@@ -1,0 +1,513 @@
+-- Converts the pack's R6 fighters into R15 rigs (elbows, knees, wrists, waist) that keep their look:
+-- shirt and pants (the same templates render on R15), body colours, the pack's own head and face (on an
+-- invisible R15 head), and every item attached to the body (hair, hats, scarves, swords), re-anchored to the
+-- matching R15 joint.
+--
+-- Templates are built once per fighter with Roblox's own R15 builder and cached in
+-- ReplicatedStorage.Assets.R15 so both server and clients can clone them.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local FighterRig = {}
+
+-- Pack fighters that came without something (checked in the launch face check, 2026-10-21):
+-- FACE_FROM: no eyes in the pack (Sage Mode only has whiskers): borrow another fighter's face decal.
+-- OUTFIT: their Shirt/Pants images no longer load on Roblox: paint the outfit on the body instead
+-- { shirt, shorts, shoes } (arms and torso, upper legs, feet).
+-- true: every R15 body part is hidden; a set: just those (Frieza's torso is invisible in his model, his limbs are not).
+local HIDDEN_BODY = { GoldenFrieza = true, Frieza = { UpperTorso = true, LowerTorso = true } }
+-- The biggest body a fighter keeps (Whitebeard is 2.6x a normal avatar): a model built larger than this (Cell Max
+-- is 12x) is scaled down to it, so nothing towers over its altar, stand or card.
+local MAX_BODY = 2.6
+-- Fighters drawn at a set size: 2.565 is Whitebeard's (the biggest original body in the pack); 1.8 sits between his and a
+-- normal avatar.
+local GIANT = 2.565
+local BODY_SCALE = { Kaido = GIANT, BigMom = GIANT, Mahoraga = 1.8 }
+local FACE_FROM = { SageMode = "Tsnaruto" }
+-- Packs that switched faces with a script: the face that works is saved hidden and the one shown points
+-- at a deleted image, so the head is blank. [key] = the decal to show (the other front decals on its part go).
+local FACE_SHOW = { Vegito = "Face1", VegitoBlue = "Face1" }
+local KILLUA = { Color3.fromRGB(45, 55, 95), Color3.fromRGB(215, 200, 165), Color3.fromRGB(40, 40, 50) }
+local OUTFIT = { Killua = KILLUA, KilluaGodspeed = KILLUA }
+-- PANTS: only the Pants image is dead (the shirt still loads): paint just the legs { shorts, shins, feet }.
+local LUFFY_LEGS = { Color3.fromRGB(40, 78, 160), nil, Color3.fromRGB(150, 105, 60) } -- blue shorts, sandals
+local PANTS = { Ptsluffy = LUFFY_LEGS } -- (Tsluffy is a hand-made model with its own outfit: left exactly as made)
+local SHIRT = {
+	UpperTorso = true,
+	LowerTorso = true,
+	LeftUpperArm = true,
+	RightUpperArm = true,
+	LeftLowerArm = true,
+	RightLowerArm = true,
+}
+local SHORTS = { LeftUpperLeg = true, RightUpperLeg = true }
+local SHOES = { LeftFoot = true, RightFoot = true }
+
+-- A fighter's front face decal (not the "roblox" torso logo).
+local function faceDecal(model)
+	for _, d in model:GetDescendants() do
+		if d:IsA("Decal") and d.Name ~= "roblox" and d.Face == Enum.NormalId.Front then
+			return d
+		end
+	end
+	return nil
+end
+
+local BODY6 = {
+	Head = true,
+	Torso = true,
+	["Left Arm"] = true,
+	["Right Arm"] = true,
+	["Left Leg"] = true,
+	["Right Leg"] = true,
+	HumanoidRootPart = true,
+}
+
+local function cache()
+	local assets = ReplicatedStorage:WaitForChild("Assets")
+	local folder = assets:FindFirstChild("R15")
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = "R15"
+		folder.Parent = assets
+	end
+	return folder
+end
+
+-- R6 joint points, from the torso, in a pose with no animation: neck, shoulders and hips.
+local function r6Anchors(torso)
+	local cf = torso.CFrame
+	-- (Every distance grows with the body: for Kaido, Whitebeard or a titan the neck is 2.5 studs up, not 1, and with
+	-- the standard numbers the head was put 1.5 studs too high: floating off the body.)
+	local k = torso.Size.Y / 2
+	return {
+		Head = cf * CFrame.new(0, k, 0),
+		Torso = cf * CFrame.new(0, k, 0),
+		["Right Arm"] = cf * CFrame.new(k, 0.5 * k, 0),
+		["Left Arm"] = cf * CFrame.new(-k, 0.5 * k, 0),
+		["Right Leg"] = cf * CFrame.new(0.5 * k, -k, 0),
+		["Left Leg"] = cf * CFrame.new(-0.5 * k, -k, 0),
+	}
+end
+
+local function attachmentCFrame(model, partName, attachmentName)
+	local p = model:FindFirstChild(partName)
+	local a = p and p:FindFirstChild(attachmentName)
+	return a and a.WorldCFrame
+end
+
+-- The same joint points on the R15 rig, oriented like the root.
+local function r15Anchors(rig)
+	local rot = rig.HumanoidRootPart.CFrame.Rotation
+	local function at(partName, attachmentName)
+		local cf = attachmentCFrame(rig, partName, attachmentName)
+		return cf and (CFrame.new(cf.Position) * rot)
+	end
+	local neck = at("UpperTorso", "NeckRigAttachment")
+	return {
+		Head = neck,
+		Torso = neck,
+		["Right Arm"] = at("UpperTorso", "RightShoulderRigAttachment"),
+		["Left Arm"] = at("UpperTorso", "LeftShoulderRigAttachment"),
+		["Right Leg"] = at("LowerTorso", "RightHipRigAttachment"),
+		["Left Leg"] = at("LowerTorso", "LeftHipRigAttachment"),
+	}
+end
+
+-- Which R15 segment carries an item that sat on an R6 limb, from how far down the limb it is.
+local DEFAULT_FACE = { Cell = true }
+
+local function segmentFor(region, offset, k)
+	local y = offset.Position.Y / k
+	if region == "Head" then
+		return "Head"
+	elseif region == "Torso" then
+		return y < -1.4 and "LowerTorso" or "UpperTorso"
+	end
+	local side = string.find(region, "Right") and "Right" or "Left"
+	if string.find(region, "Arm") then
+		return side .. (y < -1.3 and "Hand" or y < -0.6 and "LowerArm" or "UpperArm")
+	end
+	return side .. (y < -1.6 and "Foot" or y < -0.8 and "LowerLeg" or "UpperLeg")
+end
+
+-- Finds, for every non-body part, the R6 body part it is (eventually) attached to.
+local function regions(source)
+	local links = {}
+	local function link(a, b)
+		links[a] = links[a] or {}
+		links[b] = links[b] or {}
+		table.insert(links[a], b)
+		table.insert(links[b], a)
+	end
+	for _, joint in source:GetDescendants() do
+		if (joint:IsA("JointInstance") or joint:IsA("WeldConstraint")) and joint.Part0 and joint.Part1 then
+			link(joint.Part0, joint.Part1)
+		end
+	end
+	local region = {}
+	local queue = {}
+	for _, p in source:GetChildren() do
+		if p:IsA("BasePart") and BODY6[p.Name] and p.Name ~= "HumanoidRootPart" then
+			region[p] = p.Name
+			table.insert(queue, p)
+		end
+	end
+	-- Hand-made fighters (tools/pack/custom) parent their coat, sleeves and shorts straight under the limb
+	-- they sit on, with no weld: those belong to that limb too.
+	for _, p in queue do
+		for _, d in p:GetDescendants() do
+			if d:IsA("BasePart") and not BODY6[d.Name] and not region[d] then
+				region[d] = region[p]
+			end
+		end
+	end
+	-- A piece welded to several body parts (an armband welded to the torso AND the arm) belongs to the nearest one,
+	-- or it stays on the torso when the arm moves.
+	local bodies = {}
+	for _, p in source:GetChildren() do
+		if p:IsA("BasePart") and BODY6[p.Name] and p.Name ~= "HumanoidRootPart" then
+			bodies[p] = true
+		end
+	end
+	local nearest = {}
+	for part, around in links do
+		if not BODY6[part.Name] then
+			local best, bestDistance, onLimb = nil, math.huge, false
+			for _, q in around do
+				if bodies[q] then
+					onLimb = onLimb or string.find(q.Name, "Arm") ~= nil or string.find(q.Name, "Leg") ~= nil
+					local distance = (part.Position - q.Position).Magnitude
+					if distance < bestDistance then
+						best, bestDistance = q, distance
+					end
+				end
+			end
+			if best and onLimb then -- (hair and hats welded to head and torso stay as they were)
+				nearest[part] = best
+			end
+		end
+	end
+	for part, body in nearest do
+		region[part] = body.Name
+	end
+	while #queue > 0 do
+		local p = table.remove(queue, 1)
+		for _, q in links[p] or {} do
+			-- (Only the rig's own body parts end the walk: a "Head" part nested inside a Head model, like Cell Max's,
+			-- is just a link between the pieces of his head, and they all belong to the limb it hangs from.)
+			if not region[q] and not (BODY6[q.Name] and q.Parent == source) then
+				region[q] = region[p]
+				table.insert(queue, q)
+			end
+		end
+	end
+	return region
+end
+
+local function solveRest(source)
+	-- Same joint solve as FighterModels, with no pose: every part at its rest offset from the root.
+	local root = source:FindFirstChild("HumanoidRootPart")
+	local links = {}
+	local function link(a, b, rel)
+		links[a] = links[a] or {}
+		links[b] = links[b] or {}
+		table.insert(links[a], { to = b, rel = rel })
+		table.insert(links[b], { to = a, rel = rel:Inverse() })
+	end
+	local joints = source:GetDescendants()
+	table.sort(joints, function(a, b)
+		return a:IsA("Motor6D") and not b:IsA("Motor6D")
+	end)
+	for _, j in joints do
+		if j:IsA("JointInstance") and j.Part0 and j.Part1 then
+			link(j.Part0, j.Part1, j.C0 * j.C1:Inverse())
+		elseif j:IsA("WeldConstraint") and j.Part0 and j.Part1 then
+			link(j.Part0, j.Part1, j.Part0.CFrame:ToObjectSpace(j.Part1.CFrame))
+		end
+	end
+	local placed = { [root] = root.CFrame }
+	local queue = { root }
+	while #queue > 0 do
+		local p = table.remove(queue, 1)
+		for _, e in links[p] or {} do
+			if not placed[e.to] then
+				placed[e.to] = placed[p] * e.rel
+				table.insert(queue, e.to)
+			end
+		end
+	end
+	for p, cf in placed do
+		p.CFrame = cf
+	end
+end
+
+local function colorOf(source, name)
+	local p = source:FindFirstChild(name)
+	return p and p:IsA("BasePart") and p.Color or Color3.fromRGB(242, 243, 243)
+end
+
+function FighterRig.build(key, source)
+	if source:FindFirstChild("UpperTorso") then
+		-- Already R15 (hand-made fighters like Mihawk and Daki): used as built, with the clean-up tools/pack did.
+		local rig = source:Clone()
+		rig.Name = key
+		for _, item in rig:GetDescendants() do
+			if item:IsA("LuaSourceContainer") then
+				item:Destroy()
+			end
+		end
+		rig.PrimaryPart = rig:FindFirstChild("HumanoidRootPart")
+		rig:SetAttribute("FighterKey", key)
+		rig:SetAttribute("BodyScale", 1)
+		return rig
+	end
+	local description = Instance.new("HumanoidDescription")
+	description.HeadColor = colorOf(source, "Head")
+	description.TorsoColor = colorOf(source, "Torso")
+	description.LeftArmColor = colorOf(source, "Left Arm")
+	description.RightArmColor = colorOf(source, "Right Arm")
+	description.LeftLegColor = colorOf(source, "Left Leg")
+	description.RightLegColor = colorOf(source, "Right Leg")
+	local ok, rig = pcall(Players.CreateHumanoidModelFromDescription, Players, description, Enum.HumanoidRigType.R15)
+	if not ok or not rig then
+		warn("[FighterRig] R15 build failed for", key, rig)
+		return nil
+	end
+	rig.Name = key
+	for _, item in rig:GetDescendants() do
+		if item:IsA("LuaSourceContainer") or item:IsA("Shirt") or item:IsA("Pants") or item:IsA("ShirtGraphic") then
+			item:Destroy()
+		end
+	end
+	local src = source:Clone()
+	local srcRoot = src:FindFirstChild("HumanoidRootPart")
+	local torso = src:FindFirstChild("Torso")
+	if torso and not srcRoot then
+		-- A hand-made rig saved without its root part (Mahoraga): make one where the Torso is.
+		srcRoot = Instance.new("Part")
+		srcRoot.Name = "HumanoidRootPart"
+		srcRoot.Size = Vector3.new(2, 2, 1)
+		srcRoot.Transparency = 1
+		srcRoot.CFrame = torso.CFrame
+		srcRoot.Parent = src
+	end
+	if not (srcRoot and torso) then
+		rig:Destroy()
+		src:Destroy()
+		return nil
+	end
+	if torso and BODY_SCALE[key] then
+		src:ScaleTo(BODY_SCALE[key] * 2 / torso.Size.Y) -- (scales every piece, joint and mesh with it)
+	elseif torso and torso.Size.Y / 2 > MAX_BODY then
+		src:ScaleTo(MAX_BODY * 2 / torso.Size.Y)
+	end
+	-- Big originals (Whitebeard, the titans) are R6 bodies scaled up evenly: grow the R15 body to match, so the
+	-- pack's own head, hair and items sit on a body of their size instead of a standard-sized one.
+	local bodyScale = torso.Size.Y / 2
+	if math.abs(bodyScale - 1) > 0.05 then
+		rig:ScaleTo(bodyScale)
+	else
+		bodyScale = 1
+	end
+	-- Line both rigs up at the origin in their rest poses.
+	-- Parts parented straight under a limb with no joint (hand-made fighters: coat, sleeves, shorts) don't move when
+	-- the body is put in its rest pose: remember where each sits on its limb and put it back after.
+	local jointed = {}
+	for _, j in src:GetDescendants() do
+		if (j:IsA("JointInstance") or j:IsA("WeldConstraint")) and j.Part0 and j.Part1 then
+			jointed[j.Part0], jointed[j.Part1] = true, true
+		end
+	end
+	local nested = {}
+	for _, limb in src:GetChildren() do
+		if limb:IsA("BasePart") and BODY6[limb.Name] and limb.Name ~= "HumanoidRootPart" then
+			for _, d in limb:GetDescendants() do
+				if d:IsA("BasePart") and not BODY6[d.Name] and not jointed[d] then
+					table.insert(nested, { part = d, limb = limb, rel = limb.CFrame:ToObjectSpace(d.CFrame) })
+				end
+			end
+		end
+	end
+	srcRoot.CFrame = CFrame.new()
+	solveRest(src)
+	for _, n in nested do
+		n.part.CFrame = n.limb.CFrame * n.rel
+	end
+	rig.HumanoidRootPart.CFrame = CFrame.new()
+	for _, j in rig:GetDescendants() do
+		if j:IsA("Motor6D") then
+			j.Transform = CFrame.identity
+		end
+	end
+	-- Joints only update parts when simulated; place R15 parts by their rig attachments instead.
+	local rigRoot = rig.HumanoidRootPart
+	local placed = { [rigRoot] = rigRoot.CFrame }
+	local pending = true
+	while pending do
+		pending = false
+		for _, j in rig:GetDescendants() do
+			if j:IsA("Motor6D") and placed[j.Part0] and not placed[j.Part1] then
+				placed[j.Part1] = placed[j.Part0] * j.C0 * j.C1:Inverse()
+				j.Part1.CFrame = placed[j.Part1]
+				pending = true
+			end
+		end
+	end
+
+	-- Clothing, face and body colours.
+	for _, item in src:GetChildren() do
+		if item:IsA("Shirt") or item:IsA("Pants") or item:IsA("ShirtGraphic") then
+			item:Clone().Parent = rig
+		end
+	end
+	-- The head stays the pack's own: its original Head (and FakeHead) with whatever draws the face (a decal,
+	-- a textured mesh, a welded face part) ride on the R15 head, which turns invisible and loses Roblox's
+	-- default face. Faces then match the source exactly, however the pack drew them.
+	rig.Head.Transparency = 1
+	for _, d in rig.Head:GetChildren() do
+		if d:IsA("Decal") then
+			d:Destroy()
+		end
+	end
+
+	-- Every attached item moves to the matching R15 segment, keeping its place relative to the joint.
+	local from, to = r6Anchors(torso), r15Anchors(rig)
+	local region = regions(src)
+	local items = Instance.new("Folder")
+	items.Name = "Items"
+	items.Parent = rig
+	local srcHead = src:FindFirstChild("Head")
+	if srcHead then
+		region[srcHead] = "Head"
+	end
+	for part, r in region do
+		if (not BODY6[part.Name] or part == srcHead) and from[r] and to[r] then
+			local offset = from[r]:ToObjectSpace(part.CFrame)
+			local segment = rig:FindFirstChild(segmentFor(r, offset, torso.Size.Y / 2))
+			if segment then
+				for _, j in part:GetChildren() do
+					if j:IsA("JointInstance") or j:IsA("WeldConstraint") then
+						j:Destroy()
+					end
+				end
+				if part == srcHead then
+					part.Name = "PackHead" -- "Head" stays the R15 joint part
+				end
+				part.Parent = items
+				part.CFrame = to[r] * offset
+				part.Anchored = false
+				part.Massless = true
+				part.CanCollide = false
+				local weld = Instance.new("WeldConstraint")
+				weld.Part0 = segment
+				weld.Part1 = part
+				weld.Parent = part
+			end
+		end
+	end
+	src:Destroy()
+	-- Packs that draw the face on a "FakeHead" put it exactly where the real head is; the two fight over
+	-- which draws in front and the face can vanish. The FakeHead is a whole head itself, so hide the real one.
+	local fakeHead = items:FindFirstChild("FakeHead")
+	local packHead = items:FindFirstChild("PackHead")
+	if fakeHead and packHead and fakeHead:FindFirstChildWhichIsA("Decal") then
+		packHead.Transparency = 1
+	end
+	local donorKey = FACE_FROM[key]
+	if donorKey then
+		local folder = ReplicatedStorage.Assets:FindFirstChild("Fighters")
+		local donor = folder and folder:FindFirstChild(donorKey)
+		local face = donor and faceDecal(donor)
+		local mark = faceDecal(rig) -- the decal already there (whiskers): the face goes on the same part
+		if face and mark then
+			local copy = face:Clone()
+			copy.Name = "face"
+			copy.ZIndex = mark.ZIndex - 1 -- under the whiskers
+			copy.Parent = mark.Parent
+		end
+	end
+	-- Cell's pack head is a plain head: its face decal has no image (the original was deleted), so he stood
+	-- blank. Roblox's own face is drawn on the head instead (a decal, so cards and the Bag show it too).
+	if DEFAULT_FACE[key] and packHead and not packHead:FindFirstChildWhichIsA("Decal") then
+		local face = Instance.new("Decal")
+		face.Name = "face"
+		face.Face = Enum.NormalId.Front
+		face.Texture = "rbxasset://textures/face.png"
+		face.Parent = packHead
+	end
+	local show = FACE_SHOW[key]
+	if show then
+		for _, d in rig:GetDescendants() do
+			if d:IsA("Decal") and d.Name == show then
+				d.Transparency = 0
+				for _, other in d.Parent:GetChildren() do
+					if other:IsA("Decal") and other ~= d and other.Face == d.Face then
+						other:Destroy()
+					end
+				end
+			end
+		end
+	end
+	local outfit = OUTFIT[key]
+	if outfit then
+		for _, c in rig:GetDescendants() do
+			if c:IsA("Clothing") or c:IsA("BodyColors") then
+				c:Destroy() -- BodyColors would paint the skin back over the outfit
+			end
+		end
+		for _, part in rig:GetChildren() do
+			if part:IsA("BasePart") then
+				part.Color = SHIRT[part.Name] and outfit[1]
+					or SHORTS[part.Name] and outfit[2]
+					or SHOES[part.Name] and outfit[3]
+					or part.Color
+			end
+		end
+	end
+	local legs = PANTS[key]
+	if legs then
+		for _, c in rig:GetDescendants() do
+			if c:IsA("Pants") or c:IsA("BodyColors") then
+				c:Destroy() -- (BodyColors would paint the skin back over the shorts)
+			end
+		end
+		for _, part in rig:GetChildren() do
+			if part:IsA("BasePart") then
+				local shin = part.Name == "LeftLowerLeg" or part.Name == "RightLowerLeg"
+				part.Color = SHORTS[part.Name] and legs[1]
+					or shin and legs[2]
+					or SHOES[part.Name] and legs[3]
+					or part.Color
+			end
+		end
+	end
+	local hidden = HIDDEN_BODY[key]
+	if hidden then
+		-- Fighters whose look is their own meshes (the R6 body parts are invisible in the model): hide the R15 ones.
+		for _, part in rig:GetChildren() do
+			if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" and (hidden == true or hidden[part.Name]) then
+				part.Transparency = 1
+			end
+		end
+	end
+	rig:SetAttribute("FighterKey", key)
+	rig:SetAttribute("BodyScale", bodyScale) -- 1 for a normal avatar, 2.2-2.6 for Whitebeard and the titans
+	return rig
+end
+
+-- Returns the cached R15 template for a fighter, building it on first use.
+function FighterRig.template(key, source)
+	local folder = cache()
+	local existing = folder:FindFirstChild(key)
+	if existing then
+		return existing
+	end
+	local rig = FighterRig.build(key, source)
+	if rig then
+		rig.Parent = folder
+	end
+	return rig
+end
+
+return FighterRig

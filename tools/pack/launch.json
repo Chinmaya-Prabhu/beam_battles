@@ -1,0 +1,492 @@
+{
+  "100Deku": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Legendary"
+  },
+  "5ThGate": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "8ThGate": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Mythic"
+  },
+  "Ace": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Epic"
+  },
+  "AdultGon": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Legendary"
+  },
+  "Akainu": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Legendary"
+  },
+  "AllMight": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Epic"
+  },
+  "AllMightMode": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Legendary"
+  },
+  "Annie": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Legendary"
+  },
+  "AnnieJuniorHigh": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Epic"
+  },
+  "AttackTitan": {
+    "exclusive": true,
+    "pool": "Walled",
+    "rarity": "Secret"
+  },
+  "AwakenedBakugo": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Epic"
+  },
+  "Bakugo": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Rare"
+  },
+  "Broly": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "BuuSagaGoku": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "Deku": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Rare"
+  },
+  "DekuAwakened": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Epic"
+  },
+  "Eren": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Legendary"
+  },
+  "ErenPostTimeSkip": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Mythic"
+  },
+  "Eri": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Common"
+  },
+  "Erwin": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Mythic"
+  },
+  "ErwinAlt": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Epic"
+  },
+  "FemaleTitan": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Secret"
+  },
+  "Gaara": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Rare"
+  },
+  "GojoSatoru": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Legendary"
+  },
+  "GojoSatoruBlindfoldOff": {
+    "exclusive": true,
+    "pool": "Blossom",
+    "rarity": "Mythic"
+  },
+  "Goku": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "GokuBlackNew": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Mythic"
+  },
+  "Gon": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "Gray": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "GreyAwakening": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Epic"
+  },
+  "Hellflame": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Rare"
+  },
+  "Hiei": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "HieiJaganEye": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare"
+  },
+  "Hisoka": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "Illumi": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "IllumiAwakened": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Epic"
+  },
+  "Itachi": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Legendary"
+  },
+  "Kakashi": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "KcmMinato": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Mythic"
+  },
+  "Killua": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "KilluaGodspeed": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Legendary"
+  },
+  "Kizaru": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Legendary"
+  },
+  "Lemillion": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Common"
+  },
+  "LssjBroly": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Mythic"
+  },
+  "Madara": {
+    "exclusive": true,
+    "pool": "Ninja",
+    "rarity": "Mythic"
+  },
+  "MajinVegeta": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "MightGuy": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "Mikasa": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Legendary"
+  },
+  "MikasaFormal": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Epic"
+  },
+  "Minato": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "Natsu": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "NatsuAwakened": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare"
+  },
+  "Neji": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Uncommon"
+  },
+  "Pain": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Legendary"
+  },
+  "Ptslaw": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Rare"
+  },
+  "Ptsluffy": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Rare"
+  },
+  "Ptsnaruto": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Uncommon"
+  },
+  "Ptssanji": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Rare"
+  },
+  "Ptssasuke": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Uncommon"
+  },
+  "Ptszoro": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Rare"
+  },
+  "RockLee": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Rare"
+  },
+  "RockLeeGates": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "SageMode": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Legendary"
+  },
+  "Sasha": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Epic"
+  },
+  "SashaSuit": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Epic"
+  },
+  "Shanks": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Mythic"
+  },
+  "Snakeman": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Secret"
+  },
+  "SpeedGuy": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Uncommon"
+  },
+  "Ssjr": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Mythic"
+  },
+  "Sukuna": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Legendary"
+  },
+  "Todoroki": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Rare"
+  },
+  "TsSanji": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Epic"
+  },
+  "Tsluffy": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Epic"
+  },
+  "Tsnaruto": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "Tssasuke": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "Tszoro": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Epic"
+  },
+  "Vegeta": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "Vegito": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Mythic"
+  },
+  "VegitoBlue": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Secret"
+  },
+  "Whitebeard": {
+    "exclusive": true,
+    "pool": "Pirate",
+    "rarity": "Mythic"
+  },
+  "Yuji": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Uncommon"
+  },
+  "Yusuke": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "YusukeMode": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare"
+  },
+  "Zabuza": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Rare"
+  },
+  "Cell": {
+    "exclusive": true,
+    "pool": "Divine",
+    "rarity": "Epic"
+  },
+  "Mahoraga": {
+    "exclusive": true,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "GoldenFrieza": {
+    "exclusive": true,
+    "pool": "Divine",
+    "rarity": "Mythic"
+  },
+  "Sengoku": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Mythic"
+  },
+  "Doflamingo": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Epic"
+  },
+  "Fujitora": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Legendary"
+  },
+  "Mihawk": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Legendary"
+  },
+  "Rayleigh": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Legendary"
+  },
+  "Kaido": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Mythic"
+  },
+  "BigMom": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Mythic"
+  },
+  "Frieza": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "Beerus": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Secret"
+  },
+  "CellMax": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Secret"
+  }
+}

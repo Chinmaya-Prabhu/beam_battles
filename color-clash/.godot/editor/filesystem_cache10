@@ -1,0 +1,11 @@
+63f7b34db8d8cdea90c76aacccf841ec
+::res://::1793028187
+icon.svg::CompressedTexture2D::6410999067275068163::1793027888::1793028190::1::::<><><>0<>0<>8240cc63c0024b27ce38cebecda7936c<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+::res://scenes/::1793028153
+main.tscn::PackedScene::209530284825651782::1793028153::0::1::::<><><>0<>0<><>::res://scripts/main.gd
+::res://scripts/::1793028139
+arena_canvas.gd::GDScript::9079907042008721650::1793028030::0::1::::ArenaCanvas<>Control<><>0<>0<><>::
+main.gd::GDScript::3573057353556923359::1793028176::0::1::::<>Control<><>0<>0<><>::
+shape_generator.gd::GDScript::6751314950848534310::1793027938::0::1::::ShapeGenerator<>RefCounted<><>0<>0<><>::
+territory_bar.gd::GDScript::8397785133676364722::1793028044::0::1::::TerritoryBar<>Control<><>0<>0<><>::
+wavefront_sim.gd::GDScript::6709398198742270956::1793027996::0::1::::WavefrontSim<>RefCounted<><>0<>0<><>::

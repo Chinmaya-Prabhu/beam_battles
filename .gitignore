@@ -1,0 +1,11 @@
+*.rbxlx
+*.rbxl
+.DS_Store
+__pycache__/
+*.pyc
+*.log
+# Big media stays local
+promo/
+screens/
+*.mp4
+*.mov

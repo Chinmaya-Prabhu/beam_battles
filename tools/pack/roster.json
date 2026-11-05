@@ -1,0 +1,1612 @@
+[
+  {
+    "key": "AnnieJuniorHigh",
+    "source": "Annie (Junior High)",
+    "display": "Annie (Junior High)",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 8
+  },
+  {
+    "key": "ErwinAlt",
+    "source": "Erwin (Alt)",
+    "display": "Erwin (Alt)",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 8
+  },
+  {
+    "key": "MikasaFormal",
+    "source": "Mikasa (Formal)",
+    "display": "Mikasa (Formal)",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 9
+  },
+  {
+    "key": "Sasha",
+    "source": "Sasha",
+    "display": "Sasha",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 8
+  },
+  {
+    "key": "SashaSuit",
+    "source": "Sasha (Suit)",
+    "display": "Sasha (Suit)",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 8
+  },
+  {
+    "key": "Rukia",
+    "source": "Rukia",
+    "display": "Rukia",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 14
+  },
+  {
+    "key": "Krillin",
+    "source": "Krillin",
+    "display": "Krillin",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 11
+  },
+  {
+    "key": "Eri",
+    "source": "Eri",
+    "display": "Eri",
+    "series": "My Hero Academia",
+    "parentInPack": "100% Deku",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 8
+  },
+  {
+    "key": "Chika",
+    "source": "Chika",
+    "display": "Chika",
+    "series": "OTHER",
+    "parentInPack": "MISC",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 13
+  },
+  {
+    "key": "Kazuma",
+    "source": "Kazuma",
+    "display": "Kazuma",
+    "series": "OTHER",
+    "parentInPack": "OTHER",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 13
+  },
+  {
+    "key": "Rikka",
+    "source": "Rikka",
+    "display": "Rikka",
+    "series": "OTHER",
+    "parentInPack": "OTHER",
+    "rarity": "Common",
+    "income": 8,
+    "parts": 15
+  },
+  {
+    "key": "Annie",
+    "source": "Annie",
+    "display": "Annie",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 8
+  },
+  {
+    "key": "Erwin",
+    "source": "Erwin",
+    "display": "Erwin",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 9
+  },
+  {
+    "key": "Kiritsugu",
+    "source": "Kiritsugu",
+    "display": "Kiritsugu",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 13
+  },
+  {
+    "key": "Rin",
+    "source": "Rin",
+    "display": "Rin",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 13
+  },
+  {
+    "key": "Gon",
+    "source": "Gon",
+    "display": "Gon",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 12
+  },
+  {
+    "key": "Killua",
+    "source": "Killua",
+    "display": "Killua",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 12
+  },
+  {
+    "key": "Jonathan",
+    "source": "Jonathan",
+    "display": "Jonathan",
+    "series": "JOJO",
+    "parentInPack": "JOJO",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 13
+  },
+  {
+    "key": "OldJoseph",
+    "source": "Old Joseph",
+    "display": "Old Joseph",
+    "series": "JOJO",
+    "parentInPack": "JOJO",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 16
+  },
+  {
+    "key": "YoungJoseph",
+    "source": "Young Joseph",
+    "display": "Young Joseph",
+    "series": "JOJO",
+    "parentInPack": "JOJO",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 17
+  },
+  {
+    "key": "Lemillion",
+    "source": "Lemillion",
+    "display": "Lemillion",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 15
+  },
+  {
+    "key": "Ptsnaruto",
+    "source": "ptsNaruto",
+    "display": "Naruto (Pre-Timeskip)",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 12
+  },
+  {
+    "key": "Neji",
+    "source": "Neji",
+    "display": "Neji",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 13
+  },
+  {
+    "key": "Ptssasuke",
+    "source": "ptsSasuke",
+    "display": "Sasuke (Pre-Timeskip)",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 13
+  },
+  {
+    "key": "Ptsluffy",
+    "source": "ptsLuffy",
+    "display": "Luffy (Pre-Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 16
+  },
+  {
+    "key": "Ptssanji",
+    "source": "ptsSanji",
+    "display": "Sanji (Pre-Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 12
+  },
+  {
+    "key": "Ptszoro",
+    "source": "ptsZoro",
+    "display": "Zoro (Pre-Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 22
+  },
+  {
+    "key": "Hiei",
+    "source": "Hiei",
+    "display": "Hiei",
+    "series": "YYH",
+    "parentInPack": "YYH",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 21
+  },
+  {
+    "key": "Yusuke",
+    "source": "Yusuke",
+    "display": "Yusuke",
+    "series": "YYH",
+    "parentInPack": "YYH",
+    "rarity": "Uncommon",
+    "income": 35,
+    "parts": 12
+  },
+  {
+    "key": "Eren",
+    "source": "Eren",
+    "display": "Eren",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 8
+  },
+  {
+    "key": "Mikasa",
+    "source": "Mikasa",
+    "display": "Mikasa",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 9
+  },
+  {
+    "key": "Gin",
+    "source": "Gin",
+    "display": "Gin",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 15
+  },
+  {
+    "key": "R1",
+    "source": "R1",
+    "display": "R1",
+    "series": "Bleach",
+    "parentInPack": "Ulquiorra",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 18
+  },
+  {
+    "key": "R2",
+    "source": "R2",
+    "display": "R2",
+    "series": "Bleach",
+    "parentInPack": "Ulquiorra",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 19
+  },
+  {
+    "key": "Shinji",
+    "source": "Shinji",
+    "display": "Shinji",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 19
+  },
+  {
+    "key": "Starrk",
+    "source": "Starrk",
+    "display": "Starrk",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 16
+  },
+  {
+    "key": "Toshiro",
+    "source": "Toshiro",
+    "display": "Toshiro",
+    "series": "Bleach",
+    "parentInPack": "Toshiro",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 17
+  },
+  {
+    "key": "Caulifa",
+    "source": "Caulifa",
+    "display": "Caulifa",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 13
+  },
+  {
+    "key": "Gohan",
+    "source": "Gohan",
+    "display": "Gohan",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 13
+  },
+  {
+    "key": "Piccolo",
+    "source": "Piccolo",
+    "display": "Piccolo",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 17
+  },
+  {
+    "key": "Trunks",
+    "source": "Trunks",
+    "display": "Trunks",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 19
+  },
+  {
+    "key": "Lancer",
+    "source": "Lancer",
+    "display": "Lancer",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 18
+  },
+  {
+    "key": "Shirou",
+    "source": "Shirou",
+    "display": "Shirou",
+    "series": "FATE",
+    "parentInPack": "Fate Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 18
+  },
+  {
+    "key": "Gray",
+    "source": "Gray",
+    "display": "Gray",
+    "series": "Fairy Tail",
+    "parentInPack": "Fairy Tail",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 13
+  },
+  {
+    "key": "Natsu",
+    "source": "Natsu",
+    "display": "Natsu",
+    "series": "Fairy Tail",
+    "parentInPack": "Fairy Tail",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 14
+  },
+  {
+    "key": "Hisoka",
+    "source": "Hisoka",
+    "display": "Hisoka",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 12
+  },
+  {
+    "key": "Illumi",
+    "source": "Illumi",
+    "display": "Illumi",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 13
+  },
+  {
+    "key": "Yuji",
+    "source": "Yuji",
+    "display": "Yuji",
+    "series": "JJK",
+    "parentInPack": "JJK",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 15
+  },
+  {
+    "key": "Jolyne",
+    "source": "Jolyne",
+    "display": "Jolyne",
+    "series": "JOJO",
+    "parentInPack": "Jolyne",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 27
+  },
+  {
+    "key": "Josuke",
+    "source": "Josuke",
+    "display": "Josuke",
+    "series": "JOJO",
+    "parentInPack": "Josuke",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 27
+  },
+  {
+    "key": "Stand",
+    "source": "Stand",
+    "display": "Stand",
+    "series": "JOJO",
+    "parentInPack": "Enrico",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 28
+  },
+  {
+    "key": "StoneFree",
+    "source": "STONE FREE",
+    "display": "Stone Free",
+    "series": "JOJO",
+    "parentInPack": "Jolyne",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 34
+  },
+  {
+    "key": "Bakugo",
+    "source": "Bakugo",
+    "display": "Bakugo",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 24
+  },
+  {
+    "key": "Deku",
+    "source": "Deku",
+    "display": "Deku",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 15
+  },
+  {
+    "key": "Hellflame",
+    "source": "Hellflame",
+    "display": "Hellflame",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 25
+  },
+  {
+    "key": "SpeedGuy",
+    "source": "Speed Guy",
+    "display": "Speed Guy",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 220
+  },
+  {
+    "key": "Todoroki",
+    "source": "Todoroki",
+    "display": "Todoroki",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 14
+  },
+  {
+    "key": "Gaara",
+    "source": "Gaara",
+    "display": "Gaara",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 21
+  },
+  {
+    "key": "RockLee",
+    "source": "Rock Lee",
+    "display": "Rock Lee",
+    "series": "NARUTO",
+    "parentInPack": "Rock Lee",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 17
+  },
+  {
+    "key": "Zabuza",
+    "source": "Zabuza",
+    "display": "Zabuza",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 16
+  },
+  {
+    "key": "Tanjiro",
+    "source": "Tanjiro",
+    "display": "Tanjiro",
+    "series": "OTHER",
+    "parentInPack": "MISC",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 16
+  },
+  {
+    "key": "Ptslaw",
+    "source": "ptsLaw",
+    "display": "Law (Pre-Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 15
+  },
+  {
+    "key": "Snakeman",
+    "source": "Snakeman",
+    "display": "Snakeman",
+    "series": "One Piece",
+    "parentInPack": "TS Luffy",
+    "rarity": "Rare",
+    "income": 180,
+    "parts": 22
+  },
+  {
+    "key": "ErenPostTimeSkip",
+    "source": "Eren Post-time skip",
+    "display": "Eren Post-time skip",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 8
+  },
+  {
+    "key": "Byakuya",
+    "source": "Byakuya",
+    "display": "Byakuya",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 15
+  },
+  {
+    "key": "Grimmjow",
+    "source": "Grimmjow",
+    "display": "Grimmjow",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 21
+  },
+  {
+    "key": "Ichigo",
+    "source": "Ichigo",
+    "display": "Ichigo",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 14
+  },
+  {
+    "key": "Kisuke",
+    "source": "Kisuke",
+    "display": "Kisuke",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 17
+  },
+  {
+    "key": "NekoYoru",
+    "source": "Neko Yoru",
+    "display": "Neko Yoru",
+    "series": "Bleach",
+    "parentInPack": "Yoruichi",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 26
+  },
+  {
+    "key": "Shunsui",
+    "source": "Shunsui",
+    "display": "Shunsui",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 22
+  },
+  {
+    "key": "Ulq",
+    "source": "Ulq",
+    "display": "Ulq",
+    "series": "Bleach",
+    "parentInPack": "Ulquiorra",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 18
+  },
+  {
+    "key": "Yamamoto",
+    "source": "Yamamoto",
+    "display": "Yamamoto",
+    "series": "Bleach",
+    "parentInPack": "Bleach Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 15
+  },
+  {
+    "key": "Yoruichi",
+    "source": "Yoruichi",
+    "display": "Yoruichi",
+    "series": "Bleach",
+    "parentInPack": "Yoruichi",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 13
+  },
+  {
+    "key": "Broly",
+    "source": "Broly",
+    "display": "Broly",
+    "series": "DBZ",
+    "parentInPack": "Broly",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 13
+  },
+  {
+    "key": "BuuSagaGoku",
+    "source": "Buu Saga Goku",
+    "display": "Buu Saga Goku",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 14
+  },
+  {
+    "key": "Goku",
+    "source": "Goku",
+    "display": "Goku",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 12
+  },
+  {
+    "key": "MajinVegeta",
+    "source": "Majin Vegeta",
+    "display": "Majin Vegeta",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 13
+  },
+  {
+    "key": "Vegeta",
+    "source": "Vegeta",
+    "display": "Vegeta",
+    "series": "DBZ",
+    "parentInPack": "DBZ",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 43
+  },
+  {
+    "key": "LancerMode",
+    "source": "Lancer Mode",
+    "display": "Lancer Mode",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 18
+  },
+  {
+    "key": "Salter",
+    "source": "SALTER",
+    "display": "Salter",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 22
+  },
+  {
+    "key": "GreyAwakening",
+    "source": "Grey Awakening",
+    "display": "Grey Awakening",
+    "series": "Fairy Tail",
+    "parentInPack": "Fairy Tail",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 13
+  },
+  {
+    "key": "NatsuAwakened",
+    "source": "Natsu Awakened",
+    "display": "Natsu Awakened",
+    "series": "Fairy Tail",
+    "parentInPack": "Fairy Tail",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 14
+  },
+  {
+    "key": "IllumiAwakened",
+    "source": "Illumi Awakened",
+    "display": "Illumi Awakened",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 15
+  },
+  {
+    "key": "Doppio",
+    "source": "Doppio",
+    "display": "Doppio",
+    "series": "JOJO",
+    "parentInPack": "Doppio/Diavolo",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 35
+  },
+  {
+    "key": "Giorno",
+    "source": "Giorno",
+    "display": "Giorno",
+    "series": "JOJO",
+    "parentInPack": "Giorno",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 31
+  },
+  {
+    "key": "Jotaro",
+    "source": "Jotaro",
+    "display": "Jotaro",
+    "series": "JOJO",
+    "parentInPack": "Model",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 32
+  },
+  {
+    "key": "KillerQueen",
+    "source": "Killer Queen",
+    "display": "Killer Queen",
+    "series": "JOJO",
+    "parentInPack": "Kira Yoshikage",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 38
+  },
+  {
+    "key": "KiraYoshikage",
+    "source": "Kira Yoshikage",
+    "display": "Kira Yoshikage",
+    "series": "JOJO",
+    "parentInPack": "Kira Yoshikage",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 22
+  },
+  {
+    "key": "StoneFreeAura",
+    "source": "STONE FREE AURA",
+    "display": "Stone Free Aura",
+    "series": "JOJO",
+    "parentInPack": "Jolyne",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 34
+  },
+  {
+    "key": "AllMight",
+    "source": "All Might",
+    "display": "All Might",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 12
+  },
+  {
+    "key": "AwakenedBakugo",
+    "source": "Awakened Bakugo",
+    "display": "Awakened Bakugo",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 24
+  },
+  {
+    "key": "DekuAwakened",
+    "source": "Deku Awakened",
+    "display": "Deku Awakened",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 15
+  },
+  {
+    "key": "5ThGate",
+    "source": "5TH GATE",
+    "display": "5Th Gate",
+    "series": "NARUTO",
+    "parentInPack": "Might Guy",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 16
+  },
+  {
+    "key": "Kakashi",
+    "source": "Kakashi",
+    "display": "Kakashi",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 17
+  },
+  {
+    "key": "MightGuy",
+    "source": "Might Guy",
+    "display": "Might Guy",
+    "series": "NARUTO",
+    "parentInPack": "Might Guy",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 13
+  },
+  {
+    "key": "Minato",
+    "source": "Minato",
+    "display": "Minato",
+    "series": "NARUTO",
+    "parentInPack": "Minato",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 14
+  },
+  {
+    "key": "Tsnaruto",
+    "source": "tsNaruto",
+    "display": "Naruto (Timeskip)",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 12
+  },
+  {
+    "key": "RockLeeGates",
+    "source": "ROCK LEE GATES",
+    "display": "Rock Lee Gates",
+    "series": "NARUTO",
+    "parentInPack": "Rock Lee",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 17
+  },
+  {
+    "key": "Tssasuke",
+    "source": "tsSasuke",
+    "display": "Sasuke (Timeskip)",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 25
+  },
+  {
+    "key": "RikkaAwakened",
+    "source": "Rikka Awakened",
+    "display": "Rikka Awakened",
+    "series": "OTHER",
+    "parentInPack": "OTHER",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 20
+  },
+  {
+    "key": "Ace",
+    "source": "Ace",
+    "display": "Ace",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 15
+  },
+  {
+    "key": "Akainu",
+    "source": "Akainu",
+    "display": "Akainu",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 27
+  },
+  {
+    "key": "Kizaru",
+    "source": "Kizaru",
+    "display": "Kizaru",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 21
+  },
+  {
+    "key": "Tsluffy",
+    "source": "tsLuffy",
+    "display": "Luffy (Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "TS Luffy",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 17
+  },
+  {
+    "key": "TsSanji",
+    "source": "TS SANJI",
+    "display": "Sanji (Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 12
+  },
+  {
+    "key": "Tszoro",
+    "source": "tsZoro",
+    "display": "Zoro (Timeskip)",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 22
+  },
+  {
+    "key": "HieiJaganEye",
+    "source": "Hiei (Jagan Eye)",
+    "display": "Hiei (Jagan Eye)",
+    "series": "YYH",
+    "parentInPack": "YYH",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 21
+  },
+  {
+    "key": "YusukeMode",
+    "source": "Yusuke Mode",
+    "display": "Yusuke Mode",
+    "series": "YYH",
+    "parentInPack": "YYH",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 13
+  },
+  {
+    "key": "Aizen",
+    "source": "Aizen",
+    "display": "Aizen",
+    "series": "Bleach",
+    "parentInPack": "Aizen",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 14
+  },
+  {
+    "key": "BankaiToshiro",
+    "source": "Bankai Toshiro",
+    "display": "Bankai Toshiro",
+    "series": "Bleach",
+    "parentInPack": "Toshiro",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 24
+  },
+  {
+    "key": "HollowIchigo",
+    "source": "Hollow Ichigo",
+    "display": "Hollow Ichigo",
+    "series": "Bleach",
+    "parentInPack": "Hollow Ichigo",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 16
+  },
+  {
+    "key": "Vasto",
+    "source": "Vasto",
+    "display": "Vasto",
+    "series": "Bleach",
+    "parentInPack": "Hollow Ichigo",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 17
+  },
+  {
+    "key": "GokuBlackNew",
+    "source": "Goku Black [NEW]",
+    "display": "Goku Black",
+    "series": "DBZ",
+    "parentInPack": "Goku Black",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 19
+  },
+  {
+    "key": "LssjBroly",
+    "source": "LSSJ BROLY",
+    "display": "Lssj Broly",
+    "series": "DBZ",
+    "parentInPack": "Broly",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 14
+  },
+  {
+    "key": "Ssjr",
+    "source": "SSJR",
+    "display": "Ssjr",
+    "series": "DBZ",
+    "parentInPack": "Goku Black",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 21
+  },
+  {
+    "key": "Vegito",
+    "source": "VEGITO",
+    "display": "Vegito",
+    "series": "DBZ",
+    "parentInPack": "Vegito",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 15
+  },
+  {
+    "key": "ArcherEmiya",
+    "source": "Archer (EMIYA)",
+    "display": "Archer (EMIYA)",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 18
+  },
+  {
+    "key": "Iskandar",
+    "source": "Iskandar",
+    "display": "Iskandar",
+    "series": "FATE",
+    "parentInPack": "FATE",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 20
+  },
+  {
+    "key": "Saber",
+    "source": "Saber",
+    "display": "Saber",
+    "series": "FATE",
+    "parentInPack": "Fate Pack",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 16
+  },
+  {
+    "key": "AdultGon",
+    "source": "Adult Gon",
+    "display": "Adult Gon",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 12
+  },
+  {
+    "key": "KilluaGodspeed",
+    "source": "Killua Godspeed",
+    "display": "Killua Godspeed",
+    "series": "HXH",
+    "parentInPack": "HXH",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 13
+  },
+  {
+    "key": "GojoSatoru",
+    "source": "Gojo Satoru",
+    "display": "Gojo Satoru",
+    "series": "JJK",
+    "parentInPack": "JJK",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 17
+  },
+  {
+    "key": "Sukuna",
+    "source": "Sukuna",
+    "display": "Sukuna",
+    "series": "JJK",
+    "parentInPack": "JJK",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 16
+  },
+  {
+    "key": "AwakenedJolyne",
+    "source": "Awakened Jolyne",
+    "display": "Awakened Jolyne",
+    "series": "JOJO",
+    "parentInPack": "Jolyne",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 27
+  },
+  {
+    "key": "Dio",
+    "source": "DIO",
+    "display": "Dio",
+    "series": "JOJO",
+    "parentInPack": "DIO",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 37
+  },
+  {
+    "key": "100Deku",
+    "source": "100% Deku",
+    "display": "100% Deku",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 21
+  },
+  {
+    "key": "AllMightMode",
+    "source": "All Might (MODE)",
+    "display": "All Might (MODE)",
+    "series": "My Hero Academia",
+    "parentInPack": "My Hero Academia Pack",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 13
+  },
+  {
+    "key": "Itachi",
+    "source": "Itachi",
+    "display": "Itachi",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 13
+  },
+  {
+    "key": "Pain",
+    "source": "Pain",
+    "display": "Pain",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 13
+  },
+  {
+    "key": "SageMode",
+    "source": "Sage Mode",
+    "display": "Sage Mode",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 13
+  },
+  {
+    "key": "Accel",
+    "source": "Accel",
+    "display": "Accel",
+    "series": "OTHER",
+    "parentInPack": "OTHER",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 14
+  },
+  {
+    "key": "AfroSamurai",
+    "source": "Afro Samurai",
+    "display": "Afro Samurai",
+    "series": "OTHER",
+    "parentInPack": "MISC",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 25
+  },
+  {
+    "key": "Shanks",
+    "source": "Shanks",
+    "display": "Shanks",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 25
+  },
+  {
+    "key": "Whitebeard",
+    "source": "Whitebeard",
+    "display": "Whitebeard",
+    "series": "One Piece",
+    "parentInPack": "One Piece Pack",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 17
+  },
+  {
+    "key": "FinalAizen",
+    "source": "Final Aizen",
+    "display": "Final Aizen",
+    "series": "Bleach",
+    "parentInPack": "Aizen",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 26
+  },
+  {
+    "key": "ShunkoYoruichi",
+    "source": "Shunko Yoruichi",
+    "display": "Shunko Yoruichi",
+    "series": "Bleach",
+    "parentInPack": "Yoruichi",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 13
+  },
+  {
+    "key": "VegitoBlue",
+    "source": "VEGITO BLUE",
+    "display": "Vegito Blue",
+    "series": "DBZ",
+    "parentInPack": "Vegito",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 15
+  },
+  {
+    "key": "Gilgamesh",
+    "source": "Gilgamesh",
+    "display": "Gilgamesh",
+    "series": "FATE",
+    "parentInPack": "Fate Pack",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 16
+  },
+  {
+    "key": "GojoSatoruBlindfoldOff",
+    "source": "Gojo Satoru (Blindfold Off)",
+    "display": "Gojo Satoru (Blindfold Off)",
+    "series": "JJK",
+    "parentInPack": "JJK",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 17
+  },
+  {
+    "key": "DioAwakened",
+    "source": "DIO AWAKENED",
+    "display": "Dio Awakened",
+    "series": "JOJO",
+    "parentInPack": "DIO",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 11
+  },
+  {
+    "key": "Ger",
+    "source": "GER",
+    "display": "Ger",
+    "series": "JOJO",
+    "parentInPack": "Giorno (BUT BOSS)",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 85
+  },
+  {
+    "key": "8ThGate",
+    "source": "8TH GATE",
+    "display": "8Th Gate",
+    "series": "NARUTO",
+    "parentInPack": "Might Guy",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 14
+  },
+  {
+    "key": "KcmMinato",
+    "source": "KCM MINATO",
+    "display": "Kcm Minato",
+    "series": "NARUTO",
+    "parentInPack": "Minato",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 145
+  },
+  {
+    "key": "Madara",
+    "source": "Madara",
+    "display": "Madara",
+    "series": "NARUTO",
+    "parentInPack": "NARUTO",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 15
+  },
+  {
+    "key": "Saitama",
+    "source": "Saitama",
+    "display": "Saitama",
+    "series": "OTHER",
+    "parentInPack": "MISC",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 13
+  },
+  {
+    "key": "AttackTitan",
+    "source": "Attack Titan",
+    "display": "Attack Titan",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Secret",
+    "income": 500000,
+    "parts": 9
+  },
+  {
+    "key": "FemaleTitan",
+    "source": "Female Titan",
+    "display": "Female Titan",
+    "series": "AOT",
+    "parentInPack": "AOT",
+    "rarity": "Secret",
+    "income": 500000,
+    "parts": 8
+  },
+  {
+    "key": "Mugetsu",
+    "source": "Mugetsu",
+    "display": "Mugetsu",
+    "series": "Bleach",
+    "parentInPack": "Hollow Ichigo",
+    "rarity": "Secret",
+    "income": 500000,
+    "parts": 17
+  },
+  {
+    "key": "Cell",
+    "source": "cell",
+    "display": "Cell",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Epic",
+    "income": 900,
+    "parts": 0
+  },
+  {
+    "key": "Mahoraga",
+    "source": "Mahoraga",
+    "display": "Mahoraga",
+    "series": "JJK",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 6000,
+    "parts": 0
+  },
+  {
+    "key": "GoldenFrieza",
+    "source": "golden_frieza",
+    "display": "Golden Frieza",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 60000,
+    "parts": 0
+  },
+  {
+    "key": "Sengoku",
+    "source": "Sengoku",
+    "display": "Sengoku",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Doflamingo",
+    "source": "Doflamingo",
+    "display": "Doflamingo",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Epic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Fujitora",
+    "source": "Fujitora",
+    "display": "Fujitora",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Mihawk",
+    "source": "Mihawk",
+    "display": "Mihawk",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Rayleigh",
+    "source": "Rayleigh",
+    "display": "Rayleigh",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Kaido",
+    "source": "Kaido",
+    "display": "Kaido",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "BigMom",
+    "source": "Big Mom",
+    "display": "Big Mom",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Frieza",
+    "source": "Frieza",
+    "display": "Frieza",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Beerus",
+    "source": "Beerus",
+    "display": "Beerus",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "CellMax",
+    "source": "Cell Max",
+    "display": "Cell Max",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  }
+]

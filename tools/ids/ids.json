@@ -1,0 +1,41 @@
+{
+  "pass": {
+    "AutoTrain": 2053955908,
+    "BeamChidori": 2053241976,
+    "BeamCursed": 2052611937,
+    "BeamGoldenGod": 2053349901,
+    "BeamHellfire": 2052599920,
+    "BeamKamehameha": 2053577894,
+    "BeamPrism": 2054117830,
+    "ChakraWeights": 2052485933,
+    "DoubleCash": 2054027925,
+    "DoublePower": 2053127884,
+    "DragonWeights": 2053565913,
+    "DropLuck": 2053511926,
+    "ExtraStands": 2053763861,
+    "FastSteal": 2053427856,
+    "Floor2": 2053637868,
+    "MutationLuck": 2053391877,
+    "ProBundle": 2053697923,
+    "VIP": 2053343838
+  },
+  "product": {
+    "CashHuge": 3722149181,
+    "CashLarge": 3722149159,
+    "MarketT1": 3722149252,
+    "MarketT2": 3722149267,
+    "MarketT3": 3722149282,
+    "MarketT4": 3722149293,
+    "MarketT5": 3722149310,
+    "PowerBoost": 3722149139,
+    "Restock": 3722149212,
+    "ServerLuck": 3722149105,
+    "Shield": 3722149148,
+    "StandNow": 3722149172,
+    "StarterPack": 3722149191,
+    "SummonLegendary": 3722149224,
+    "SummonMythic": 3722149239,
+    "SummonSecret": 3722149332
+  },
+  "voxelKit": 121245120135946
+}

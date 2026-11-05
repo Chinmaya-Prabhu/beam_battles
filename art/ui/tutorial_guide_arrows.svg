@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="256" viewBox="0 0 1024 256">
+  <defs>
+    <linearGradient id="lime" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#D3FF7A"/>
+      <stop offset="0.48" stop-color="#A7F83F"/>
+      <stop offset="1" stop-color="#66CD24"/>
+    </linearGradient>
+    <g id="chevron" stroke-linejoin="round">
+      <path d="M-90-72h62L90 0-28 72h-62L26 0Z" fill="url(#lime)" stroke="#286B32" stroke-width="14"/>
+      <path d="M-75-55h42L68 0" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
+      <path d="M-67 55h34L67 0" fill="none" stroke="#3A9D31" stroke-width="7" stroke-linecap="round" opacity="0.42"/>
+    </g>
+  </defs>
+  <use href="#chevron" transform="translate(171 128)"/>
+  <use href="#chevron" transform="translate(512 128)"/>
+  <use href="#chevron" transform="translate(853 128)"/>
+</svg>
