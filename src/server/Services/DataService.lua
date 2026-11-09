@@ -64,6 +64,8 @@ local function default()
 		daily = { streak = 0 }, -- last = the UTC day last claimed (shared/Rewards.lua)
 		restocks = 0, -- gear-stall restocks bought (salts the rotating stock, shared/Stock.lua)
 		ftue = 1, -- tutorial step (TutorialService); new players start at 1
+		funnel = 0, -- last analytics steps logged (server/Funnel.lua)
+		progress = 0,
 		goals = {}, -- active goal ids (TutorialService) -> baseline for relative goals
 		goalNext = 1, -- next goal in Goals.List to hand out
 		stats = { wins = 0, collected = 0, steals = 0, silver = 0, zones = {} },
@@ -189,7 +191,7 @@ local function load(player)
 	end
 	profiles[player] = { data = data, dirty = false, online = online }
 	publish(player, data)
-	loadedSignal:Fire(player, data)
+	loadedSignal:Fire(player)
 end
 
 local function save(player)
@@ -256,7 +258,13 @@ function DataService.onLoaded(callback)
 	for player, profile in profiles do
 		task.spawn(callback, player, profile.data)
 	end
-	return loadedSignal.Event:Connect(callback)
+	-- (A BindableEvent copies tables, so the real save goes to the callback here, never through the event.)
+	return loadedSignal.Event:Connect(function(player)
+		local profile = profiles[player]
+		if profile then
+			callback(player, profile.data)
+		end
+	end)
 end
 
 function DataService.start()

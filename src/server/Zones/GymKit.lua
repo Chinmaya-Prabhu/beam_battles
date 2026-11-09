@@ -47,8 +47,9 @@ end
 -- The floor inside the mat's rim, themed per zone: tatami (hub, Ninja), a blue gym mat (Blossom), deck
 -- planks (Pirate) or flagstones (Walled).
 local TATAMI, TATAMI_EDGE = rgb(214, 204, 140), rgb(46, 84, 56)
+local RIM = PLATE + 0.15 -- (a little over a plaza's PLATE-high paving: equal heights flicker)
 local function floor(m, cf, zone, set)
-	local y = PLATE
+	local y = RIM
 	if zone == "Pirate" then
 		for k = 0, 4 do
 			Core.box(
@@ -84,15 +85,15 @@ local function floor(m, cf, zone, set)
 	elseif zone == "Blossom" then
 		Core.centered(m, cf, 0, y, 0, 11, 0.2, 11, rgb(54, 92, 170), SMOOTH)
 		for _, d in { -1, 1 } do
-			Core.centered(m, cf, d * 4.9, y + 0.2, 0, 0.3, 0.04, 10, C.white, DECOR)
-			Core.centered(m, cf, 0, y + 0.2, d * 4.9, 10, 0.04, 0.3, C.white, DECOR)
+			Core.centered(m, cf, d * 4.9, y + 0.2, 0, 0.3, 0.14, 10, C.white, DECOR)
+			Core.centered(m, cf, 0, y + 0.2, d * 4.9, 10, 0.14, 0.3, C.white, DECOR)
 		end
 	else
 		-- Two tatami mats side by side, each with its dark cloth edging.
 		for _, x in { -2.75, 2.75 } do
 			Core.centered(m, cf, x, y, 0, 5.4, 0.2, 11, TATAMI, SMOOTH)
 			for _, dx in { -1, 1 } do
-				Core.centered(m, cf, x + dx * 2.55, y + 0.2, 0, 0.3, 0.04, 11, TATAMI_EDGE, DECOR)
+				Core.centered(m, cf, x + dx * 2.55, y + 0.2, 0, 0.3, 0.14, 11, TATAMI_EDGE, DECOR)
 			end
 		end
 	end
@@ -100,7 +101,7 @@ end
 
 -- The mat's rim, the floor, a sign on two posts at the front left and the multiplier plate.
 local function base(m, cf, def, set)
-	Core.centered(m, cf, 0, 0, 0, 13, PLATE, 13, set.trim or C.darkGray)
+	Core.centered(m, cf, 0, 0, 0, 13, RIM, 13, set.trim or C.darkGray)
 	floor(m, cf, def.zone, set)
 	local sx = -7.5
 	for _, dx in { -2.2, 2.2 } do

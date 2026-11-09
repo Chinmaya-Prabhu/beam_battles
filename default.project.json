@@ -21,9 +21,7 @@
       }
     },
     "ReplicatedFirst": {
-      "Loading": {
-        "$path": "src/first/Loading.client.lua"
-      }
+      "$ignoreUnknownInstances": false
     },
     "ServerScriptService": {
       "Server": {

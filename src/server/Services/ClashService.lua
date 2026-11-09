@@ -95,7 +95,13 @@ local function snapshot(index, clash)
 		sides = { sideInfo(clash.sides[1]), sideInfo(clash.sides[2]) },
 		startAt = clash.startAt,
 		-- A guardian's prize is the fighter hovering over it (DropService guardian spawns), if any.
-		prize = altar.rival and { key = altar.prizeKey, mutation = altar.prizeMutation, model = altar.prizeModel }
+		-- (A first win's prize is the guardian itself: its fighting copy stands in for the portrait and the comet.)
+		prize = clash.firstKey and {
+			key = clash.firstKey,
+			mutation = "Normal",
+			model = clash.sides[2] and clash.sides[2].model,
+		}
+			or altar.rival and { key = altar.prizeKey, mutation = altar.prizeMutation, model = altar.prizeModel }
 			or { key = altar.key, mutation = altar.mutation, model = altar.model },
 		rounds = clash.roundsToWin,
 		title = altar.title,
@@ -152,10 +158,12 @@ local function finish(index, winnerSide, tiebreak)
 	local clash = clashes[index]
 	clash.phase = "result"
 	local altar = venueOf(index)
-	local prizeKey = altar.rival and altar.prizeKey or altar.key
+	-- (A first win over a guardian: the guardian itself, not the drop hovering over it.)
+	local first = clash.firstKey and winnerSide == 1 and clash.firstKey or nil
+	local prizeKey = first or (altar.rival and altar.prizeKey or altar.key)
 	local prize = {
 		key = prizeKey,
-		mutation = (altar.rival and altar.prizeMutation or altar.mutation) or "Normal",
+		mutation = first and "Normal" or (altar.rival and altar.prizeMutation or altar.mutation) or "Normal",
 		rarity = prizeKey and Fighters.ByKey[prizeKey].rarity,
 	}
 	local s1, s2 = clash.rounds[1], clash.rounds[2]
@@ -217,7 +225,7 @@ local function finish(index, winnerSide, tiebreak)
 		-- A guardian or boss fight: the zone records the result (ladder progress). A fighter hovering over
 		-- the guardian goes to the winner (granted above) and leaves; a loss leaves it there for the next try.
 		task.spawn(altar.onResult, winner.player, loser.player)
-		if winner.player and prize.key and Drops.clearGuardian then
+		if winner.player and prize.key and not first and Drops.clearGuardian then
 			task.delay(0.6, Drops.clearGuardian, index)
 		end
 	else
@@ -254,9 +262,13 @@ local function begin(index)
 		local key = altar.key and Fighters.ByKey[altar.key]
 		clash.roundsToWin, clash.maxRounds = ClashRules.matchPlan(key and key.rarity, clash.tutorial)
 	end
+	-- A guardian beaten for the first time gives itself (ZoneService firstPrize): the hovering drop stays for
+	-- everyone else.
+	local challenger = clash.sides[1] and clash.sides[1].player
+	clash.firstKey = altar.firstPrize and challenger and altar.firstPrize(challenger) or nil
 	-- The prize (an altar's drop, or a guardian spawn) shrinks and rises to hover above the clash, out of the
 	-- beams' path.
-	local prize = if altar.rival then altar.prizeModel else altar.model
+	local prize = if altar.rival then (not clash.firstKey and altar.prizeModel) else altar.model
 	if prize and prize.Parent then
 		if altar.rival then
 			altar.prizeHome = { model = prize, pivot = prize:GetPivot(), scale = prize:GetScale() } -- back after a loss
@@ -301,7 +313,7 @@ local function begin(index)
 	remote:FireAllClients("Start", snapshot(index, clash))
 end
 
--- A drop altar's rival: the zone's entry Power (its first guardian's) or the hub tier's, times botRarityStep for
+-- A drop altar's rival: the zone's entry Power (its first guardian's) or the hub tier's, times the rarity step for
 -- each rarity the prize is above the altar's most common one (Config.Push.botPower).
 local function dropBotPower(altar)
 	local zone = altar.zone and Config.Zones[altar.zone]
@@ -317,7 +329,8 @@ local function dropBotPower(altar)
 	local prize = altar.key and Fighters.ByKey[altar.key]
 	local rank = prize and table.find(Config.RarityOrder, prize.rarity)
 	local steps = (rank and lowest) and math.max(rank - lowest, 0) or 0
-	return math.floor(base * P.botRarityStep ^ steps)
+	local step = zone and zone.botRarityStep or not zone and P.hubRarityStep[altar.tier] or P.botRarityStep
+	return math.floor(base * step ^ steps)
 end
 
 local function addBot(index, side)
@@ -463,7 +476,9 @@ local function claimLoop()
 						and not (clash and clash.sides[side])
 					then
 						local ok, why = true, nil
-						if
+						if player:GetAttribute("Carrying") then
+							ok, why = false, "TAKE YOUR FIGHTER HOME FIRST"
+						elseif
 							altar.reservedFor
 							and altar.reservedFor ~= player
 							and os.clock() < (altar.reservedUntil or 0)

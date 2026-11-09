@@ -41,8 +41,9 @@ function Blossom.build(parent, zone, ctx)
 	local plazas = K.Core.model(root, "Plazas", Fz)
 	local function plaza(x0, z0, w, d)
 		-- Warm cherry-blossom paving with a darker kerb (grey read as a car park).
-		K.Core.box(plazas, Fz, x0 - 1, 0, z0 - 1, w + 2, PLATE, d + 2, set.path[4], { smooth = true }) -- the kerb
-		K.Core.box(plazas, Fz, x0, PLATE, z0, w, 0.05, d, set.path[1], { smooth = true, collide = false })
+		-- (The kerb sits lower than the paving: two surfaces a hair apart flicker from a distance.)
+		K.Core.box(plazas, Fz, x0 - 1, 0, z0 - 1, w + 2, PLATE / 2, d + 2, set.path[4], { smooth = true }) -- the kerb
+		K.Core.box(plazas, Fz, x0, 0, z0, w, PLATE, d, set.path[1], { smooth = true })
 	end
 	local COURT, COURT_R = -185, 52 -- the drop court: its centre (z) and the altars' ring
 	plaza(-30, -296, 60, 50) -- in front of and through the school gate
@@ -52,24 +53,6 @@ function Blossom.build(parent, zone, ctx)
 	local garden = K.Core.model(root, "CourtGarden", Fz)
 	K.Core.cyl(garden, L(0, PLATE, COURT), 0, 0, 0, 34, PLATE, P.lawn[1])
 
-	-- Lawn beds (a darker green, raised a plate) under the trees and flower beds.
-	local lawns = K.Core.model(root, "Lawns", Fz)
-	local function lawn(x0, z0, w, d)
-		K.Core.box(lawns, Fz, x0, 0, z0, w, PLATE, d, set.grass[1], { smooth = true })
-		K.Core.box(
-			lawns,
-			Fz,
-			x0 + 1,
-			PLATE,
-			z0 + 1,
-			w - 2,
-			0.05,
-			d - 2,
-			P.lawn[1]:Lerp(Color3.new(), 0.18),
-			{ smooth = true, collide = false }
-		)
-	end
-
 	-- Arrival: the school gate and the return pad; nothing else in the way.
 	local front = K.Core.model(root, "Front", Fz)
 	CampusKit.schoolGate(front, L(0, 0, -270), zone.title)
@@ -77,7 +60,6 @@ function Blossom.build(parent, zone, ctx)
 
 	-- TRAINING: one yard beside the gate (on the arriving player's right): the post, the bag and the gear stall.
 	local yard = K.Core.model(root, "TrainingYard", Fz)
-	lawn(-92, -278, 34, 58)
 	GymKit.station(yard, L(-72, 0, -270, -90), "AcademyPost", set)
 	GymKit.station(yard, L(-72, 0, -236, -90), "AcademyBag", set)
 	GymKit.stall(yard, L(-90, 0, -253, -90), set, { 4, 5 })
@@ -107,7 +89,7 @@ function Blossom.build(parent, zone, ctx)
 	end
 
 	-- Guardian 1 on the forecourt, past the drop court, right before the school doors.
-	station(1, L(0, 0, -85))
+	station(1, L(0, 0, -85), { noStrip = true }) -- (on paving already)
 
 	-- The school (bigger), with the boss arena on its roof.
 	local school, roof = CampusKit.school(root, L(0, 0, -15), set, 120, zone.title)

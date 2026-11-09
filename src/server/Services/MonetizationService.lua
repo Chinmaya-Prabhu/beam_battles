@@ -32,6 +32,22 @@ local MAX_RECEIPTS = 60
 local owns = {} -- [player] = { [passKey] = true } from Roblox (gamepasses)
 local rng = Random.new()
 
+-- Auto Train switches on by itself when it's bought (alone or in a bundle), so nobody has to find the switch.
+local function startAutoTrain(player, pass)
+	if pass.key == "AutoTrain" or (pass.includes and table.find(pass.includes, "AutoTrain")) then
+		player:SetAttribute("AutoTrainOn", true)
+		local data = Data.get(player)
+		if data then
+			data.autoTrainOn = true -- (kept: it's on again next time they join)
+			Data.changed(player)
+		end
+		Net.get("FX"):FireClient(player, "Banner", {
+			text = "AUTO TRAIN IS ON! TURN IT OFF IN SETTINGS",
+			color = Color3.fromRGB(120, 255, 150),
+		})
+	end
+end
+
 local function banner(player, text, color)
 	FX:FireClient(player, "Banner", { text = text, color = color })
 end
@@ -244,8 +260,15 @@ local function checkPasses(player)
 	owns[player] = owns[player] or {}
 	-- Roblox counts the game's creator as owning every pass; that would hide the new-player experience
 	-- (premium weights, VIP...), so the creator only gets passes bought in the session.
+	local function restore()
+		local data = Data.get(player)
+		if data and data.autoTrainOn and has(player, "AutoTrain") then
+			player:SetAttribute("AutoTrainOn", true) -- as they left it
+		end
+	end
 	if player.UserId == game.CreatorId then
 		MonetizationService.refresh(player)
+		restore()
 		return
 	end
 	for _, pass in Products.Passes do
@@ -258,6 +281,7 @@ local function checkPasses(player)
 		end
 	end
 	MonetizationService.refresh(player)
+	restore()
 end
 
 -- Whether the player owns pass `key` (or a bundle with it).
@@ -283,7 +307,21 @@ function MonetizationService.buyPass(player, key)
 	if not pass or not data or has(player, key) then
 		return
 	end
-	if pass.id ~= 0 then
+	if pass.id ~= 0 and player.UserId == game.CreatorId then
+		-- The game's creator already owns every pass on Roblox (the prompt would only say "already own"), but
+		-- plays without them to see what new players see: a tap turns this one on for the session.
+		owns[player] = owns[player] or {}
+		owns[player][key] = true
+		data.passes[key] = true -- (kept across sessions, like a real purchase; Config.OwnerSaveSlot starts clean)
+		Data.changed(player)
+		if pass.beam then
+			data.beam = pass.beam
+			Data.changed(player)
+		end
+		banner(player, string.upper(pass.name) .. " ON (OWNER TEST)", GOLD)
+		MonetizationService.refresh(player)
+		startAutoTrain(player, pass)
+	elseif pass.id ~= 0 then
 		MarketplaceService:PromptGamePassPurchase(player, pass.id)
 	elseif RunService:IsStudio() then
 		data.passes[key] = true
@@ -319,6 +357,8 @@ function MonetizationService.start(DataService, PlotService, TrainingService)
 					data.beam = pass.beam -- a new beam skin goes on at once
 					Data.changed(player)
 				end
+				MonetizationService.refresh(player)
+				startAutoTrain(player, pass)
 			end
 		end
 		MonetizationService.refresh(player)
@@ -327,8 +367,16 @@ function MonetizationService.start(DataService, PlotService, TrainingService)
 	remote.OnServerEvent:Connect(function(player, kind, value)
 		if kind == "EquipBeam" then
 			MonetizationService.equipBeam(player, value)
+		elseif kind == "OwnerPass" and player.UserId == game.CreatorId and type(value) == "string" then
+			MonetizationService.buyPass(player, value) -- (the creator: on for the session, client UIKit.promptPass)
 		elseif kind == "AutoTrain" then
-			player:SetAttribute("AutoTrainOn", (value == true and has(player, "AutoTrain")) or nil)
+			local on = value == true and has(player, "AutoTrain")
+			player:SetAttribute("AutoTrainOn", on or nil)
+			local data = Data.get(player)
+			if data then
+				data.autoTrainOn = on -- (the switch is remembered: same state next time they join)
+				Data.changed(player)
+			end
 		elseif kind == "DebugBuy" and RunService:IsStudio() and type(value) == "string" then
 			-- Studio only: pretend the purchase went through (products with id 0 can't be bought).
 			local product = Products.ByKey[value]

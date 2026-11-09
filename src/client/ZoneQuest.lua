@@ -1,14 +1,15 @@
 -- The zone quest (server/Services/ZoneService.lua runs the ladder):
 --   * the first time a player enters a zone (player attribute NewZone, set by TutorialService) a ZONE QUEST
 --     card lists its 5 guardians and the boss: portrait, name, the Power each needs and this player's status;
---     LET'S GO points the guide beam (client/ArrowPath.lua, owner "Quest") at the next one;
---   * while in a zone, a tracker at the top right shows the zone's progress and the one to beat next (tap it
---     to point the beam there); tap the header for the full list (the ZONE QUEST card again).
+--     it closes by itself after CARD_TIME (or on LET'S GO);
+--   * while in a zone the guide beam (client/ArrowPath.lua, owner "Zone") always points at the next guardian,
+--     and ZoneQuest.line() is the one thing to do next (client/Tutorial.lua shows it in the coach bubble);
+--   * a tracker at the top right shows the zone's progress and the one to beat next; tap the header for the
+--     full list (the ZONE QUEST card again).
 -- Status comes from Ladder_<Zone> (guardians cleared) and Boss_<Zone>, the same as the guardian labels.
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared.Config)
 local Fighters = require(Shared.Fighters)
@@ -24,11 +25,11 @@ local GREEN = Color3.fromRGB(110, 230, 130)
 local RED = Color3.fromRGB(255, 110, 95)
 local GRAY = Color3.fromRGB(150, 150, 170)
 local INK = Color3.fromRGB(30, 16, 40)
-local ARRIVED = 26 -- studs from a station that count as "there"
+local ARRIVED = 26 -- studs from a station where the beam hides (it comes back if they walk away)
+local CARD_TIME = 5 -- seconds the first-visit card stays up
 
 local hud, rows, header
 local card
-local target -- the station position the beam points at
 
 -- The station model for `zone`'s rung (6 = the boss arena).
 local function station(zone, rung)
@@ -157,15 +158,6 @@ local function portrait(parent, zone, rung)
 	return vp
 end
 
-local function pointAt(zone, rung)
-	local m = station(zone, rung)
-	if not m then
-		return
-	end
-	target = m:GetPivot().Position
-	ArrowPath.set("Quest", target)
-end
-
 local function nextRung(zone)
 	for _, e in entries(zone) do
 		if e.state ~= "done" then
@@ -180,8 +172,7 @@ end
 local function refresh()
 	local zone = player:GetAttribute("Zone")
 	local z = zone and Config.Zones[zone]
-	-- (Phones: the NEXT card's badge shows the zone's count instead: client/Tutorial.lua.)
-	hud.Enabled = z ~= nil and not UIKit.compact()
+	hud.Enabled = false -- (the NEXT card's badge shows the zone's count instead, phones and desktop: client/Tutorial.lua)
 	if not z then
 		return
 	end
@@ -229,7 +220,9 @@ local function refresh()
 			TextColor3 = color,
 		})
 		row.Activated:Connect(function()
-			pointAt(zone, e.rung)
+			if ZoneQuest.openCard then
+				ZoneQuest.openCard(zone)
+			end
 		end)
 		table.insert(rows, row)
 	end
@@ -285,7 +278,7 @@ end
 
 -- ------------------------------------------------------------------ the first-visit card
 
-local function showCard(zone)
+local function showCard(zone, auto)
 	local z = Config.Zones[zone]
 	if not z then
 		return
@@ -365,79 +358,106 @@ local function showCard(zone)
 	go.Activated:Connect(function()
 		window.Visible = false
 	end)
+	local mine = card
 	window:GetPropertyChangedSignal("Visible"):Connect(function()
-		if not window.Visible then
-			local rung = nextRung(zone)
-			if rung and player:GetAttribute("Zone") == zone then
-				pointAt(zone, rung)
-			end
+		if not window.Visible and card == mine then
 			card:Destroy()
 			card = nil
 		end
 	end)
 	window.Visible = true
+	if auto then
+		task.delay(CARD_TIME, function()
+			if card == mine then
+				window.Visible = false
+			end
+		end)
+	end
 end
 
--- The beam always points at the next guardian while you're in a zone (after a fight's result screen,
--- never over a fight), so after each win the way on is obvious even when it's behind a building.
-local pending = 0
-local function guide(delay)
-	pending += 1
-	local mine = pending
-	task.delay(delay or 0, function()
-		while UIKit.inFight() and mine == pending do
-			task.wait(0.5)
+-- The beam always points at the next guardian while you're in a zone. Nothing else clears it: other beams
+-- (going home, a drop, the gym) just take over for a while, and it hides only when you're standing there.
+local function steer()
+	local zone = player:GetAttribute("Zone")
+	local rung = zone and Config.Zones[zone] and nextRung(zone)
+	local m = rung and station(zone, rung)
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	local position = m and m:GetPivot().Position
+	if position and root and (root.Position - position).Magnitude < ARRIVED then
+		position = nil
+	end
+	ArrowPath.set("Zone", position)
+end
+
+-- The one thing to do next in this zone, in a few words (nil: nothing to say right now).
+function ZoneQuest.line()
+	local zone = player:GetAttribute("Zone")
+	if not (zone and Config.Zones[zone]) or card or player:GetAttribute("Carrying") then
+		return nil
+	end
+	for _, e in entries(zone) do
+		if e.state == "next" then
+			return "FOLLOW THE ARROW AND FIGHT " .. e.name .. "!"
+		elseif e.state == "power" then
+			return "TRAIN TO " .. Format.short(e.need) .. " POWER TO FIGHT " .. e.name
 		end
-		local zone = player:GetAttribute("Zone")
-		if mine ~= pending or not (zone and Config.Zones[zone]) then
-			return
+	end
+	return nil
+end
+
+-- The zone to go to from the hub: the first open one whose next guardian this player can fight now.
+function ZoneQuest.ready()
+	local order = {}
+	for name in string.gmatch(player:GetAttribute("Zones") or "", "[^,]+") do
+		if Config.Zones[name] then
+			table.insert(order, name)
 		end
-		local rung = nextRung(zone)
-		if rung then
-			pointAt(zone, rung)
-		else
-			target = nil
-			ArrowPath.set("Quest", nil)
-		end
+	end
+	table.sort(order, function(a, b)
+		return Config.Zones[a].order < Config.Zones[b].order
 	end)
+	for _, name in order do
+		for _, e in entries(name) do
+			if e.state ~= "done" then
+				if e.state == "next" then
+					return name
+				end
+				break
+			end
+		end
+	end
+	return nil
 end
 
 function ZoneQuest.start()
 	ZoneQuest.openCard = showCard
 	buildHud()
 	player:GetAttributeChangedSignal("Zone"):Connect(function()
-		target = nil
 		ArrowPath.set("Quest", nil)
 		refresh()
-		guide(2)
 	end)
 	player:GetAttributeChangedSignal("NewZone"):Connect(function()
 		local zone = player:GetAttribute("NewZone")
-		task.delay(3, function() -- after the zone's title card, and never over a fight
+		task.delay(3.5, function() -- after the zone's title card, and never over a fight
 			while player:GetAttribute("InClash") do
 				task.wait(0.5)
 			end
 			if player:GetAttribute("Zone") == zone then
-				showCard(zone)
+				showCard(zone, true)
 			end
 		end)
 	end)
 	player:GetAttributeChangedSignal("Power"):Connect(refresh)
 	for name in Config.Zones do
 		for _, attr in { "Ladder_" .. name, "Boss_" .. name } do
-			player:GetAttributeChangedSignal(attr):Connect(function()
-				refresh()
-				guide(1)
-			end)
+			player:GetAttributeChangedSignal(attr):Connect(refresh)
 		end
 	end
 	refresh()
-	-- Arrived: the beam stops.
-	RunService.Heartbeat:Connect(function()
-		local root = target and player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-		if root and (root.Position - target).Magnitude < ARRIVED then
-			target = nil
-			ArrowPath.set("Quest", nil)
+	task.spawn(function()
+		while true do
+			steer()
+			task.wait(0.5)
 		end
 	end)
 end

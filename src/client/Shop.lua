@@ -73,7 +73,7 @@ local function buy(product)
 		remote:FireServer("DebugBuy", product.key) -- (Studio: a test grant; the game's creator "owns" every real pass)
 	elseif product.id ~= 0 then
 		if isPass(product) then
-			MarketplaceService:PromptGamePassPurchase(player, product.id)
+			UIKit.promptPass(product.key, product.id)
 		else
 			MarketplaceService:PromptProductPurchase(player, product.id)
 		end
@@ -533,7 +533,7 @@ local function buildWindow(gui)
 	for _, pass in Products.Passes do
 		if pass.gear then
 			local g = Training.Gear[pass.gear]
-			local _, label, button = Fancy.premiumCard(weights, {
+			local card, label, button = Fancy.premiumCard(weights, {
 				look = g.look,
 				name = g.name,
 				rarity = string.upper(Training.gearRarity(pass.gear)),
@@ -550,6 +550,9 @@ local function buildWindow(gui)
 				local own = player:GetAttribute(pass.key) == true
 				label.Text = own and "OWNED" or (ROBUX .. " " .. pass.price)
 				UIKit.setPill(button, own and "grey" or "green")
+				if card then
+					card.Visible = not own -- (bought once, kept forever: nothing left to sell)
+				end
 			end
 			owned()
 			player:GetAttributeChangedSignal(pass.key):Connect(owned)
@@ -672,6 +675,9 @@ function refreshCards()
 			end
 		elseif owned then
 			setCard(c, "OWNED", "grey")
+			if c.card then
+				c.card.Visible = false -- a one-time pass that's already bought isn't shown (beam skins stay: EQUIP)
+			end
 		elseif left > 0 then
 			setCard(c, "+ " .. clock(left), "gold")
 		elseif p.id == 0 and not RunService:IsStudio() then

@@ -241,9 +241,9 @@ local function plot(parent, index, deg)
 	m:SetAttribute("Frame", cf) -- ground centre, front (-Z) toward the hub (server/Services/PlotService.lua)
 	K.Core.seed(200 + index)
 	-- One flat floor with a thin rim in the base's colour, and the carpet down the middle.
-	K.Core.centered(m, cf, 0, -PLATE - 0.05, 0, w + 2, PLATE, d + 2, SLATE.rim, { smooth = true })
+	K.Core.centered(m, cf, 0, -PLATE - 0.05, 0, w + 2, PLATE - 0.2, d + 2, SLATE.rim, { smooth = true }) -- (lower than the floor: surfaces a hair apart flicker)
 	K.Core.centered(m, cf, 0, -PLATE - 0.05, 0, w, PLATE + 0.05, d, SLATE.floor, { smooth = true })
-	K.Core.centered(m, cf, 0, 0, 0, 16, 0.06, d, SLATE.carpet, { smooth = true, collide = false })
+	K.Core.centered(m, cf, 0, 0, 0, 16, 0.15, d, SLATE.carpet, { smooth = true, collide = false })
 	local stands = folder(m, "Stands")
 	local function stand(slot, at, trim, pass)
 		local s = folder(stands, "Stand" .. slot, "Model")
@@ -280,14 +280,14 @@ local function plot(parent, index, deg)
 	local floor2 = folder(m, "Floor2", "Model")
 	local h0, h1 = d / 2 - 2 - HATCH, d / 2 - 2 -- the hatch's front and back edges (z), centred on x = 0
 	local function slab(x0, x1, z0, z1)
-		K.Core.box(floor2, top, x0, -0.8, z0, x1 - x0, 0.8, z1 - z0, SLATE.rim, { smooth = true })
-		K.Core.box(floor2, top, x0, 0, z0, x1 - x0, 0.05, z1 - z0, SLATE.floor, { smooth = true })
+		K.Core.box(floor2, top, x0, -0.8, z0, x1 - x0, 0.6, z1 - z0, SLATE.rim, { smooth = true })
+		K.Core.box(floor2, top, x0, -0.2, z0, x1 - x0, 0.25, z1 - z0, SLATE.floor, { smooth = true })
 	end
 	slab(-w / 2 - 1, w / 2 + 1, -d / 2 - 1, h0)
 	slab(-w / 2 - 1, w / 2 + 1, h1, d / 2 + 1)
 	slab(-w / 2 - 1, -HATCH / 2, h0, h1)
 	slab(HATCH / 2, w / 2 + 1, h0, h1)
-	K.Core.box(floor2, top, -8, 0.05, -d / 2, 16, 0.06, h0 + d / 2, SLATE.carpet, { smooth = true, collide = false })
+	K.Core.box(floor2, top, -8, 0.05, -d / 2, 16, 0.15, h0 + d / 2, SLATE.carpet, { smooth = true, collide = false })
 	for _, x in { -w / 2, w / 2 } do
 		for _, z in { -d / 2, d / 2 } do
 			K.Core.centered(floor2, cf, x, 0, z, 1.6, FLOOR_H - 0.8, 1.6, SLATE.post, { smooth = true })
@@ -768,9 +768,9 @@ local function belt(root)
 			if deg % (B.step * 2) == 0 then
 				for _, side in { -1, 1 } do
 					local arm = cf
-						* CFrame.new(side * 0.9, B.height / 2 + 0.03, 0)
+						* CFrame.new(side * 0.9, B.height / 2 + 0.08, 0)
 						* CFrame.Angles(0, side * math.rad(40), 0) -- the arms meet ahead: a ^ pointing the way
-					K.Core.part(root, arm, Vector3.new(0.35, 0.06, 2.6), lane.mark, { neon = true, collide = false })
+					K.Core.part(root, arm, Vector3.new(0.35, 0.16, 2.6), lane.mark, { neon = true, collide = false })
 				end
 			end
 		end

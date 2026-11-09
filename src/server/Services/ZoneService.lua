@@ -408,6 +408,12 @@ function ZoneService.start(ClashService, DataService, DropService)
 				},
 				canSeat = ladderGate(name, rung, false),
 				onResult = ladderResult(name, zone, rung, false),
+				-- The first win over this guardian gives the guardian itself (ClashService); after that, only
+				-- whatever drop is hovering over it.
+				firstPrize = function(player)
+					local data = Data.get(player)
+					return data and (data.ladder[name] or 0) < rung and fighter and key or nil
+				end,
 			}
 			local index = ClashService.addChallenge(spec)
 			if DropService then

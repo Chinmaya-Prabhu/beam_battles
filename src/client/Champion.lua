@@ -1,7 +1,7 @@
 -- Champion followers (docs/TRAINING_PLAN.md §3): every player's equipped fighter floats beside them like a
 -- pet, built on this client from the cached fighter rigs so it moves smoothly with no network lag.
 -- Reads player attributes set by server/Services/TrainingService.lua: Champion (fighter key),
--- ChampionMutation and ChampionMult. While its owner trains it powers up with them; a new Champion
+-- ChampionMutation and ChampionMult. It stays calm while its owner trains (no clips: they read as random posing); a new Champion
 -- arrives with a burst, in its signature pose. Naruto fighters do the Naruto run while their owner moves.
 -- POSE (Champion.pose, from the Bag): the owner and the follower strike its signature pose together (server:
 -- PlotService "Pose", player attribute PoseAt) while the owner's camera swings round them.
@@ -150,6 +150,20 @@ local function build(player)
 		return
 	end
 	model.Name = "Champion_" .. player.Name
+	-- A follower is scenery: no part of it (accessories and aura bits added later too) may shove its owner (that
+	-- made them slide while training) or catch clicks.
+	local function ghost(d)
+		if d:IsA("BasePart") then
+			d.CanCollide = false
+			d.CanTouch = false
+			d.CanQuery = false
+			d.Massless = true
+		end
+	end
+	for _, d in model:GetDescendants() do
+		ghost(d)
+	end
+	model.DescendantAdded:Connect(ghost)
 	-- Your own Champion's name and multiplier are on the HUD; plates are for other players' followers.
 	local label = player ~= Players.LocalPlayer
 			and plate(model, fighter, mutation, player:GetAttribute("ChampionMult") or 1)
@@ -282,13 +296,6 @@ function Champion.start()
 					f.model:SetAttribute("Clip", nil)
 					f.model:SetAttribute("ClipStart", nil)
 				end
-			end
-			-- Power up alongside a training owner.
-			if player:GetAttribute("Training") and now >= f.nextClip then
-				f.running = false
-				f.nextClip = now + 1.8
-				f.model:SetAttribute("Clip", "PowerUp")
-				f.model:SetAttribute("ClipStart", workspace:GetServerTimeNow())
 			end
 		end
 	end)

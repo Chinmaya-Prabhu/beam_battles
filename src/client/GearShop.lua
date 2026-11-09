@@ -7,7 +7,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local CollectionService = game:GetService("CollectionService")
-local MarketplaceService = game:GetService("MarketplaceService")
 local ProximityPromptService = game:GetService("ProximityPromptService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -95,7 +94,7 @@ local function build(gui)
 					if RunService:IsStudio() then
 						Net.get("Shop"):FireServer("DebugBuy", pass.key) -- (Studio: a test grant)
 					elseif pass.id ~= 0 then
-						MarketplaceService:PromptGamePassPurchase(player, pass.id)
+						UIKit.promptPass(pass.key, pass.id)
 					end
 				end,
 			})
@@ -214,7 +213,7 @@ function GearShop.start()
 		if RunService:IsStudio() then
 			Net.get("Shop"):FireServer("DebugBuy", pass.key) -- (Studio: a test grant)
 		elseif pass.id ~= 0 then
-			MarketplaceService:PromptGamePassPurchase(player, pass.id)
+			UIKit.promptPass(pass.key, pass.id)
 		end
 	end)
 	-- Owned premium weights say so on their prompt.

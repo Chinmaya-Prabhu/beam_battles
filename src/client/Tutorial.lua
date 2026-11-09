@@ -25,6 +25,7 @@ local Net = require(Shared.Net)
 local UIKit = require(script.Parent.UIKit)
 local Fx = require(script.Parent.Fx)
 local ArrowPath = require(script.Parent.ArrowPath)
+local ZoneQuest = require(script.Parent.ZoneQuest)
 
 local Tutorial = {}
 local player = Players.LocalPlayer
@@ -96,6 +97,8 @@ local function buildCoach()
 end
 
 local tipIndex, tipAt = 1, 0
+local LINE_TIME = 6 -- seconds a zone's next-step line stays up
+local lastLine, lineUntil = nil, 0
 local function refreshCoach()
 	local step = player:GetAttribute("Ftue") or DONE
 	local text = player:GetAttribute("FtueText")
@@ -108,6 +111,14 @@ local function refreshCoach()
 		text = CLASH_TIPS[tipIndex]
 	elseif inClash then
 		text = nil
+	elseif step >= DONE then
+		-- In a zone: the one thing to do next, for a few seconds whenever it changes.
+		-- (Not behind the NEW AREA card: it shows once that closes.)
+		local line = not gui:FindFirstChild("ZoneUnlocked") and ZoneQuest.line() or nil
+		if line ~= lastLine then
+			lastLine, lineUntil = line, os.clock() + LINE_TIME
+		end
+		text = os.clock() < lineUntil and line or nil
 	end
 	-- At the stand with the fighter: the stand's own prompt is the next thing to tap, so the bubble (which can sit
 	-- right over it on a phone) steps aside.
@@ -129,7 +140,7 @@ local function refreshCoach()
 	coach.Visible = show
 	-- In the clash, the bubble sits up top, clear of the clash buttons.
 	-- In the clash it drops lower, between the SMASH and DEFLECT buttons.
-	coach.Position = inClash and UDim2.new(0.5, 0, 1, -24) or UDim2.new(0.5, 0, 1, UIKit.compact() and (step == 6 and -116 or -14) or -96) -- (step 6: over the HOME button)
+	coach.Position = inClash and UDim2.new(0.5, 0, 1, -24) or UDim2.new(0.5, 0, 1, UIKit.compact() and ((step == 6 or step >= DONE) and -116 or -14) or -96) -- (over the main button)
 	hand.Visible = step == 2 and not swooping
 end
 
@@ -270,7 +281,8 @@ end
 -- ------------------------------------------------------------------ goals
 
 local nextTarget -- (below)
-local collapse -- (phones: the NEXT card folds into a badge; set up by buildGoals)
+local collapse -- (the NEXT card folds into a badge; set up by buildGoals)
+local CARD_OPEN = 5 -- seconds the NEXT card stays open before it folds
 local function buildGoals()
 	-- Top right, under Roblox's own buttons: a compact list, one line of text and a thin bar per goal.
 	goalsPanel = Instance.new("Frame")
@@ -330,7 +342,6 @@ local function buildGoals()
 	go.Activated:Connect(goNow)
 	tap.Activated:Connect(function()
 		local zone = player:GetAttribute("Zone")
-		local ZoneQuest = require(script.Parent.ZoneQuest)
 		if (zone == nil or zone == "Hub") and select(3, nextTarget()) then
 			goNow()
 			return
@@ -386,9 +397,9 @@ local function buildGoals()
 		StrokeThickness = 1.2,
 	})
 	targetPct.Name = "Count"
-	-- Phones: the card shows when the target is new, then folds into a round badge (the zone's icon) that opens
-	-- it again; a chevron on the card folds it by hand.
-	if UIKit.compact() then
+	-- The card shows when the target is new (or the badge is tapped), then folds back into a round badge (the
+	-- zone's icon) after CARD_OPEN seconds; a chevron on the card folds it by hand. Phones and desktop alike.
+	do
 		tt.Size = UDim2.new(1, -52, 0, 26)
 		local fold = Instance.new("TextButton")
 		fold.Name = "Fold"
@@ -448,7 +459,7 @@ local function buildGoals()
 			target.Visible = open
 			badge.Visible = not open
 			if open and auto then
-				task.delay(9, function()
+				task.delay(CARD_OPEN, function()
 					if token == mine then
 						collapse.set(false)
 					end
@@ -516,15 +527,15 @@ local function refreshTarget()
 	-- Room for GO beside the bar when it shows; the name always gets the full width.
 	-- Phones, inside the zone being worked on: just its name and how many of its 6 are beaten (the list is one
 	-- tap away); no boss name or Power. Once its boss falls, the target is the next zone: GO again.
-	local here = UIKit.compact() and zoneName ~= nil and zone == zoneName
+	local here = zoneName ~= nil and zone == zoneName
 	local beaten = 0
 	if here then
 		beaten = (player:GetAttribute("Ladder_" .. zoneName) or 0) + (player:GetAttribute("Boss_" .. zoneName) and 1 or 0)
 		line = string.upper(Config.Zones[zoneName].title)
-	elseif UIKit.compact() and zoneName and not inHub then
+	elseif zoneName and not inHub then
 		line = string.upper(Config.Zones[zoneName].title) -- (in a cleared zone: the next one, with GO)
 	end
-	local showGo = (inHub or (UIKit.compact() and not here)) and zoneName ~= nil
+	local showGo = (inHub or not here) and zoneName ~= nil
 	target.Bar.Size = UDim2.new(1, showGo and -112 or -20, 0, 26)
 	if go then
 		go.Visible = showGo
@@ -556,10 +567,8 @@ end
 
 local function refreshGoals()
 	local done = (player:GetAttribute("Ftue") or DONE) >= DONE
-	local zone = player:GetAttribute("Zone")
-	local inHub = zone == nil or zone == "Hub" -- (in a zone, its tracker takes the right side: client/ZoneQuest)
-	-- (Phones: in zones too; the card turns into the zone's count there.)
-	goalsPanel.Visible = done and (inHub or UIKit.compact()) and not player:GetAttribute("InClash")
+	-- (In zones too: the card turns into the zone's count there.)
+	goalsPanel.Visible = done and not player:GetAttribute("InClash")
 	refreshTarget()
 end
 
@@ -762,6 +771,14 @@ function Tutorial.start()
 		player:GetAttributeChangedSignal(name):Connect(refreshTarget)
 	end
 	onStep()
+	task.spawn(function()
+		while true do
+			task.wait(0.5)
+			if (player:GetAttribute("Ftue") or DONE) >= DONE then
+				refreshCoach()
+			end
+		end
+	end)
 
 	Net.get("FX").OnClientEvent:Connect(function(kind, data)
 		if kind == "GoalDone" then

@@ -114,7 +114,7 @@ local function buy()
 	elseif product and product.id ~= 0 and candidate.item then
 		MarketplaceService:PromptProductPurchase(player, product.id)
 	elseif product and product.id ~= 0 then
-		MarketplaceService:PromptGamePassPurchase(player, product.id)
+		UIKit.promptPass(candidate.key, product.id)
 	end
 	-- Not bought yet? It comes back later like any ignored offer.
 	nextAt[candidate.key] = os.clock() + REOFFER[math.min(shows[candidate.key] or 1, #REOFFER)]

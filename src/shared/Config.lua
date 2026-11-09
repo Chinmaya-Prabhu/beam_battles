@@ -193,9 +193,10 @@ Config.Push = {
 	-- Drop-altar bots (guardians and bosses use their ladder Power, ZoneService). The tutorial's first fight is
 	-- 30; hub altars start at their tier's Power (players leave the tutorial past 1K); a zone's altars start at
 	-- the Power the zone asks for (its first guardian's) and every rarity above the altar's most common one
-	-- multiplies it by botRarityStep, so a rarer prize is guarded by a stronger rival.
+	-- multiplies it by botRarityStep (or the zone's own), so a rarer prize is guarded by a stronger rival.
 	botPower = { Tutorial = 30, Bronze = 1e3, Silver = 4e3, Gold = 320e3, Diamond = 16e6, Celestial = 600e6 },
 	botRarityStep = 1.5,
+	hubRarityStep = { Silver = 4 }, -- (hub Silver shares Blossom's drops: its rare ones can't be cheaper here)
 }
 
 -- Beam Rally (docs/PROGRESSION.md, rally section): one orb flies between the players and must be deflected
@@ -317,9 +318,10 @@ Config.Zones = {
 		band = { "Bronze", "Silver" },
 		-- Power to challenge guardians 1-5 and the boss (ZoneService), in step with the zone's stations.
 		-- (Blossom opens at 2K Power, so its first guardian needs 2K; the rest climb from there.)
-		ladderPower = { 2e3, 15e3, 100e3, 300e3, 1e6, 3.5e6 },
+		ladderPower = { 2e3, 6e3, 15e3, 40e3, 400e3, 3.5e6 }, -- (small steps first: the early wins come fast)
+		botRarityStep = 8, -- (its ladder climbs far: a Legendary's bot sits near the end of it, about 1M)
 		tier = "Silver", -- altar tier (drop odds): one step above the hub, and up a step per zone
-		guardians = { "Lemillion", "Deku", "Bakugo", "Todoroki", "DekuAwakened" },
+		guardians = { "Lemillion", "Deku", "Bakugo", "Todoroki", "Hellflame" },
 		boss = { key = "AllMightMode", title = "SYMBOL OF PEACE", rounds = 3, skill = "Gold" },
 		unlocked = false,
 		unlockPower = 2e3, -- Blossom Academy opens when a player first reaches 2K Power (TrainingService)
@@ -334,8 +336,9 @@ Config.Zones = {
 		series = { "NARUTO", "HXH" },
 		band = { "Silver", "Gold" },
 		ladderPower = { 6e6, 10e6, 16e6, 24e6, 34e6, 50e6 }, -- (cleared around day 3)
+		botRarityStep = 2, -- (a Mythic's bot sits at the boss's level)
 		tier = "Gold",
-		guardians = { "Neji", "Gaara", "Zabuza", "Kakashi", "Itachi" },
+		guardians = { "Neji", "RockLee", "Gaara", "Kakashi", "Itachi" },
 		boss = { key = "Madara", title = "THE SHADOW", rounds = 3, skill = "Diamond" },
 		unlocked = false,
 		next = "Pirate",

@@ -16,6 +16,7 @@ local Config = require(Shared.Config)
 local Fighters = require(Shared.Fighters)
 local Format = require(Shared.Format)
 local Net = require(Shared.Net)
+local Products = require(Shared.Products)
 
 local TrainingClient = {}
 local player = Players.LocalPlayer
@@ -26,6 +27,7 @@ TrainingClient.onRep = nil -- set by TrainPose: called on every accepted local c
 
 local GOLD = Color3.fromRGB(255, 214, 80)
 local KI = Color3.fromRGB(110, 230, 255)
+local BEAM = Color3.fromRGB(255, 170, 80)
 local INK = Color3.fromRGB(30, 16, 40)
 
 local function tween(inst, time, props, style)
@@ -97,7 +99,7 @@ local function buildHud()
 	gui.IgnoreGuiInset = true
 	gui.Parent = player:WaitForChild("PlayerGui")
 	hud.gui = gui
-	-- The player's numbers. Desktop: bottom-left, Cash big with Power and Ki under it and the bar to the next
+	-- The player's numbers. Desktop: bottom-left, Cash big with Power, Ki and the per-tap multiplier under it and the bar to the next
 	-- aura under those. Phones: one line under Roblox's buttons (Cash, Power, Ki) with the aura bar under it,
 	-- clear of the thumbstick. Tap a number for what it's for.
 	local compact = UIKit.compact()
@@ -114,7 +116,7 @@ local function buildHud()
 		panel.Size = UDim2.fromOffset(360, 132)
 	end
 	panel.Parent = gui
-	local scale = UIKit.fitScale(panel)
+	local scale = UIKit.fitScale(panel, 0.75) -- (smaller on phones: the world comes first)
 	hud.panel, hud.scale = panel, scale
 	hud.baseScale = scale.Scale
 	scale:GetPropertyChangedSignal("Scale"):Connect(function()
@@ -168,6 +170,7 @@ local function buildHud()
 	local TIPS = {
 		cash = "CASH: your fighters earn it on your base's stands. Spend it on more stands and stations.",
 		power = "POWER: train to raise it. Guardians and bosses need it, and beating them opens new zones.",
+		ki = "KI: earned by training. Spend it on new weights at the Training Gear stall.",
 		smash_charged = "BEAM: how hard every tap hits. Gear, your follower and rebirths multiply it.",
 	}
 	-- One number with its icon; it grows with the number (never "2.3...").
@@ -196,14 +199,33 @@ local function buildHud()
 		t.TextTruncate = Enum.TextTruncate.None
 		-- Sized to its number every time it changes (automatic sizing lagged a frame and cut "22.5K" to
 		-- "22.5").
-		local TextService = game:GetService("TextService")
-		local function fitWidth()
-			local w = TextService:GetTextSize(t.Text, t.TextSize, t.Font, Vector2.new(1000, size)).X + 8
+		-- Sized to the rendered text: an invisible copy of the label, always wide, reports the number's real width
+		-- (TextBounds, which also catches the font finishing loading), and the label and its cell take it.
+		-- (Measuring with TextService ran wide and left big gaps; automatic sizing lagged and cut "22.5K".)
+		local probe = t:Clone()
+		for _, d in probe:GetChildren() do
+			if d:IsA("UIStroke") then
+				d.Transparency = 1
+			end
+		end
+		probe.Name = "Probe"
+		probe.TextTransparency = 1
+		probe.TextStrokeTransparency = 1
+		probe.Size = UDim2.new(0, 1000, 1, 0)
+		probe.Parent = cell
+		local function fit()
+			-- (TextBounds is in screen pixels, after the HUD's UIScale; the sizes here are design units.)
+			local k = probe.AbsoluteSize.X > 0 and probe.AbsoluteSize.X / 1000 or 1
+			local w = math.ceil(probe.TextBounds.X / k) + 6
 			t.Size = UDim2.new(0, w, 1, 0)
 			cell.Size = UDim2.fromOffset(size + 4 + w, size)
 		end
-		t:GetPropertyChangedSignal("Text"):Connect(fitWidth)
-		fitWidth()
+		t:GetPropertyChangedSignal("Text"):Connect(function()
+			probe.Text = t.Text
+		end)
+		probe:GetPropertyChangedSignal("TextBounds"):Connect(fit)
+		probe:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
+		fit()
 		-- (Not on phones: a thumb heading for the thumbstick kept landing on these instead of steering.)
 		if not UIKit.compact() then
 			local hit = Instance.new("TextButton")
@@ -260,7 +282,7 @@ local function buildHud()
 					count += 1
 				end
 			end
-			local width = math.max(content + 14 * math.max(count - 1, 0) + 28, 300)
+			local width = math.max(content + 14 * math.max(count - 1, 0) + 24, 240)
 			back.Size = UDim2.fromOffset(width, 34)
 			if hud.barFrame then
 				hud.barFrame.Size = UDim2.new(0, width - 16, 0, 22)
@@ -269,15 +291,19 @@ local function buildHud()
 		rowList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 			hud.fitBack()
 		end)
-		hud.cash = stat(row, 1, "cash", Color3.fromRGB(130, 255, 140), 24)
-		hud.power = stat(row, 2, "power", GOLD, 24)
-		hud.beam = stat(row, 3, "smash_charged", KI, 24)
+		-- Three numbers only, a size smaller: on a phone this pill must leave the world visible. (The per-tap
+		-- multiplier is desktop only; it lives in the gear window and the stations' plates too.)
+		hud.cash = stat(row, 1, "cash", Color3.fromRGB(130, 255, 140), 20)
+		hud.power = stat(row, 2, "power", GOLD, 20)
+		hud.ki = stat(row, 3, "ki", KI, 20)
+		hud.beam = Instance.new("TextLabel") -- (not shown)
 		barY = 34
 	else
 		hud.cash = stat(line(0, 50, 0), 1, "cash", Color3.fromRGB(130, 255, 140), 48)
 		local row = line(54, 32, 18)
 		hud.power = stat(row, 1, "power", GOLD, 30)
-		hud.beam = stat(row, 2, "smash_charged", KI, 30)
+		hud.ki = stat(row, 2, "ki", KI, 30)
+		hud.beam = stat(row, 3, "smash_charged", BEAM, 30)
 		barY = 94
 	end
 	-- The one bar: the next thing you can buy ("NEXT: STONE WEIGHTS 72%").
@@ -288,6 +314,8 @@ local function buildHud()
 	UIKit.skin(bar, "bar_track", 0.38)
 	bar.Parent = panel
 	hud.barFrame = compact and bar or nil
+	-- Phones: no bar under the numbers (the shop and stand buttons already say what's ready).
+	bar.Visible = not compact
 	if hud.fitBack then
 		hud.fitBack()
 	end
@@ -352,6 +380,7 @@ local function refresh()
 	local ki = player:GetAttribute("Ki") or 0
 	local gearTier = player:GetAttribute("Gear") or 1
 	hud.power.Text = Format.short(power)
+	hud.ki.Text = Format.short(ki)
 	hud.cash.Text = Format.cash(player:GetAttribute("Cash") or 0)
 	local goal, goalAt = nextGoal(ki, gearTier)
 	if goal then
@@ -384,7 +413,7 @@ local function refresh()
 		grow.Scale = 1.7
 		hud.beam.TextColor3 = Color3.new(1, 1, 1)
 		tween(grow, 0.35, { Scale = 1 }, Enum.EasingStyle.Back)
-		tween(hud.beam, 0.5, { TextColor3 = KI })
+		tween(hud.beam, 0.5, { TextColor3 = BEAM })
 	end
 	lastBeam = perClick
 	local champion = Fighters.ByKey[player:GetAttribute("Champion") or ""]
@@ -521,10 +550,40 @@ local function refreshPrompts()
 	end
 end
 
+-- Auto Train: the same +Power numbers as tapping, rising over the player twice a second (no combo: nobody tapped).
+local function autoPop()
+	local view = workspace.CurrentCamera.ViewportSize
+	local amount = expected() * Products.AutoTrainRate * 0.5
+	local label = text(hud.gui, {
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		Position = UDim2.fromOffset(view.X * 0.5 + math.random(-90, 90), view.Y * 0.45 + math.random(-30, 30)),
+		Size = UDim2.fromOffset(140, 38),
+		Text = "+" .. (amount < 100 and amount % 1 ~= 0 and string.format("%.1f", amount) or Format.short(amount)),
+		TextColor3 = heat(1),
+		Rotation = math.random(-10, 10),
+	})
+	local scale = Instance.new("UIScale")
+	scale.Scale = 1.4
+	scale.Parent = label
+	tween(scale, 0.2, { Scale = 1 }, Enum.EasingStyle.Back)
+	fade(label, 0.75, { Position = label.Position - UDim2.fromOffset(math.random(-20, 20), 70) })
+	Debris:AddItem(label, 0.85)
+end
+
 -- ------------------------------------------------------------------ input
 
-local function click(at)
+-- A stray tap does nothing: training starts on the second tap in a row, and never while moving. (On a station
+-- they chose to train, so every tap counts.)
+local START_GAP = 0.8 -- seconds between two taps that count as meaning it
+local lastTap = 0
+local function click(at, humanoid)
 	local now = os.clock()
+	local seated = player:GetAttribute("TrainStation") ~= nil
+	local first = now - lastTap > START_GAP
+	lastTap = now
+	if not seated and (first or humanoid.MoveDirection.Magnitude > 0.1) then
+		return
+	end
 	while stamps[1] and now - stamps[1] > 1 do
 		table.remove(stamps, 1)
 	end
@@ -582,9 +641,23 @@ function TrainingClient.start()
 		if not humanoid or humanoid.Health <= 0 or player:GetAttribute("InClash") then
 			return
 		end
-		click(Vector2.new(input.Position.X, input.Position.Y))
+		click(Vector2.new(input.Position.X, input.Position.Y), humanoid)
 	end)
 
+	task.spawn(function()
+		while true do
+			task.wait(0.5)
+			if
+				player:GetAttribute("AutoTrainOn")
+				and not player:GetAttribute("InClash")
+				and os.clock() - lastClick > 1
+				and hud.gui
+				and hud.gui.Enabled
+			then
+				autoPop()
+			end
+		end
+	end)
 	-- Send reps in small batches; leave a station when the player moves or jumps.
 	task.spawn(function()
 		while true do

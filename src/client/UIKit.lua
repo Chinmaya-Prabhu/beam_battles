@@ -917,6 +917,17 @@ function UIKit.inFight()
 end
 
 -- Whether the loading screen (ReplicatedFirst.Loading) is done, or there is none.
+-- Opens Roblox's purchase window for gamepass `key` (id `id`). The game's creator already owns every pass on
+-- Roblox (the window would only say "already own"), so for them the server turns it on for the session instead.
+function UIKit.promptPass(key, id)
+	local player = Players.LocalPlayer
+	if player.UserId == game.CreatorId then
+		require(game:GetService("ReplicatedStorage").Shared.Net).get("Shop"):FireServer("OwnerPass", key)
+	elseif id and id ~= 0 then
+		game:GetService("MarketplaceService"):PromptGamePassPurchase(player, id)
+	end
+end
+
 function UIKit.loaded()
 	return Players.LocalPlayer:GetAttribute("Loaded") == true
 		or not game:GetService("ReplicatedFirst"):FindFirstChild("Loading")

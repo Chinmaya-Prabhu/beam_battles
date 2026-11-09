@@ -6,7 +6,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local MarketplaceService = game:GetService("MarketplaceService")
 local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -171,7 +170,7 @@ local function build(gui)
 			elseif autoPass and RunService:IsStudio() then
 				Net.get("Shop"):FireServer("DebugBuy", autoPass.key) -- (Studio: a test grant; the creator "owns" every real pass)
 			elseif autoPass and autoPass.id ~= 0 then
-				MarketplaceService:PromptGamePassPurchase(player, autoPass.id)
+				UIKit.promptPass(autoPass.key, autoPass.id)
 			end
 		end,
 		"auto_train",

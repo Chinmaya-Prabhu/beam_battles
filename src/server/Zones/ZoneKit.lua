@@ -468,9 +468,9 @@ function ZoneKit.belt(parent, cf, routes, opts)
 					K.Core.part(
 						m,
 						laneCf
-							* CFrame.new(arm * 0.9, BELT.height / 2 + 0.03, 0)
+							* CFrame.new(arm * 0.9, BELT.height / 2 + 0.08, 0)
 							* CFrame.Angles(0, arm * math.rad(40), 0),
-						Vector3.new(0.35, 0.06, 2.6),
+						Vector3.new(0.35, 0.16, 2.6),
 						MARKS[lane],
 						{ neon = true, collide = false }
 					)

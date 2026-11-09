@@ -17,6 +17,7 @@ local UIAtlas = require(Shared.UIAtlas)
 local UIKit = require(script.Parent.UIKit)
 local Fancy = require(script.Parent.Fancy)
 local ArrowPath = require(script.Parent.ArrowPath)
+local ZoneQuest = require(script.Parent.ZoneQuest)
 
 local MainButton = {}
 local player = Players.LocalPlayer
@@ -56,7 +57,7 @@ local function decide()
 		return "HOME"
 	end
 	local zone = player:GetAttribute("Zone") or "Hub"
-	if zone == "Hub" and (player:GetAttribute("Power") or 0) > Config.Push.rookieMax then
+	if zone == "Hub" and ((player:GetAttribute("Power") or 0) > Config.Push.rookieMax or ZoneQuest.ready()) then
 		return "ZONES"
 	end
 	local pad = nearestDrop()

@@ -984,6 +984,13 @@ local function startTheft(thief, plot, stand)
 	local name = string.upper(Fighters.ByKey[entry.k].display)
 	-- The thief's own call ("RUN HOME WITH ...!") is on their screen (client/Plots.lua); no banner too.
 	banner(victim, thief.DisplayName .. " IS STEALING YOUR " .. name .. "! CATCH THEM!", RED)
+	-- The first time: how to stop it happening again (the tutorial no longer teaches the lock).
+	local victimData = Data.get(victim)
+	if victimData and not victimData.seenLockTip then
+		victimData.seenLockTip = true
+		Data.changed(victim)
+		banner(victim, "STEP ON YOUR LOCK PAD TO KEEP THIEVES OUT!", GREEN)
+	end
 	-- And a warning that stays up until the steal ends (client/Plots.lua).
 	victim:SetAttribute(
 		"StealAlert",

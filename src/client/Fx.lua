@@ -51,6 +51,11 @@ local showing = false
 -- player's, with their prompts.)
 local TOP = workspace.CurrentCamera.ViewportSize.Y < 560 and 0.78 or 0.22
 
+-- Long lines stay up longer (a kid needs time to read "AUTO TRAIN IS ON! TURN IT OFF IN SETTINGS").
+local function readTime(text)
+	return math.clamp(#text * 0.07, 2, 4)
+end
+
 local function show(text, color)
 	local gui = Players.LocalPlayer:WaitForChild("PlayerGui")
 	local screen = gui:FindFirstChild("Banners") or Instance.new("ScreenGui")
@@ -81,10 +86,11 @@ local function show(text, color)
 	scale.Parent = label
 	label.Parent = screen
 	tween(scale, 0.3, { Scale = 1 }, Enum.EasingStyle.Back)
-	task.delay(1.9, function()
+	local hold = readTime(text)
+	task.delay(hold, function()
 		tween(label, 0.3, { TextTransparency = 1, TextStrokeTransparency = 1 })
 	end)
-	Debris:AddItem(label, 2.3)
+	Debris:AddItem(label, hold + 0.4)
 end
 
 local function pump()
@@ -97,7 +103,7 @@ local function pump()
 	end
 	showing = true
 	show(nextOne[1], nextOne[2])
-	task.delay(2.2, function()
+	task.delay(readTime(nextOne[1]) + 0.3, function()
 		showing = false
 		pump()
 	end)

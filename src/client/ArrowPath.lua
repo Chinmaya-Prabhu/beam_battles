@@ -1,8 +1,9 @@
 -- The guide beam (the big games' quest line): one straight glowing beam of scrolling chevrons from the
 -- player's chest to the place they should go, and a pillar of light over the target.
 -- It ignores walls and paths on purpose: a clean straight pointer reads at a glance.
---   ArrowPath.set(owner, target)  show the way to `target` (a Vector3) for `owner` ("Tutorial", "Carry", "Rush");
---                                 nil clears it. Carry wins, then Tutorial, then Rush.
+--   ArrowPath.set(owner, target)  show the way to `target` (a Vector3) for `owner` ("Tutorial", "Carry", "Rush",
+--                                 "Quest", "Zone"); nil clears it. Earlier owners win; "Zone" (the next guardian,
+--                                 client/ZoneQuest.lua) is the fallback, so it comes back when the others finish.
 -- The chevron texture is the "beam" art (art/atlas/anime_clash_beam.png); before it is uploaded the beam is
 -- a plain glowing ribbon.
 local Players = game:GetService("Players")
@@ -106,7 +107,7 @@ local function buildMarker()
 end
 
 local function active()
-	return targets.Carry or targets.Tutorial or targets.Rush or targets.Train or targets.Quest
+	return targets.Carry or targets.Tutorial or targets.Rush or targets.Train or targets.Quest or targets.Zone
 end
 
 -- "TRAIN!" after losing to someone stronger (client/Clash.lua sets GoTrain): the beam points at the

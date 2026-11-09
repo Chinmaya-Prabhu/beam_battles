@@ -1,7 +1,7 @@
 -- Training poses for every R15 player, written over the default animation each frame (Stepped runs after
 -- the Animator):
---   punch (click anywhere, and every station: they're all posts and bags): a boxer's guard, then straight
---     punches driven from the hip with the torso turning into them, and front kicks; the local player's
+--   punch (click anywhere, and every station: they're all posts and bags): a boxer's guard, feet planted,
+--     then straight punches driven from the hip with the torso turning into them; the local player's
 --     strike fires on each click,
 --   carry: holding a fighter overhead on the way home,
 --   burst: the power-up pose (fists down, head back) for a moment after a tier-up.
@@ -20,7 +20,7 @@ local RANGE = 160
 local joints = {} -- [character] = { [name] = Motor6D }
 local bursts = {} -- [player] = until (os.clock)
 local localActiveUntil = 0
-local jab = { move = 4, at = 0 } -- the local player's last strike (1..4) and when
+local jab = { move = 2, at = 0 } -- the local player's last strike (1 right, 2 left) and when
 local stations = {} -- [StationId] = model
 
 local NAMES = {
@@ -82,23 +82,22 @@ end
 
 local POSES = {}
 
--- Strikes cycle right jab, left jab, right kick, left kick, so arms and legs both train.
--- `move` is 1..4 in that order; `amount` 0 (guard) .. 1 (full extension).
+-- Strikes alternate right jab, left jab, with the feet planted (no leg swing, so it never reads as running).
+-- `move` is 1 or 2; `amount` 0 (guard) .. 1 (full extension).
 function POSES.punch(j, t, p)
 	local move, amount
 	if p.isLocal then
 		move, amount = jab.move, jabCurve(os.clock() - jab.at)
 	else
-		local phase = (t * 5) % 4
+		local phase = (t * 5) % 2
 		move, amount = math.floor(phase) + 1, jabCurve(phase % 1 * 0.3)
 	end
-	local kick = move >= 3
-	local strikeSide = (move == 1 or move == 3) and "Right" or "Left"
+	local strikeSide = move == 1 and "Right" or "Left"
 	-- Guard: elbows tucked by the ribs, fists up at the chin. A punch drives the upper arm up to shoulder
 	-- height and straightens the elbow so the fist travels straight out from the chin, angled a little in
 	-- toward the centre line; the other fist stays at the chin.
 	local function arm(prefix, sx)
-		if not kick and prefix == strikeSide then
+		if prefix == strikeSide then
 			-- (The inward turn goes first, about the shoulder's upright axis; after the lift it would twist the
 			-- arm instead.)
 			set(j, prefix .. "Shoulder", CFrame.Angles(0, sx * 0.22 * amount, 0) * rx(0.55 + 1.05 * amount))
@@ -112,21 +111,11 @@ function POSES.punch(j, t, p)
 	arm("Left", -1)
 	-- The torso turns into the punch (the power comes from the hips), and back to square in guard.
 	local turn = (strikeSide == "Right" and 0.45 or -0.45) * amount
-	if kick then
-		-- A front kick: the hip swings the leg up, the knee snaps straight; lean back a touch.
-		local other = strikeSide == "Right" and "Left" or "Right"
-		set(j, strikeSide .. "Hip", rx(1.5 * amount))
-		set(j, strikeSide .. "Knee", rx(-1.4 * (1 - amount) - 0.05))
-		set(j, other .. "Hip", rx(-0.1))
-		set(j, other .. "Knee", rx(-0.3))
-		set(j, "Waist", rx(-0.18 * amount) * CFrame.Angles(0, turn * 0.5, 0))
-	else
-		set(j, "Waist", CFrame.Angles(0, turn, 0))
-		set(j, "RightHip", rx(-0.15))
-		set(j, "LeftHip", rx(0.3))
-		set(j, "RightKnee", rx(-0.25))
-		set(j, "LeftKnee", rx(-0.35))
-	end
+	set(j, "Waist", CFrame.Angles(0, turn, 0))
+	set(j, "RightHip", rx(-0.15))
+	set(j, "LeftHip", rx(0.3))
+	set(j, "RightKnee", rx(-0.25))
+	set(j, "LeftKnee", rx(-0.35))
 end
 
 -- Holding a fighter up overhead while running it home: both arms up under it with a small bounce in
@@ -161,7 +150,7 @@ end
 -- Called on every local click (client/Training.lua).
 function TrainPose.rep()
 	localActiveUntil = os.clock() + Training.ActiveFor
-	jab.move = jab.move % 4 + 1
+	jab.move = jab.move % 2 + 1
 	jab.at = os.clock()
 end
 
@@ -194,7 +183,7 @@ function TrainPose.start()
 				continue
 			end
 			-- The local player's strikes follow their clicks; with Auto Train on (no clicks) they use the same
-			-- punch-and-kick rhythm everyone else's do, so it moves too.
+			-- punch rhythm everyone else's do, so it moves too.
 			local isLocal = player == localPlayer and not (player:GetAttribute("AutoTrainOn") and now - jab.at > 0.6)
 			local station = player:GetAttribute("TrainStation")
 			local active = player:GetAttribute("Training") ~= nil or (isLocal and now < localActiveUntil)
@@ -203,7 +192,8 @@ function TrainPose.start()
 				style = "burst"
 			elseif player:GetAttribute("Carrying") and not station then
 				style = "carry"
-			elseif station or active then
+			elseif station or (active and (root.AssemblyLinearVelocity * Vector3.new(1, 0, 1)).Magnitude < 2) then
+				-- (Never while walking: planted punching legs on a moving body looked like sliding.)
 				style = "punch"
 			end
 			if not style then

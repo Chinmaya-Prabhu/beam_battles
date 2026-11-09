@@ -7,9 +7,10 @@
 -- Fighter first: a new player wins a fighter within a minute, and everything else is taught after that.
 -- Order: 1 intro swoop (client) · 4 walk to the personal drop (Luffi, TUTORIAL_FIGHTER) · 5 win the clash ·
 -- 6 take it home · 7 collect the pad · 2 click to train (gift weights at 50) · 3 click at the base's punching
--- post (x2) to 1K (first aura) · 9 lock your base · then done (+500 Ki, goals appear). The numbers are saved, so
+-- post (x2) to 1K (first aura) · 10 buy Stone Weights at the gear shop · then done (+500 Ki, goals appear). The numbers are saved, so
 -- they keep their old meaning. A save from the old order (training first) goes 3 -> 4 and skips 2-3 after 7.
--- (Stealing isn't taught: players find it at other bases. Step 8 is gone; a save on it moves on to 9.)
+-- (Stealing isn't taught: players find it at other bases. Locking is taught the first time someone steals from
+-- them (PlotService). Steps 8 and 9 are gone; a save on either moves on to 10.)
 -- Training is x5 for steps 2-3 and x2 for the rest (TutorialBoost).
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
@@ -18,8 +19,10 @@ local RunService = game:GetService("RunService")
 local Shared = ReplicatedStorage.Shared
 local Config = require(Shared.Config)
 local Goals = require(Shared.Goals)
+local Training = require(Shared.Training)
 local Net = require(Shared.Net)
 local GymKit = require(script.Parent.Parent.Zones.GymKit)
+local Funnel = require(script.Parent.Parent.Funnel)
 
 local TutorialService = {}
 local FX = Net.get("FX")
@@ -33,6 +36,7 @@ local DONE = 99
 local TUTORIAL_FIGHTER = "Tsluffy"
 local MENU_AFTER = 600 -- seconds in an unfinished tutorial before the whole menu opens anyway
 local GIFT_POWER, AURA_POWER = 50, 1000
+local FIRST_WEIGHTS = 3 -- Stone Weights (shared/Training.lua): the tutorial's last step buys them
 local START_POWER = Config.Push.botPower.Tutorial -- an even first fight: at 0 Power no amount of tapping could win it
 
 local TEXT = {
@@ -42,8 +46,7 @@ local TEXT = {
 	[5] = "TAP FAST TO PUSH THE BEAM!",
 	[6] = "TAKE YOUR FIGHTER HOME AND PUT IT ON A STAND!",
 	[7] = "STEP ON THE GREEN PAD TO COLLECT!",
-	[8] = "STEAL THE PRACTICE FIGHTER! HOLD E",
-	[9] = "PLAYERS STEAL TOO! STEP ON YOUR LOCK PAD",
+	[10] = "FOLLOW THE ARROW AND BUY STONE WEIGHTS!",
 }
 
 local state = {} -- [player] = { altar, resultAt, droppedAt }
@@ -140,9 +143,9 @@ end
 
 local setStep -- forward
 
--- After the training steps: on to the lock, or (a save from the old order, no fighter won yet) to the first drop.
+-- After the training steps: on to the weights, or (a save from the old order, no fighter won yet) to the first drop.
 local function afterTraining(data)
-	return data.stats.wins > 0 and 9 or 4
+	return data.stats.wins > 0 and 10 or 4
 end
 
 -- The tutorial drop: a personal Epic on the nearest free hub Bronze altar, held for this player.
@@ -187,6 +190,7 @@ end
 
 local function enter(player, step)
 	local data = Data.get(player)
+	Funnel.tutorial(player, data, step)
 	player:SetAttribute("Ftue", step)
 	player:SetAttribute("FtueText", TEXT[step])
 	player:SetAttribute("FtueTarget", nil)
@@ -217,10 +221,31 @@ local function enter(player, step)
 	elseif step == 7 and places then
 		Plots.addStash(player, 1, 5000)
 		player:SetAttribute("FtueTarget", places.pad)
-	elseif step == 8 then
-		task.defer(setStep, player, 9) -- (no practice steal any more)
-	elseif step == 9 and places then
-		player:SetAttribute("FtueTarget", places.lock)
+	elseif step == 8 or step == 9 then
+		task.defer(setStep, player, 10) -- (no practice steal or lock step any more)
+	elseif step == 10 and data then
+		if data.gear >= FIRST_WEIGHTS then
+			task.defer(setStep, player, DONE)
+			return
+		end
+		-- Enough Ki for them, so the first shop visit always ends in a purchase.
+		local cost = Training.Gear[FIRST_WEIGHTS].cost
+		if data.ki < cost then
+			banner(player, "GIFT! +" .. (cost - data.ki) .. " KI", GOLD)
+			data.ki = cost
+			player:SetAttribute("Ki", data.ki)
+			Data.changed(player)
+		end
+		-- The nearest stall that sells them.
+		local root = rootOf(player)
+		local best, bestDist
+		for _, stall in GymKit.Stalls do
+			local d = root and (stall.position - root.Position).Magnitude or 0
+			if table.find(stall.tiers, FIRST_WEIGHTS) and (not bestDist or d < bestDist) then
+				best, bestDist = stall, d
+			end
+		end
+		player:SetAttribute("FtueTarget", best and best.position)
 	elseif step == DONE then
 		player:SetAttribute("FtueText", nil)
 		if data and not data.ftueDoneAt then
@@ -261,6 +286,13 @@ local function tick(player)
 		return
 	end
 	local root = rootOf(player)
+	-- Rejoined mid-step: the base wasn't assigned yet when the step was entered, so the arrow still needs setting.
+	if (step == 6 or step == 7) and player:GetAttribute("FtueTarget") == nil then
+		local places = Plots.places(player)
+		if places then
+			player:SetAttribute("FtueTarget", step == 6 and places.gate or places.pad)
+		end
+	end
 	if step == 2 and data.power >= GIFT_POWER then
 		if data.gear < 2 then
 			data.gear = 2
@@ -321,7 +353,7 @@ local function tick(player)
 		and player:GetAttribute("CarryKind") ~= "own" -- placed it (client/Plots.lua says how)
 	then
 		setStep(player, 7)
-	elseif step == 9 and Plots.isLocked(player) then
+	elseif step == 10 and data.gear >= FIRST_WEIGHTS then
 		setStep(player, DONE)
 	end
 end
@@ -365,7 +397,7 @@ function TutorialService.start(_world, deps)
 		bump(player, "collected", amount)
 		local data = Data.get(player)
 		if data and data.ftue == 7 then
-			setStep(player, data.power >= AURA_POWER and 9 or 2) -- (at the base, right by its punching post)
+			setStep(player, data.power >= AURA_POWER and 10 or 2) -- (at the base, right by its punching post)
 		end
 	end
 	Plots.onSteal = function(player)
@@ -463,6 +495,7 @@ function TutorialService.start(_world, deps)
 				local data = Data.get(player)
 				if data and data.ftue >= DONE and n % 4 == 0 then
 					checkGoals(player, data)
+					Funnel.progress(player, data)
 				end
 				-- The menu's safety net: 10 minutes into an unfinished tutorial (this visit or across visits), the
 				-- whole menu opens anyway (client/UIKit.lua). The tutorial carries on; it can still be finished.

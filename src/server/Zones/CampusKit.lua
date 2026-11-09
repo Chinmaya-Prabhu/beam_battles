@@ -528,16 +528,16 @@ end
 function CampusKit.gym(parent, cf, set, w, d)
 	local m = Core.model(parent, "Gym", cf)
 	Core.centered(m, cf, 0, 0, 0, w, PLATE, d, P.wood, SMOOTH)
-	local y = PLATE + 0.03
+	local y = PLATE + 0.1
 	local function line(x, z, sx, sz)
-		Core.part(m, cf * CFrame.new(x, y, z), Vector3.new(sx, 0.06, sz), P.line, DECOR)
+		Core.part(m, cf * CFrame.new(x, y, z), Vector3.new(sx, 0.2, sz), P.line, DECOR)
 	end
 	line(0, -d / 2 + 2, w - 4, 0.3)
 	line(0, d / 2 - 2, w - 4, 0.3)
 	line(-w / 2 + 2, 0, 0.3, d - 4)
 	line(w / 2 - 2, 0, 0.3, d - 4)
 	line(0, 0, w - 4, 0.3)
-	arc(m, cf, 5, 0.3, 0, math.pi * 2, 20, PLATE, P.line, 0.06)
+	arc(m, cf, 5, 0.3, 0, math.pi * 2, 20, PLATE, P.line, 0.2)
 	for _, sz in { -1, 1 } do
 		line(0, sz * (d / 2 - 8), 10, 0.3)
 		line(-5, sz * (d / 2 - 5), 0.3, 6)
@@ -657,8 +657,8 @@ function CampusKit.track(parent, cf, straight, inner)
 		for k = 0, 3 do
 			Core.part(
 				m,
-				cf * CFrame.new(sx * (inner + 0.1 + k * 2.6), 0.43, 0),
-				Vector3.new(0.2, 0.06, straight * 2),
+				cf * CFrame.new(sx * (inner + 0.1 + k * 2.6), 0.5, 0),
+				Vector3.new(0.2, 0.2, straight * 2),
 				P.line,
 				DECOR
 			)
@@ -669,7 +669,7 @@ function CampusKit.track(parent, cf, straight, inner)
 		local a0 = sz > 0 and 0 or math.pi
 		arc(m, end_, mid, 8, a0, a0 + math.pi, 16, 0, P.track, PLATE)
 		for k = 0, 3 do
-			arc(m, end_, inner + 0.1 + k * 2.6, 0.2, a0, a0 + math.pi, 16, PLATE, P.line, 0.06)
+			arc(m, end_, inner + 0.1 + k * 2.6, 0.2, a0, a0 + math.pi, 16, PLATE, P.line, 0.2)
 		end
 	end
 	-- Striped lawn inside the track.
