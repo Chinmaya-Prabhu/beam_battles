@@ -183,10 +183,10 @@ local function rivets(m, cf, x, y, z, half, color)
 	end
 end
 
--- A training post: a kung fu wooden dummy. A slim round trunk held between two studded rails on a brick
--- frame behind it, two arms reaching out at shoulder height and one bent leg low down, bands round the
--- trunk and a small target at the chest. (A post you punch should be slim: the old padded column was a
--- block.)
+-- A training post: a kung fu wooden dummy, studded like everything else. A slim round trunk with a square
+-- 2x2 studded plate at its foot, waist and top (studs showing at the corners), held between two studded
+-- rails on brick posts over a studded base; two arms reach out at shoulder height, a middle arm and one
+-- bent leg low down, slim and round; a small target on the chest.
 local function limb(m, cf, from, dir, length, diameter, color)
 	local d = dir.Unit
 	local centre = from + d * (length / 2)
@@ -201,30 +201,31 @@ end
 
 local function post(m, cf, look)
 	local z = 1.6
-	local trunkTop = PLATE + BRICK * 6
-	-- The frame: a studded base plate, two posts behind the trunk and two rails through them.
-	Core.centered(m, cf, 0, 0, z + 0.7, 7, PLATE, 2, look.foot)
-	for _, x in { -2.8, 2.8 } do
-		Core.centered(m, cf, x, PLATE, z + 0.9, 1, trunkTop + 0.4 - PLATE, 1, look.pole)
-		Core.roundPlate(m, cf, x, trunkTop + 0.4, z + 0.9, look.cap, 1)
+	local floorY = RIM -- (on the mat, so the base's studs show)
+	local trunkTop = floorY + PLATE + BRICK * 5.5
+	-- The frame: a studded floorY, two brick posts behind the trunk and two studded rails through them.
+	Core.centered(m, cf, 0, floorY, z + 0.6, 8, PLATE, 3, look.foot)
+	for _, x in { -2.5, 2.5 } do
+		Core.centered(m, cf, x, floorY + PLATE, z + 0.9, 1, trunkTop + 0.4 - floorY - PLATE, 1, look.pole)
+		Core.centered(m, cf, x, trunkTop + 0.4, z + 0.9, 1, PLATE, 1, look.cap) -- a studded cap
 	end
-	for _, y in { PLATE + BRICK * 1.5, trunkTop - BRICK } do
-		Core.centered(m, cf, 0, y, z + 0.9, 6.6, PLATE * 1.5, 1, look.pole) -- a rail (studs on top)
+	for _, y in { floorY + PLATE + BRICK * 1.2, trunkTop - BRICK * 1.2 } do
+		Core.centered(m, cf, 0, y, z + 0.9, 6, PLATE, 1, look.pole) -- a rail (studs on top)
 	end
-	-- The trunk: slim and round, banded at the top and bottom.
-	Core.cyl(m, cf, 0, PLATE, z, 1.5, trunkTop - PLATE, look.pad)
-	for _, y in { PLATE + 0.5, trunkTop - 0.5 } do
-		Core.cyl(m, cf, 0, y, z, 1.6, 0.25, look.bands)
+	-- The trunk, with a studded 2x2 plate at its foot, waist and top.
+	Core.cyl(m, cf, 0, floorY + PLATE, z, 1.5, trunkTop - floorY - PLATE, look.pad)
+	for _, y in { floorY + PLATE + 0.6, floorY + PLATE + BRICK * 2.2, trunkTop } do
+		Core.centered(m, cf, 0, y, z, 2, PLATE, 2, look.bands)
 	end
-	Core.roundPlate(m, cf, 0, trunkTop, z, look.cap, 1.2) -- the cap
-	-- The arms: two at shoulder height, angled out to the sides, one a little higher; the leg: bent down.
-	local front = z - 0.7
-	limb(m, cf, Vector3.new(-0.35, 4.9, front + 0.1), Vector3.new(-0.45, 0.12, -1), 2.3, 0.38, look.pole)
-	limb(m, cf, Vector3.new(0.35, 4.6, front + 0.1), Vector3.new(0.45, 0.12, -1), 2.3, 0.38, look.pole)
-	limb(m, cf, Vector3.new(0, 3.6, front + 0.1), Vector3.new(0, 0, -1), 1.3, 0.38, look.pole) -- the middle arm
-	local knee = Vector3.new(0.3, 2.0, front - 0.9)
-	limb(m, cf, Vector3.new(0.15, 2.3, front + 0.1), knee - Vector3.new(0.15, 2.3, front + 0.1), 1.05, 0.45, look.pole)
-	limb(m, cf, knee, Vector3.new(0.15, -1, -0.15), 1.4, 0.45, look.pole)
+	-- Arms at shoulder height, angled out to the sides (one a little higher), a middle arm and a bent leg.
+	local front = z - 0.4
+	limb(m, cf, Vector3.new(-0.3, 4.9, front), Vector3.new(-0.5, 0.1, -1), 2.3, 0.4, look.pole)
+	limb(m, cf, Vector3.new(0.3, 4.6, front), Vector3.new(0.5, 0.1, -1), 2.3, 0.4, look.pole)
+	limb(m, cf, Vector3.new(0, 3.5, front), Vector3.new(0, 0, -1), 1.4, 0.4, look.pole)
+	local hip = Vector3.new(0.2, 2.4, front)
+	local knee = Vector3.new(0.35, 2.1, front - 1.2)
+	limb(m, cf, hip, knee - hip, (knee - hip).Magnitude + 0.2, 0.45, look.pole)
+	limb(m, cf, knee + Vector3.new(0, 0.2, 0), Vector3.new(0.1, -1, -0.1), 1.4, 0.45, look.pole)
 	target(m, cf, 0, 4.2, z - 0.72, 0.9)
 	return cf * CFrame.new(0, PLATE, -1.6) * CFrame.Angles(0, math.pi, 0) -- facing the dummy
 end

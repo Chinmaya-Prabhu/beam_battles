@@ -626,7 +626,17 @@ function TrainingClient.start()
 	for _, inst in workspace:GetDescendants() do
 		watchPrompt(inst)
 	end
-	workspace.DescendantAdded:Connect(watchPrompt)
+	workspace.DescendantAdded:Connect(function(inst)
+		watchPrompt(inst)
+		task.defer(watchPrompt, inst) -- (again once its name and attributes have arrived)
+	end)
+	-- And every second, so an owned station's prompt can never stay up (streaming, late data).
+	task.spawn(function()
+		while true do
+			task.wait(1)
+			refreshPrompts()
+		end
+	end)
 
 	UserInputService.InputBegan:Connect(function(input, processed)
 		if processed then
