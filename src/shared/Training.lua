@@ -1,6 +1,6 @@
 -- The training ladder (docs/TRAINING_PLAN.md): Power (permanent, drives body, aura and clash strength)
--- and Ki (the wallet, earned one for one with Power). Clicks anywhere train at the gear's rate; stations
--- multiply it. Everything here is data and pure maths so tests can run it outside Roblox.
+-- and Cash (earned by the fighters on the stands; it buys stands, stations and weights). Clicks anywhere
+-- train at the gear's rate; an owned station trains by itself while you stand at it. Everything here is data and pure maths so tests can run it outside Roblox.
 local Training = {}
 
 local function rgb(r, g, b)
@@ -13,24 +13,27 @@ Training.MaxCps = 14
 Training.ActiveFor = 0.6
 
 -- Worn on both wrists and both ankles. `look` is read by the client's gear builder.
--- Each tier doubles the click gain and costs 10x the last (a 5x step let Power race past every zone gate).
+-- Each tier doubles the click gain. Bought with Cash, and only once the weight's zone is open (offline cash would
+-- otherwise buy weights far ahead). Prices from tools/sim/cash_weights.py: each one a few minutes of the
+-- income a player has when they reach that zone. `power` is the Power needed too (like stations), so cash
+-- kept through a rebirth can't buy the whole ladder back at once.
 Training.Gear = {
 	{ name = "Cloth Wraps", mult = 1, cost = 0, zone = nil, look = "cloth" },
-	{ name = "Wooden Weights", mult = 2, cost = 100, zone = "Hub", look = "wood" },
-	{ name = "Stone Weights", mult = 4, cost = 1e3, zone = "Hub", look = "stone" },
-	{ name = "Iron Weights", mult = 8, cost = 10e3, zone = "Blossom", look = "iron" },
-	{ name = "Steel Weights", mult = 16, cost = 100e3, zone = "Blossom", look = "steel" },
-	{ name = "Gold Weights", mult = 32, cost = 1e6, zone = "Ninja", look = "gold" },
-	{ name = "Chakra Seals", mult = 64, cost = 10e6, zone = "Ninja", look = "chakra" },
-	{ name = "Sea Rock Shackles", mult = 128, cost = 100e6, zone = "Pirate", look = "seastone" },
-	{ name = "Diamond Weights", mult = 256, cost = 1e9, zone = "Pirate", look = "diamond" },
-	{ name = "Gravity Rings", mult = 512, cost = 10e9, zone = "Walled", look = "gravity" },
+	{ name = "Wooden Weights", mult = 2, cost = 1e3, zone = "Hub", look = "wood" },
+	{ name = "Stone Weights", mult = 4, cost = 5e3, zone = "Hub", look = "stone" },
+	{ name = "Iron Weights", mult = 8, cost = 250e3, power = 10e3, zone = "Blossom", look = "iron" },
+	{ name = "Steel Weights", mult = 16, cost = 6e6, power = 150e3, zone = "Blossom", look = "steel" },
+	{ name = "Gold Weights", mult = 32, cost = 100e6, power = 2e6, zone = "Ninja", look = "gold" },
+	{ name = "Chakra Seals", mult = 64, cost = 1e9, power = 20e6, zone = "Ninja", look = "chakra" },
+	{ name = "Sea Rock Shackles", mult = 128, cost = 8e9, power = 150e6, zone = "Pirate", look = "seastone" },
+	{ name = "Diamond Weights", mult = 256, cost = 60e9, power = 750e6, zone = "Pirate", look = "diamond" },
+	{ name = "Gravity Rings", mult = 512, cost = 400e9, power = 8e9, zone = "Walled", look = "gravity" },
 	-- Rebirth-gated: only sold to players with at least `rebirth` rebirths.
-	{ name = "Turtle Shell Weights", mult = 800, cost = 100e9, zone = "Walled", look = "turtle", rebirth = 1 },
-	{ name = "Warrior Armor Weights", mult = 1600, cost = 1e12, zone = "Walled", look = "saiyan", rebirth = 3 },
-	{ name = "Limitless Instinct Weights", mult = 5000, cost = 10e12, zone = "Walled", look = "ultra", rebirth = 5 },
-	-- Premium (Robux gamepasses, shared/Products.lua): never bought with Ki and never outgrown: they give the
-	-- larger of their own `mult` and `boost` times the player's best Ki weight (Training.gearMult).
+	{ name = "Turtle Shell Weights", mult = 800, cost = 2e12, power = 8e9, zone = "Walled", look = "turtle", rebirth = 1 },
+	{ name = "Warrior Armor Weights", mult = 1600, cost = 15e12, power = 30e9, zone = "Walled", look = "saiyan", rebirth = 3 },
+	{ name = "Limitless Instinct Weights", mult = 5000, cost = 100e12, power = 150e9, zone = "Walled", look = "ultra", rebirth = 5 },
+	-- Premium (Robux gamepasses, shared/Products.lua): never bought with Cash and never outgrown: they give the
+	-- larger of their own `mult` and `boost` times the player's best ladder weight (Training.gearMult).
 	-- Nine-Tail Fox (R$299) is the entry tier, Eternal Dragon (R$599) the top one: the later tier always trains best
 	-- (a player owning both wears the higher tier).
 	{
@@ -43,10 +46,10 @@ Training.Gear = {
 	},
 	{ name = "Eternal Dragon Weights", mult = 1000, boost = 3, cost = 0, premium = "DragonWeights", look = "dragon" },
 }
-Training.LadderTop = 13 -- the last Ki tier (the premium tiers come after)
+Training.LadderTop = 13 -- the last cash tier (the premium tiers come after)
 
 -- The tier a player wears (its look): their premium weights if they own any (those always train best),
--- else their Ki ladder tier.
+-- else their ladder tier.
 function Training.bestGear(ladderTier, premiumTier)
 	if premiumTier and Training.Gear[premiumTier] then
 		return premiumTier
@@ -79,7 +82,7 @@ end
 
 -- Stations by zone: a punching post and a heavy bag in each (all training is punching). `style` picks the
 -- training pose; `power` is the Power needed to buy, `price` the
--- cash (stations are the main cash sink after stands; gear is bought with Ki).
+-- cash.
 Training.Stations = {
 	Hub = {
 		{ key = "PunchPost", name = "Punching Post", style = "punch", mult = 2, power = 0, price = 0 },
@@ -167,10 +170,10 @@ function Training.championMult(rarity, mutation)
 end
 
 -- Rebirth: each one adds this much to the permanent training multiplier. The first needs RebirthBase
--- Power, each next one RebirthStep times more. Rebirth resets Power, Ki, gear and stations; fighters,
+-- Power, each next one RebirthStep times more. Rebirth resets Power, gear and stations; fighters,
 -- the base, cash and zones stay.
 Training.RebirthBonus = 0.5
-Training.RebirthBase = 1e9 -- around the Walled City (the long game after the four zones)
+Training.RebirthBase = 12e9 -- the Walled City boss (the long game after the four zones)
 Training.RebirthStep = 5
 
 -- Power needed for the next rebirth after `done` rebirths.
@@ -217,7 +220,7 @@ function Training.bodyScale(power)
 	return { width = 1 + 0.6 * s, depth = 1 + 0.6 * s, height = 1 + 0.15 * s }
 end
 
--- Power (and Ki) for one rep. `boost` covers paid multipliers (2x Power pass, 2x Training boost);
+-- Power for one rep. `boost` covers paid multipliers (2x Power pass, 2x Training boost);
 -- `premiumTier` is the player's premium weights, if any (Training.gearMult).
 function Training.perRep(gearTier, stationMult, championMult, rebirths, boost, premiumTier)
 	return Training.gearMult(gearTier, premiumTier)
@@ -227,9 +230,9 @@ function Training.perRep(gearTier, stationMult, championMult, rebirths, boost, p
 		* (boost or 1)
 end
 
--- Whether a player may buy gear tier `tier` (from a stall's stock): any Ki tier above what they have,
--- with the rebirths it needs and enough Ki.
-function Training.canBuyGear(currentTier, tier, ki, rebirths)
+-- Whether a player may buy gear tier `tier`: any cash tier above what they have, in a zone they have
+-- opened (`zones` = the save's zone set; the hub is always open), with the rebirths, Power and cash it needs.
+function Training.canBuyGear(currentTier, tier, cash, rebirths, zones, power)
 	local g = Training.Gear[tier]
 	if not g or g.premium or tier <= (currentTier or 1) then
 		return false, "ALREADY OWNED"
@@ -237,10 +240,34 @@ function Training.canBuyGear(currentTier, tier, ki, rebirths)
 	if g.rebirth and (rebirths or 0) < g.rebirth then
 		return false, "NEEDS REBIRTH " .. g.rebirth
 	end
-	if ki < g.cost then
-		return false, "NOT ENOUGH KI"
+	if g.zone and g.zone ~= "Hub" and not (zones and zones[g.zone]) then
+		return false, "OPEN THE ZONE FIRST"
+	end
+	if (power or 0) < (g.power or 0) then
+		return false, "NEEDS POWER"
+	end
+	if cash < g.cost then
+		return false, "NOT ENOUGH CASH"
 	end
 	return true
+end
+
+-- Winning a fighter also trains you: this many reps (at your best station's rate) by its rarity, so fighting
+-- for drops beats standing at a bag.
+Training.WinReps = { Common = 150, Uncommon = 200, Rare = 300, Epic = 500, Legendary = 800, Mythic = 1500, Secret = 3000 }
+-- An owned station trains by itself while you stand on it (no clicks): this many reps a second.
+Training.StationRate = 4
+
+-- The best multiplier among `stations` (the save's owned set), 1 with none.
+function Training.bestStationMult(stations)
+	local best = 1
+	for key in stations or {} do
+		local s = Training.StationByKey[key]
+		if s and s.mult > best then
+			best = s.mult
+		end
+	end
+	return best
 end
 
 -- Whether a player may buy station `key`.

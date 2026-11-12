@@ -318,8 +318,8 @@ Config.Zones = {
 		band = { "Bronze", "Silver" },
 		-- Power to challenge guardians 1-5 and the boss (ZoneService), in step with the zone's stations.
 		-- (Blossom opens at 2K Power, so its first guardian needs 2K; the rest climb from there.)
-		ladderPower = { 2e3, 6e3, 15e3, 40e3, 400e3, 3.5e6 }, -- (small steps first: the early wins come fast)
-		botRarityStep = 8, -- (its ladder climbs far: a Legendary's bot sits near the end of it, about 1M)
+		ladderPower = { 2e3, 6e3, 15e3, 40e3, 150e3, 600e3 }, -- (small steps first: the early wins come fast)
+		botRarityStep = 6, -- (a Legendary's bot sits near the boss, about 430K)
 		tier = "Silver", -- altar tier (drop odds): one step above the hub, and up a step per zone
 		guardians = { "Lemillion", "Deku", "Bakugo", "Todoroki", "Hellflame" },
 		boss = { key = "AllMightMode", title = "SYMBOL OF PEACE", rounds = 3, skill = "Gold" },
@@ -335,7 +335,7 @@ Config.Zones = {
 		center = Vector3.new(-708, 24, 496),
 		series = { "NARUTO", "HXH" },
 		band = { "Silver", "Gold" },
-		ladderPower = { 6e6, 10e6, 16e6, 24e6, 34e6, 50e6 }, -- (cleared around day 3)
+		ladderPower = { 1.5e6, 3e6, 6e6, 12e6, 24e6, 50e6 }, -- (tools/sim/cash_weights.py: day 1-2)
 		botRarityStep = 2, -- (a Mythic's bot sits at the boss's level)
 		tier = "Gold",
 		guardians = { "Neji", "RockLee", "Gaara", "Kakashi", "Itachi" },
@@ -351,7 +351,7 @@ Config.Zones = {
 		center = Vector3.new(708, 24, -496),
 		series = { "One Piece", "Fairy Tail" },
 		band = { "Gold", "Master" },
-		ladderPower = { 70e6, 90e6, 110e6, 130e6, 155e6, 180e6 }, -- (cleared around day 5)
+		ladderPower = { 100e6, 180e6, 300e6, 500e6, 750e6, 1.1e9 }, -- (day 2-3)
 		tier = "Diamond",
 		guardians = { "Ptsluffy", "Ptslaw", "Ptszoro", "Ace", "Shanks" },
 		boss = { key = "Whitebeard", title = "THE EMPEROR", rounds = 3, skill = "Master" },
@@ -366,7 +366,7 @@ Config.Zones = {
 		center = Vector3.new(-708, 24, -496),
 		series = { "AOT", "FATE" },
 		band = { "Diamond", "Legend" },
-		ladderPower = { 300e6, 380e6, 460e6, 540e6, 620e6, 700e6 }, -- (cleared around day 7)
+		ladderPower = { 2e9, 3e9, 4.5e9, 6.5e9, 9e9, 12e9 }, -- (day 3-5)
 		tier = "Celestial",
 		guardians = { "Sasha", "Erwin", "Mikasa", "ErenPostTimeSkip", "FemaleTitan" },
 		boss = { key = "AttackTitan", title = "THE TITAN", rounds = 3, skill = "Legend" },

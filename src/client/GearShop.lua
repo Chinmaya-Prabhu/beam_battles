@@ -107,7 +107,7 @@ local function build(gui)
 			player:GetAttributeChangedSignal(pass.key):Connect(owned)
 		end
 	end
-	-- One row per weight on the Ki ladder (Cloth Wraps, the start, is everyone's), filled by refresh().
+	-- One row per weight on the cash ladder (Cloth Wraps, the start, is everyone's), filled by refresh().
 	for tier = 2, Training.LadderTop do
 		local g = Training.Gear[tier]
 		local row = Instance.new("ImageLabel")
@@ -172,7 +172,11 @@ local function refresh()
 		return
 	end
 	local owned = player:GetAttribute("Gear") or 1
-	local ki = player:GetAttribute("Ki") or 0
+	local cash = player:GetAttribute("Cash") or 0
+	local zones = {}
+	for name in string.gmatch(player:GetAttribute("Zones") or "", "[^,]+") do
+		zones[name] = true
+	end
 	local rebirths = player:GetAttribute("Rebirths") or 0
 	for tier, r in rows do
 		local g = Training.Gear[tier]
@@ -181,9 +185,13 @@ local function refresh()
 			setRow(r, "OWNED", "grey")
 		elseif g.rebirth and rebirths < g.rebirth then
 			setRow(r, "REBIRTH " .. g.rebirth, "gold")
+		elseif g.zone and g.zone ~= "Hub" and not zones[g.zone] then
+			setRow(r, "LOCKED", "grey") -- (sold once its zone is open)
+		elseif (player:GetAttribute("Power") or 0) < (g.power or 0) then
+			setRow(r, Format.short(g.power) .. " POWER", "gold")
 		else
-			r.canBuy = ki >= g.cost
-			setRow(r, Format.short(g.cost) .. " KI", r.canBuy and "green" or "red")
+			r.canBuy = cash >= g.cost
+			setRow(r, Format.cash(g.cost), r.canBuy and "green" or "red")
 		end
 	end
 end
@@ -196,7 +204,7 @@ function GearShop.start()
 	gui.DisplayOrder = 9 -- windows sit above the HUD and the goals (Tutorial, 8)
 	gui.Parent = player:WaitForChild("PlayerGui")
 	window = build(gui)
-	for _, name in { "Gear", "Ki", "Rebirths" } do
+	for _, name in { "Gear", "Cash", "Power", "Zones", "Rebirths" } do
 		player:GetAttributeChangedSignal(name):Connect(refresh)
 	end
 

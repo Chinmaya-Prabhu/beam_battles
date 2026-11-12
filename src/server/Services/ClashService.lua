@@ -187,8 +187,12 @@ local function finish(index, winnerSide, tiebreak)
 	end
 	local losing = clash.sides[3 - winnerSide]
 	local consolation = losing.player and ClashService.onLoss and ClashService.onLoss(losing.player)
+	-- A won fighter also pays Power by its rarity (TrainingService), shown on the win card.
+	local winning = clash.sides[winnerSide]
+	local winPower = winning.player and prize.key and ClashService.onWin and ClashService.onWin(winning.player, prize.key)
 	remote:FireAllClients("End", {
 		consolation = consolation,
+		winPower = winPower,
 		tiebreak = tiebreak,
 		grades = grades,
 		stats = stats,

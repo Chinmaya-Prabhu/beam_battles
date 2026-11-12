@@ -90,10 +90,10 @@ def main():
     elif cmd == "feature":
         config["featured"] = args
     elif cmd == "code" and len(args) >= 2:
-        # Reward presets (shared/Codes.lua, shared/Rewards.lua kinds): Ki and Cash scale with the player.
+        # Reward presets (shared/Codes.lua, shared/Rewards.lua kinds): Power and Cash scale with the player.
         presets = {
             "cash": {"kind": "cash", "seconds": 600, "floor": 10000},
-            "ki": {"kind": "ki", "reps": 600, "floor": 3000},
+            "power": {"kind": "power", "reps": 600, "floor": 3000},
             "boost": {"kind": "boost", "minutes": 15},
             "epic": {"kind": "fighter", "rarity": "Epic"},
             "legendary": {"kind": "fighter", "rarity": "Legendary"},

@@ -218,7 +218,7 @@ end
 
 -- A gear stall: a counter under a striped awning with the stall's sign, and in front two pedestals showing
 -- the premium weights (Robux) spinning in a glowing aura, each with a Buy prompt (named "PremiumPrompt",
--- attribute Pass; the client prompts the purchase). The Ki weights this stall stocks (`tiers`) are sold
+-- attribute Pass; the client prompts the purchase). The cash weights this stall stocks (`tiers`) are sold
 -- from a window that opens when a player walks up (client/GearShop.lua; model tag "GearStall", attributes
 -- StallIndex and Tiers).
 local PREMIUM = {

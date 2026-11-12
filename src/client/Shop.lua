@@ -1,5 +1,5 @@
 -- The shop (shared/Products.lua, server/Services/MonetizationService.lua): a SHOP tile in the HUD menu opens
--- a tabbed window (docs/SHOP_RESEARCH.md), with the player's Cash and Ki in the corner:
+-- a tabbed window (docs/SHOP_RESEARCH.md), with the player's Cash in the corner:
 --   FEATURED  the Starter Pack (new players, with its countdown), the premium weights, the fighter summons,
 --   PASSES    gamepasses,
 --   BOOSTS    timed boosts and one-off skips,
@@ -495,13 +495,9 @@ local function buildWindow(gui)
 	balance.RichText = true
 	local function money()
 		balance.Text = Format.cash(player:GetAttribute("Cash") or 0)
-			.. '   <font color="#8CD8FF">'
-			.. Format.short(player:GetAttribute("Ki") or 0)
-			.. " KI</font>"
 	end
 	money()
 	player:GetAttributeChangedSignal("Cash"):Connect(money)
-	player:GetAttributeChangedSignal("Ki"):Connect(money)
 
 	-- FEATURED: starter pack, premium weights, summons.
 	local featured = pages.FEATURED

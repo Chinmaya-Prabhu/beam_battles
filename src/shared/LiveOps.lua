@@ -120,7 +120,7 @@ LiveOps.QuestPool = {
 		text = "Win 10 clashes",
 		metric = "wins",
 		need = 10,
-		reward = { kind = "ki", reps = 400, floor = 5000 },
+		reward = { kind = "power", reps = 400, floor = 5000 },
 	},
 	{
 		id = "wins25",
@@ -148,14 +148,14 @@ LiveOps.QuestPool = {
 		text = "Collect $500K at your base",
 		metric = "collected",
 		need = 5e5,
-		reward = { kind = "ki", reps = 300, floor = 4000 },
+		reward = { kind = "power", reps = 300, floor = 4000 },
 	},
 	{
 		id = "cash1m",
 		text = "Collect $10M at your base",
 		metric = "collected",
 		need = 1e7,
-		reward = { kind = "ki", reps = 800, floor = 20000 },
+		reward = { kind = "power", reps = 800, floor = 20000 },
 	},
 	{
 		id = "power100k",

@@ -27,7 +27,7 @@ assert(open and day == 1, "missed day resets")
 open, day = Rewards.daily(100, 9, 101)
 assert(day == 7, "caps at day 7")
 assert(Rewards.Daily[7].rarity == "Mythic", "day 7 is a Mythic")
-assert(Rewards.amount({ kind = "ki", reps = 10, floor = 500 }, 1, 0) == 500, "floor")
+assert(Rewards.amount({ kind = "power", reps = 10, floor = 500 }, 1, 0) == 500, "floor")
 assert(Rewards.amount({ kind = "cash", seconds = 100, floor = 5 }, 1, 20) == 2000, "income scaled")
 -- Collection.
 local index = {}

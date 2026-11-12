@@ -31,13 +31,13 @@ local function banner(player, text, color)
 	FX:FireClient(player, "Banner", { text = text, color = color })
 end
 
--- Pays one reward (a gift or a daily), `times` over for Cash, Ki and boosts; returns the line shown.
+-- Pays one reward (a gift or a daily), `times` over for Cash, Power and boosts; returns the line shown.
 function RewardsService.pay(player, data, reward, times)
 	times = times or 1
-	if reward.kind == "ki" then
+	if reward.kind == "power" or reward.kind == "ki" then -- ("ki": old LiveOps and code rewards)
 		local amount = Rewards.amount(reward, Training.perRep(player), 0) * times
-		data.ki += amount
-		return "+" .. Format.short(amount) .. " KI"
+		Training.givePower(player, amount)
+		return "+" .. Format.short(amount) .. " POWER"
 	elseif reward.kind == "cash" then
 		local amount = Rewards.amount(reward, 0, Plots.incomeRate(player)) * times
 		Plots.addCash(player, amount)
@@ -125,7 +125,7 @@ local function claimDaily(player)
 		return
 	end
 	data.daily.last, data.daily.streak = today, day
-	-- VIP doubles the daily Cash, Ki and boosts (a fighter stays one fighter).
+	-- VIP doubles the daily Cash, Power and boosts (a fighter stays one fighter).
 	local vip = player:GetAttribute("VIP") == true
 	local line = RewardsService.pay(player, data, Rewards.Daily[day], vip and 2 or 1)
 	Data.changed(player)

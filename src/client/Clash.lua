@@ -701,16 +701,17 @@ local function endScreen(view, data)
 		})
 		pop(soClose, 1.8)
 	end
-	if not won and data.consolation then
+	local paidPower = (won and data.winPower) or (not won and data.consolation)
+	if paidPower then
 		local paid = text(view.gui, {
-			Text = "+" .. Format.short(data.consolation) .. " KI",
+			Text = "+" .. Format.short(paidPower) .. " POWER",
 			AnchorPoint = Vector2.new(0.5, 0),
 			Position = UDim2.new(0.5, 0, 0, (compact and 104 or 140) + (compact and 54 or 84)),
 			Size = UDim2.fromOffset(260, compact and 26 or 36),
-			TextColor3 = Color3.fromRGB(110, 230, 255),
+			TextColor3 = Color3.fromRGB(255, 214, 80),
 			ZIndex = 8,
 		})
-		pop(paid, 1.8)
+		pop(paid, won and 3 or 1.8)
 	end
 	-- Bottom edge: one dark card.
 	local function bottomCard(width, height, edgeColor)

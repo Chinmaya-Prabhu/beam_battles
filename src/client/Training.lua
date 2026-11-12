@@ -1,5 +1,5 @@
 -- Training on the client (docs/TRAINING_PLAN.md): click or tap anywhere to train, "+N" pops, the Power /
--- Ki HUD with the bar to the next aura tier, and the station and gear prompts' text for this player.
+-- Cash and Power HUD with the bar to the next aura tier, and the station and gear prompts' text for this player.
 -- The server decides every number (server/Services/TrainingService.lua); the pops show the expected gain.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -26,7 +26,6 @@ local stamps = {} -- click times in the last second (local cap mirrors the serve
 TrainingClient.onRep = nil -- set by TrainPose: called on every accepted local click
 
 local GOLD = Color3.fromRGB(255, 214, 80)
-local KI = Color3.fromRGB(110, 230, 255)
 local BEAM = Color3.fromRGB(255, 170, 80)
 local INK = Color3.fromRGB(30, 16, 40)
 
@@ -99,8 +98,8 @@ local function buildHud()
 	gui.IgnoreGuiInset = true
 	gui.Parent = player:WaitForChild("PlayerGui")
 	hud.gui = gui
-	-- The player's numbers. Desktop: bottom-left, Cash big with Power, Ki and the per-tap multiplier under it and the bar to the next
-	-- aura under those. Phones: one line under Roblox's buttons (Cash, Power, Ki) with the aura bar under it,
+	-- The player's numbers. Desktop: bottom-left, Cash big with Power and the per-tap multiplier under it and the bar to the next
+	-- aura under those. Phones: one line under Roblox's buttons (Cash, Power) with the aura bar under it,
 	-- clear of the thumbstick. Tap a number for what it's for.
 	local compact = UIKit.compact()
 	local panel = Instance.new("Frame")
@@ -168,9 +167,8 @@ local function buildHud()
 		end)
 	end
 	local TIPS = {
-		cash = "CASH: your fighters earn it on your base's stands. Spend it on more stands and stations.",
+		cash = "CASH: your fighters earn it on your base's stands. Spend it on stands, stations and weights.",
 		power = "POWER: train to raise it. Guardians and bosses need it, and beating them opens new zones.",
-		ki = "KI: earned by training. Spend it on new weights at the Training Gear stall.",
 		smash_charged = "BEAM: how hard every tap hits. Gear, your follower and rebirths multiply it.",
 	}
 	-- One number with its icon; it grows with the number (never "2.3...").
@@ -256,7 +254,7 @@ local function buildHud()
 	end
 	local barY
 	if compact then
-		-- One dark pill holds Cash, Power and Ki; the aura bar sits under it.
+		-- One dark pill holds Cash and Power; the aura bar sits under it.
 		local back = Instance.new("Frame")
 		back.Name = "Back"
 		back.Position = UDim2.fromOffset(-8, -3)
@@ -271,7 +269,7 @@ local function buildHud()
 		back.Parent = panel
 		local row = line(0, 28, 14)
 		row.Position = UDim2.fromOffset(4, 0)
-		-- The pill (and the aura bar under it) is as wide as its numbers, never narrower, so Ki always fits.
+		-- The pill (and the aura bar under it) is as wide as its numbers, never narrower, so Power always fits.
 		local rowList = row:FindFirstChildOfClass("UIListLayout")
 		hud.fitBack = function()
 			-- (In design units: the cells' own widths and the 14 between them, never the scaled on-screen size.)
@@ -291,19 +289,17 @@ local function buildHud()
 		rowList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 			hud.fitBack()
 		end)
-		-- Three numbers only, a size smaller: on a phone this pill must leave the world visible. (The per-tap
+		-- Two numbers only, a size smaller: on a phone this pill must leave the world visible. (The per-tap
 		-- multiplier is desktop only; it lives in the gear window and the stations' plates too.)
 		hud.cash = stat(row, 1, "cash", Color3.fromRGB(130, 255, 140), 20)
 		hud.power = stat(row, 2, "power", GOLD, 20)
-		hud.ki = stat(row, 3, "ki", KI, 20)
 		hud.beam = Instance.new("TextLabel") -- (not shown)
 		barY = 34
 	else
 		hud.cash = stat(line(0, 50, 0), 1, "cash", Color3.fromRGB(130, 255, 140), 48)
 		local row = line(54, 32, 18)
 		hud.power = stat(row, 1, "power", GOLD, 30)
-		hud.ki = stat(row, 2, "ki", KI, 30)
-		hud.beam = stat(row, 3, "smash_charged", BEAM, 30)
+		hud.beam = stat(row, 2, "smash_charged", BEAM, 30)
 		barY = 94
 	end
 	-- The one bar: the next thing you can buy ("NEXT: STONE WEIGHTS 72%").
@@ -356,19 +352,31 @@ end
 local lastPower = -1
 local lastBeam
 
--- The nearest thing to buy: the next weights (Ki) or the next stand (cash), whichever is closest. Returns its
+-- The nearest thing to buy: the next weights or the next stand (both cash), whichever is closest. Returns its
 -- name and how far along it is (0..1+), or nil once there's nothing left.
-local function nextGoal(ki, gearTier)
+local function openZones()
+	local zones = {}
+	for name in string.gmatch(player:GetAttribute("Zones") or "", "[^,]+") do
+		zones[name] = true
+	end
+	return zones
+end
+
+local function nextGoal(cash, gearTier)
 	local name, progress
 	local rebirths = player:GetAttribute("Rebirths") or 0
 	local gear = Training.Gear[gearTier + 1]
-	if gearTier < Training.LadderTop and gear and Training.canBuyGear(gearTier, gearTier + 1, math.huge, rebirths) then
-		name, progress = gear.name, ki / gear.cost
+	if
+		gearTier < Training.LadderTop
+		and gear
+		and Training.canBuyGear(gearTier, gearTier + 1, math.huge, rebirths, openZones(), math.huge)
+	then
+		name, progress = gear.name, cash / gear.cost
 	end
 	local stand = (player:GetAttribute("Stands") or 0) + 1
 	local price = Config.Plot.standPrices[stand]
 	if price then
-		local p = (player:GetAttribute("Cash") or 0) / price
+		local p = cash / price
 		if not progress or p > progress then
 			name, progress = "STAND " .. stand, p
 		end
@@ -377,12 +385,11 @@ local function nextGoal(ki, gearTier)
 end
 local function refresh()
 	local power = player:GetAttribute("Power") or 0
-	local ki = player:GetAttribute("Ki") or 0
+	local cash = player:GetAttribute("Cash") or 0
 	local gearTier = player:GetAttribute("Gear") or 1
 	hud.power.Text = Format.short(power)
-	hud.ki.Text = Format.short(ki)
-	hud.cash.Text = Format.cash(player:GetAttribute("Cash") or 0)
-	local goal, goalAt = nextGoal(ki, gearTier)
+	hud.cash.Text = Format.cash(cash)
+	local goal, goalAt = nextGoal(cash, gearTier)
 	if goal then
 		-- The fill keeps its rounded ends, so it never draws narrower than its own height.
 		hud.fill.Size = UDim2.fromScale(math.clamp(goalAt, 0.13, 1), 1)
@@ -513,23 +520,15 @@ local function stationPromptText(prompt)
 		return
 	end
 	local owned = string.find("," .. (player:GetAttribute("Stations") or "") .. ",", "," .. key .. ",", 1, true)
-	local here = player:GetAttribute("TrainStation")
-	local model = prompt:FindFirstAncestorWhichIsA("Model")
-	while model and not model:GetAttribute("StationId") do
-		model = model.Parent and model.Parent:FindFirstAncestorWhichIsA("Model")
+	-- Owned: no prompt at all (stop on it and it trains by itself); the prompt only buys.
+	prompt.Enabled = not owned
+	if owned then
+		return
 	end
-	if here and model and model:GetAttribute("StationId") == here then
-		prompt.ActionText = "Stop"
-		prompt.ObjectText = def.name
-	elseif owned then
-		prompt.ActionText = "Train"
-		prompt.ObjectText = def.name .. "  ·  x" .. def.mult
-	else
-		prompt.ActionText = def.price > 0 and ("Buy  ·  " .. Format.cash(def.price)) or "Train"
-		local power = player:GetAttribute("Power") or 0
-		prompt.ObjectText = power < def.power and (def.name .. "  ·  needs " .. Format.short(def.power) .. " Power")
-			or (def.name .. "  ·  x" .. def.mult)
-	end
+	prompt.ActionText = def.price > 0 and ("Buy  ·  " .. Format.cash(def.price)) or "Train"
+	local power = player:GetAttribute("Power") or 0
+	prompt.ObjectText = power < def.power and (def.name .. "  ·  needs " .. Format.short(def.power) .. " Power")
+		or (def.name .. "  ·  x" .. def.mult)
 end
 
 local prompts = {}
@@ -550,10 +549,11 @@ local function refreshPrompts()
 	end
 end
 
--- Auto Train: the same +Power numbers as tapping, rising over the player twice a second (no combo: nobody tapped).
-local function autoPop()
+-- Auto Train and owned stations: the same +Power numbers as tapping, rising over the player twice a second
+-- (no combo: nobody tapped).
+local function autoPop(rate)
 	local view = workspace.CurrentCamera.ViewportSize
-	local amount = expected() * Products.AutoTrainRate * 0.5
+	local amount = expected() * rate * 0.5
 	local label = text(hud.gui, {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromOffset(view.X * 0.5 + math.random(-90, 90), view.Y * 0.45 + math.random(-30, 30)),
@@ -605,8 +605,8 @@ function TrainingClient.start()
 	for _, name in
 		{
 			"Power",
-			"Ki",
 			"Gear",
+			"Zones",
 			"Rebirths",
 			"Champion",
 			"ChampionMult",
@@ -620,7 +620,7 @@ function TrainingClient.start()
 	do
 		player:GetAttributeChangedSignal(name):Connect(refresh)
 	end
-	for _, name in { "Power", "Ki", "Gear", "Stations", "TrainStation" } do
+	for _, name in { "Power", "Gear", "Stations", "TrainStation" } do
 		player:GetAttributeChangedSignal(name):Connect(refreshPrompts)
 	end
 	for _, inst in workspace:GetDescendants() do
@@ -647,14 +647,16 @@ function TrainingClient.start()
 	task.spawn(function()
 		while true do
 			task.wait(0.5)
+			local rate = (player:GetAttribute("AutoTrainOn") and Products.AutoTrainRate or 0)
+				+ (player:GetAttribute("TrainStation") and Training.StationRate or 0)
 			if
-				player:GetAttribute("AutoTrainOn")
+				rate > 0
 				and not player:GetAttribute("InClash")
 				and os.clock() - lastClick > 1
 				and hud.gui
 				and hud.gui.Enabled
 			then
-				autoPop()
+				autoPop(rate)
 			end
 		end
 	end)
@@ -668,15 +670,23 @@ function TrainingClient.start()
 			end
 		end
 	end)
-	local leaving = false
+	-- A kid often walks onto a station still holding forward: moving only leaves once they have let go
+	-- after being seated (armed), so the station doesn't drop them the moment it seats them.
+	local leaving, armed = false, false
 	game:GetService("RunService").Heartbeat:Connect(function()
 		if not player:GetAttribute("TrainStation") then
-			leaving = false
+			leaving, armed = false, false
 			return
 		end
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		if humanoid and not leaving and (humanoid.MoveDirection.Magnitude > 0.1 or humanoid.Jump) then
+		if not humanoid or leaving then
+			return
+		end
+		local moving = humanoid.MoveDirection.Magnitude > 0.1
+		if not moving then
+			armed = true
+		elseif armed then
 			leaving = true
 			remote:FireServer("Leave")
 		end

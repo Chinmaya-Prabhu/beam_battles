@@ -51,7 +51,7 @@ function Rebirth.start()
 		TextSize = 19,
 		Position = UDim2.fromOffset(0, 132),
 		Size = UDim2.new(1, 0, 0, 24),
-		Text = "RESETS: POWER, KI, KI WEIGHTS, STATIONS",
+		Text = "RESETS: POWER, WEIGHTS, STATIONS",
 		TextColor3 = Color3.fromRGB(255, 120, 110),
 	})
 	UIKit.text(body, {
@@ -126,7 +126,7 @@ function Rebirth.start()
 				ready and "You're strong enough to be reborn! "
 				or ("You beat every zone! Reach " .. Format.short(cost) .. " Power to rebirth. ")
 			)
-				.. "Rebirth starts your Power and Ki over, but every click trains harder forever"
+				.. "Rebirth starts your Power over, but every click trains harder forever"
 				.. (unlockText(done + 1) ~= "" and (", and it " .. string.lower(unlockText(done + 1)) .. ".") or ".")
 				.. "\nYour fighters, base, cash and zones all stay.",
 			TextYAlignment = Enum.TextYAlignment.Top,

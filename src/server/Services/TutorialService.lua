@@ -7,7 +7,7 @@
 -- Fighter first: a new player wins a fighter within a minute, and everything else is taught after that.
 -- Order: 1 intro swoop (client) · 4 walk to the personal drop (Luffi, TUTORIAL_FIGHTER) · 5 win the clash ·
 -- 6 take it home · 7 collect the pad · 2 click to train (gift weights at 50) · 3 click at the base's punching
--- post (x2) to 1K (first aura) · 10 buy Stone Weights at the gear shop · then done (+500 Ki, goals appear). The numbers are saved, so
+-- post (x2) to 1K (first aura) · 10 buy Stone Weights at the gear shop · then done (+$2K, goals appear). The numbers are saved, so
 -- they keep their old meaning. A save from the old order (training first) goes 3 -> 4 and skips 2-3 after 7.
 -- (Stealing isn't taught: players find it at other bases. Locking is taught the first time someone steals from
 -- them (PlotService). Steps 8 and 9 are gone; a save on either moves on to 10.)
@@ -21,6 +21,7 @@ local Config = require(Shared.Config)
 local Goals = require(Shared.Goals)
 local Training = require(Shared.Training)
 local Net = require(Shared.Net)
+local Format = require(Shared.Format)
 local GymKit = require(script.Parent.Parent.Zones.GymKit)
 local Funnel = require(script.Parent.Parent.Funnel)
 
@@ -41,7 +42,7 @@ local START_POWER = Config.Push.botPower.Tutorial -- an even first fight: at 0 P
 
 local TEXT = {
 	[2] = "CLICK ANYWHERE TO TRAIN!",
-	[3] = "GO TO THE PUNCHING POST!", -- (its own prompt shows the key, or the tap on a phone)
+	[3] = "STAND AT THE PUNCHING POST!", -- (it seats you and trains by itself)
 	[4] = "A FIGHTER DROPPED! STAND ON THE BLUE PAD",
 	[5] = "TAP FAST TO PUSH THE BEAM!",
 	[6] = "TAKE YOUR FIGHTER HOME AND PUT IT ON A STAND!",
@@ -104,10 +105,7 @@ local function fillGoals(data)
 end
 
 local function reward(player, data, g)
-	if g.ki then
-		data.ki += g.ki
-		player:SetAttribute("Ki", data.ki)
-	elseif g.cash then
+	if g.cash then
 		Plots.addCash(player, g.cash)
 	elseif g.boost then
 		data.boostUntil.PowerBoost = math.max(data.boostUntil.PowerBoost or 0, os.time()) + g.boost * 60
@@ -228,13 +226,11 @@ local function enter(player, step)
 			task.defer(setStep, player, DONE)
 			return
 		end
-		-- Enough Ki for them, so the first shop visit always ends in a purchase.
+		-- Enough cash for them, so the first shop visit always ends in a purchase.
 		local cost = Training.Gear[FIRST_WEIGHTS].cost
-		if data.ki < cost then
-			banner(player, "GIFT! +" .. (cost - data.ki) .. " KI", GOLD)
-			data.ki = cost
-			player:SetAttribute("Ki", data.ki)
-			Data.changed(player)
+		if data.cash < cost then
+			banner(player, "GIFT! +" .. Format.cash(cost - data.cash), GOLD)
+			Plots.addCash(player, cost - data.cash)
 		end
 		-- The nearest stall that sells them.
 		local root = rootOf(player)
@@ -266,9 +262,8 @@ function setStep(player, step)
 	data.ftue = step
 	Data.changed(player)
 	if step == DONE then
-		data.ki += 500
-		player:SetAttribute("Ki", data.ki)
-		banner(player, "YOU'RE READY! +500 KI", GOLD)
+		Plots.addCash(player, 2000)
+		banner(player, "YOU'RE READY! +" .. Format.cash(2000), GOLD)
 		FX:FireClient(player, "FtueDone", {})
 	end
 	enter(player, step)
@@ -304,7 +299,7 @@ local function tick(player)
 	elseif step == 3 and data.power < AURA_POWER then
 		-- Once on the post: no target, and the coach explains it trains by itself.
 		local seated = player:GetAttribute("TrainStation") ~= nil -- the post, or any station they chose
-		local text = seated and "CLICK TO PUNCH! x2 HERE · REACH 1K POWER" or TEXT[3]
+		local text = seated and "IT TRAINS BY ITSELF! TAP TO GO FASTER" or TEXT[3]
 		if player:GetAttribute("FtueText") ~= text then
 			player:SetAttribute("FtueText", text)
 			if seated then

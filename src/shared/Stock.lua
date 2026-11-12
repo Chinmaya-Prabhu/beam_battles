@@ -1,5 +1,5 @@
 -- The gear stalls' rotating stock (docs/SHOP_RESEARCH.md): every Stock.Period seconds each player's stalls
--- restock with Stock.Slots weights rolled from the whole Ki ladder, rarer weights less often. The player's
+-- restock with Stock.Slots weights rolled from the whole cash ladder, rarer weights less often. The player's
 -- next tier is always in stock so progression never waits on luck; the rolled slots let a lucky player
 -- skip ahead. The roll is deterministic (user id, period, restock count) so the client shows exactly
 -- what the server will sell. "Restock now" (a Robux product) bumps the restock count.

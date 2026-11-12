@@ -1,11 +1,11 @@
 -- Player progress saved to a DataStore (docs/WORLD_PLAN.md §7): zones unlocked, Dojo Ladder rungs cleared,
--- bosses beaten, and the training ladder (docs/TRAINING_PLAN.md): Power, Ki, gear tier, owned stations and
+-- bosses beaten, and the training ladder (docs/TRAINING_PLAN.md): Power, gear tier, owned stations and
 -- rebirths. Cash, fighters and plots join when the economy lands.
 -- Loads on join (with retries); saves on leave, on shutdown and every AUTOSAVE seconds when changed.
 -- If the store can't be reached (e.g. Studio without API access), the player plays on an in-memory profile
 -- that is never written back, so a bad load can never wipe a real save.
 -- The client reads progress from player attributes: Zones ("Blossom,Ninja"), Ladder_<Zone>, Boss_<Zone>,
--- Power, Ki, Gear, Stations ("PunchPost,Bench"), Rebirths, and Champion / ChampionMutation /
+-- Power, Gear, Stations ("PunchPost,Bench"), Rebirths, and Champion / ChampionMutation /
 -- ChampionMult for the equipped fighter, Cash, Stands and Plot (the plot index this session).
 local DataStoreService = game:GetService("DataStoreService")
 local Players = game:GetService("Players")
@@ -44,7 +44,7 @@ local function default()
 		ladder = {},
 		bosses = {},
 		power = 0,
-		ki = 0,
+		ki = 0, -- (unused: weights cost cash now)
 		gear = 1,
 		stations = { PunchPost = true },
 		rebirths = 0,
@@ -112,7 +112,6 @@ local function publish(player, data)
 	table.sort(owned)
 	player:SetAttribute("Stations", table.concat(owned, ","))
 	player:SetAttribute("Power", data.power)
-	player:SetAttribute("Ki", data.ki)
 	player:SetAttribute("Gear", data.gear)
 	player:SetAttribute("Rebirths", data.rebirths)
 	player:SetAttribute("RebirthSeen", data.rebirthSeen or 0) -- client/Rebirth.lua: the unlock card shown
@@ -236,7 +235,7 @@ function DataService.saveNow(player)
 end
 
 -- Marks the save dirty without republishing every attribute (for values that change many times a
--- second, like Power and Ki, whose attributes the caller sets itself).
+-- second, like Power, whose attributes the caller sets itself).
 function DataService.touch(player)
 	local profile = profiles[player]
 	if profile then

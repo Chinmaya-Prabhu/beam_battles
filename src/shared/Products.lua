@@ -28,7 +28,7 @@ Products.Passes = {
 		id = 2053127884,
 		price = 249,
 		name = "2x Power",
-		desc = "Every rep gives double Power and Ki",
+		desc = "Every rep gives double Power",
 	},
 	{
 		key = "AutoTrain",
@@ -155,7 +155,7 @@ Products.Items = {
 		id = 3722149139,
 		price = 49,
 		name = "2x Training",
-		desc = "Double Power and Ki for 15 min",
+		desc = "Double Power for 15 min",
 		minutes = 15,
 	},
 	{

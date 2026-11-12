@@ -4,12 +4,12 @@
 --     (tools/sim/moments.py placed them in the quiet stretches), and the HUD keeps telling players so,
 --   * the daily streak: one claim per UTC day; claiming on consecutive days climbs to day 7 (a Mythic
 --     fighter), a missed day starts again at day 1, after day 7 it repeats day 7.
--- Amounts scale with the player: `reps` is that many reps at their current rate (Ki), `seconds` that much of
+-- Amounts scale with the player: `reps` is that many reps at their current rate (Power), `seconds` that much of
 -- their stands' income (Cash); `floor` is the least it pays. Pure data and maths for tests.
 local Rewards = {}
 
 Rewards.Gifts = {
-	{ min = 3, kind = "ki", reps = 150, floor = 500 },
+	{ min = 3, kind = "power", reps = 150, floor = 500 },
 	{ min = 8, kind = "cash", seconds = 180, floor = 20000 },
 	{ min = 15, kind = "fighter", rarity = "Rare" },
 	{ min = 25, kind = "boost", minutes = 10 },
@@ -22,11 +22,11 @@ Rewards.Gifts = {
 -- for them: Epic, then Legendary, then Mythic.
 Rewards.Daily = {
 	{ kind = "cash", seconds = 300, floor = 50000 },
-	{ kind = "ki", reps = 300, floor = 2000 },
+	{ kind = "power", reps = 300, floor = 2000 },
 	{ kind = "fighter", rarity = "Epic", key = "Cell" },
 	{ kind = "cash", seconds = 900, floor = 200000 },
 	{ kind = "fighter", rarity = "Legendary", key = "Mahoraga" },
-	{ kind = "ki", reps = 1000, floor = 20000 },
+	{ kind = "power", reps = 1000, floor = 20000 },
 	{ kind = "fighter", rarity = "Mythic", key = "GoldenFrieza" },
 }
 
@@ -62,7 +62,7 @@ end
 
 -- What a reward pays, for players earning `perRep` per rep and `income` cash per second.
 function Rewards.amount(reward, perRep, income)
-	if reward.kind == "ki" then
+	if reward.kind == "power" or reward.kind == "ki" then -- ("ki": old LiveOps and code rewards)
 		return math.max(reward.floor, math.floor(reward.reps * perRep))
 	elseif reward.kind == "cash" then
 		return math.max(reward.floor, math.floor(reward.seconds * income))

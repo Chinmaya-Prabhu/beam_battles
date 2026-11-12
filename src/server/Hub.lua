@@ -537,31 +537,6 @@ end
 local function portal(root)
 	local m = K.Play.dropPortal(root, CFrame.new(0, I.portal.height, 0), I.portal.radius, set)
 	m.Name = "Portal"
-	-- Countdown board hanging under the portal; the client writes the time (Ambience).
-	local anchor = K.Core.part(
-		m,
-		CFrame.new(0, I.portal.height - 10, 0),
-		Vector3.one,
-		C.gold,
-		{ trans = 1, collide = false, name = "CountdownAnchor" }
-	)
-	local board = Instance.new("BillboardGui")
-	board.Name = "Countdown"
-	board.Size = UDim2.fromScale(40, 10)
-	board.LightInfluence = 0
-	board.MaxDistance = 1000
-	board.Parent = anchor
-	local text = Instance.new("TextLabel")
-	text.Name = "Text"
-	text.Size = UDim2.fromScale(1, 1)
-	text.BackgroundTransparency = 1
-	text.Font = Enum.Font.LuckiestGuy
-	text.TextScaled = true
-	text.TextColor3 = Color3.new(1, 1, 1)
-	text.TextStrokeTransparency = 0
-	text.TextStrokeColor3 = Color3.fromRGB(60, 20, 90)
-	text.Text = "NEXT DROP"
-	text.Parent = board
 	return m
 end
 

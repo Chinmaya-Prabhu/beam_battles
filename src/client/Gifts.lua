@@ -76,8 +76,8 @@ end
 
 -- What a reward reads as on its card.
 local function describe(r)
-	if r.kind == "ki" then
-		return "Ki", "ki"
+	if r.kind == "power" or r.kind == "ki" then
+		return "Power", "power"
 	elseif r.kind == "cash" then
 		return "Cash", "cash"
 	elseif r.kind == "boost" then

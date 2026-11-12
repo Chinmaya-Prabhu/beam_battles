@@ -1,16 +1,17 @@
 -- The training ladder on the server (docs/TRAINING_PLAN.md). Server-authoritative:
 --   * clients send "Reps" batches of clicks on the Train remote; the server accepts at most
---     Training.MaxCps per second, ignores players in a clash, and adds Power and Ki at the rate of their
+--     Training.MaxCps per second, ignores players in a clash, and adds Power at the rate of their
 --     gear x station x champion x rebirth multipliers,
---   * station prompts: an owned station seats the player on its spot (root anchored) until they move or
---     jump (client sends "Leave"); their clicks then train at the station's multiplier; an unowned one is
---     bought if they have the Power and the Ki,
---   * gear stall prompts buy the next gear tier,
+--   * stations: walking onto an owned one seats the player on its spot (root anchored) and it trains by
+--     itself (Training.StationRate reps a second at its multiplier) until they move or jump (client sends
+--     "Leave"); they must step off it before it seats them again. An unowned one's prompt buys it with Cash,
+--   * gear stalls sell weights for Cash (only in zones the player has opened),
+--   * a won fighter also pays Power (Training.WinReps by rarity at the best owned station's rate),
 --   * the body grows with Power (R15 scale values), and crossing an aura tier fires FX "PowerUp" to
 --     everyone with a server banner,
 --   * every fighter a player wins is saved; the best one (by Training.championMult) is equipped as their
 --     Champion automatically, follows them (client/Champion.lua) and multiplies their training.
--- Player attributes it keeps live: Power, Ki (also saved via DataService), Training (the pose style while
+-- Player attributes it keeps live: Power (also saved via DataService), Training (the pose style while
 -- reps are coming in) and TrainStation (the station copy's id while seated).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -79,6 +80,7 @@ local function leaveStation(player)
 	if occupant[s.station] == player then
 		occupant[s.station] = nil
 	end
+	s.left = s.station -- (no auto seat there again until they step off it)
 	s.station = nil
 	player:SetAttribute("TrainStation", nil)
 	local root = rootOf(player)
@@ -93,8 +95,7 @@ local function seat(player, station)
 		return
 	end
 	if occupant[station] and occupant[station] ~= player then
-		banner(player, "IN USE · CLICK ANYWHERE TO TRAIN", GOLD)
-		return
+		return false
 	end
 	leaveStation(player)
 	local s = state[player]
@@ -104,6 +105,7 @@ local function seat(player, station)
 	root.Anchored = true
 	root.CFrame = station.spot + Vector3.new(0, height, 0)
 	player:SetAttribute("TrainStation", station.id)
+	return true
 end
 
 -- ------------------------------------------------------------------ champion
@@ -310,15 +312,13 @@ local function openZones(player, data)
 	end
 end
 
--- Adds Power and Ki, updates the live attributes and fires the tier-up moment.
+-- Adds Power, updates the live attributes and fires the tier-up moment.
 local function grant(player, data, amount)
 	local before = Training.aura(data.power)
 	data.power += amount
-	data.ki += amount
 	data.stats.power = (data.stats.power or 0) + amount -- lifetime, for the leaderboard
 	Data.touch(player)
 	player:SetAttribute("Power", data.power)
-	player:SetAttribute("Ki", data.ki)
 	local leaderstats = player:FindFirstChild("leaderstats")
 	if leaderstats then
 		leaderstats.Power.Value = math.floor(math.min(data.power, 9e18))
@@ -378,7 +378,7 @@ local function gain(player, reps)
 	player:SetAttribute("LimitCount", s.limit)
 end
 
--- Power (and Ki) one click anywhere gives this player right now (rewards scale with it).
+-- Power one click anywhere gives this player right now (rewards scale with it).
 function TrainingService.perRep(player)
 	local data = Data.get(player)
 	if not data then
@@ -387,6 +387,33 @@ function TrainingService.perRep(player)
 	local boost = player:GetAttribute("TrainBoost") or 1
 	local premium = player:GetAttribute("PremiumGear")
 	return Training.perRep(data.gear, 1, fighterMult(data.fighters[data.champion]), data.rebirths, boost, premium)
+end
+
+-- Power for winning a fighter of `rarity`: Training.WinReps at the best owned station's rate.
+function TrainingService.winPower(player, rarity)
+	local data = Data.get(player)
+	if not data then
+		return 0
+	end
+	local boost = player:GetAttribute("TrainBoost") or 1
+	local premium = player:GetAttribute("PremiumGear")
+	local per = Training.perRep(
+		data.gear,
+		Training.bestStationMult(data.stations),
+		fighterMult(data.fighters[data.champion]),
+		data.rebirths,
+		boost,
+		premium
+	)
+	return per * (Training.WinReps[rarity] or Training.WinReps.Common)
+end
+
+-- Adds Power from a reward (gifts, dailies, codes, goals): `reps` at the player's click rate, at least `floor`.
+function TrainingService.givePower(player, amount)
+	local data = Data.get(player)
+	if data and amount > 0 then
+		grant(player, data, amount)
+	end
 end
 
 -- Reps from Auto Train (MonetizationService): trained like clicks, skipped mid-clash.
@@ -411,8 +438,7 @@ local function onStationPrompt(station, player)
 		return
 	end
 	if data.stations[station.key] then
-		seat(player, station)
-		return
+		return -- owned: it seats you by itself when you walk onto it (the prompt is only for buying)
 	end
 	local def = Training.StationByKey[station.key]
 	local ok, why = Training.canBuyStation(station.key, data.power, data.cash, false)
@@ -427,31 +453,34 @@ local function onStationPrompt(station, player)
 	data.cash -= def.price
 	data.stations[station.key] = true
 	Data.changed(player)
-	banner(player, string.upper(def.name) .. " UNLOCKED!", GREEN)
+	banner(player, string.upper(def.name) .. " UNLOCKED! STAND ON IT TO TRAIN", GREEN)
 	seat(player, station)
 end
 
 -- Buying weights at a stall (Train remote "BuyGear" with the tier, from the stall's window,
--- client/GearShop.lua). Every weight is always for sale (no stock): Ki and the rebirth gate decide.
+-- client/GearShop.lua). Every weight is always for sale (no stock): Cash, the zone and the rebirth gate decide.
 local function buyGear(player, tier)
 	local data = Data.get(player)
 	if not data then
 		return
 	end
 	local g = Training.Gear[tier]
-	local ok, why = Training.canBuyGear(data.gear, tier, data.ki, data.rebirths)
+	local ok, why = Training.canBuyGear(data.gear, tier, data.cash, data.rebirths, data.zones, data.power)
 	if not ok then
-		banner(player, why == "NOT ENOUGH KI" and ("NEEDS " .. Format.short(g.cost) .. " KI") or why, RED)
+		local text = why == "NOT ENOUGH CASH" and ("NEEDS " .. Format.cash(g.cost))
+			or why == "NEEDS POWER" and ("NEEDS " .. Format.short(g.power) .. " POWER")
+			or why
+		banner(player, text, RED)
 		return
 	end
-	data.ki -= g.cost
+	data.cash -= g.cost
 	data.gear = tier
 	Data.changed(player)
 	banner(player, string.upper(g.name) .. " EQUIPPED! x" .. g.mult, GREEN)
 	FX:FireAllClients("GearUp", { userId = player.UserId, tier = tier })
 end
 
--- Rebirth (Train remote "Rebirth"): needs Training.rebirthCost(rebirths) Power. Resets Power, Ki, gear,
+-- Rebirth (Train remote "Rebirth"): needs Training.rebirthCost(rebirths) Power. Resets Power, gear,
 -- stations and the body; adds a rebirth (a permanent +50% training each).
 local function rebirth(player)
 	local data = Data.get(player)
@@ -466,7 +495,7 @@ local function rebirth(player)
 	leaveStation(player)
 	data.rebirths += 1
 	Social.award(player, "Rebirth")
-	data.power, data.ki, data.gear = 0, 0, 1
+	data.power, data.gear = 0, 1
 	data.stations = { PunchPost = true }
 	Data.changed(player)
 	Data.saveNow(player)
@@ -508,7 +537,7 @@ local function setup(player)
 		task.spawn(applyBody, player)
 	end
 	-- Studio only: set the player attribute DebugGrant from the server command bar to add that much
-	-- Power and Ki (to check aura tiers, gear and stations without clicking for hours).
+	-- Power (to check aura tiers, gear and stations without clicking for hours).
 	if game:GetService("RunService"):IsStudio() then
 		-- And DebugFighter = "Goku" or "Goku:Rainbow" wins that fighter; "ALLNEW" grants every new one.
 		player:GetAttributeChangedSignal("DebugFighter"):Connect(function()
@@ -530,6 +559,17 @@ local function setup(player)
 				TrainingService.addFighter(player, key, mutation ~= "" and mutation or "Normal", "carry")
 			end
 		end)
+		-- DebugWin = "AllMightMode" prints the Power a win of that fighter pays (ClashService.onWin), without a fight.
+		player:GetAttributeChangedSignal("DebugWin"):Connect(function()
+			local key = player:GetAttribute("DebugWin")
+			if type(key) == "string" and key ~= "" and Clash.onWin then
+				player:SetAttribute("DebugWin", nil)
+				Data.discardSession(player)
+				local before = player:GetAttribute("Power") or 0
+				local paid = Clash.onWin(player, key)
+				print("DebugWin", key, paid, (player:GetAttribute("Power") or 0) - before)
+			end
+		end)
 		player:GetAttributeChangedSignal("DebugGrant"):Connect(function()
 			local amount = tonumber(player:GetAttribute("DebugGrant"))
 			if amount and amount > 0 then
@@ -546,17 +586,26 @@ end
 
 function TrainingService.start(DataService, ClashService)
 	Data, Clash = DataService, ClashService
-	-- A loss still pays: about 30 taps' worth of Ki.
+	-- A loss still pays: about 30 taps' worth of Power.
 	ClashService.onLoss = function(player)
 		local data = Data.get(player)
 		if not data then
 			return nil
 		end
-		local ki = math.floor(TrainingService.perRep(player) * 30)
-		data.ki += ki
-		player:SetAttribute("Ki", data.ki)
-		Data.touch(player)
-		return ki
+		local power = math.floor(TrainingService.perRep(player) * 30)
+		grant(player, data, power)
+		return power
+	end
+	-- A win pays Power by the fighter's rarity (shown on the win card), on top of the fighter.
+	ClashService.onWin = function(player, key)
+		local data = Data.get(player)
+		local fighter = Fighters.ByKey[key]
+		if not data or not fighter then
+			return nil
+		end
+		local power = math.floor(TrainingService.winPower(player, fighter.rarity))
+		grant(player, data, power)
+		return power
 	end
 	ClashService.onPrize = function(player, key, mutation)
 		TrainingService.addFighter(player, key, mutation, "carry") -- a win is carried home
@@ -641,6 +690,65 @@ function TrainingService.start(DataService, ClashService)
 					local root = rootOf(player)
 					if not root or (root.Position - s.station.spot.Position).Magnitude > 8 then
 						leaveStation(player)
+					end
+				end
+			end
+		end
+	end)
+
+	-- Owned stations train by themselves: stop on one and it seats you and trains (no prompt, no clicks).
+	-- Clicks elsewhere stay manual, so the Auto Train pass still matters (anywhere, and on top of this).
+	local SEAT_RANGE, CLEAR_RANGE = 4, 7
+	local function flat(a, b)
+		return Vector3.new(a.X - b.X, 0, a.Z - b.Z).Magnitude
+	end
+	task.spawn(function()
+		local last = os.clock()
+		while true do
+			task.wait(0.25)
+			local now = os.clock()
+			local dt = math.min(now - last, 1)
+			last = now
+			for player, s in state do
+				local data = Data.get(player)
+				local root, humanoid = rootOf(player)
+				if not data or not root or not humanoid or humanoid.Health <= 0 then
+					continue
+				end
+				if s.left and (s.left == s.station or flat(root.Position, s.left.spot.Position) > CLEAR_RANGE) then
+					s.left = nil
+				end
+				if s.station then
+					if Clash.isBusy(player) then
+						leaveStation(player)
+						continue
+					end
+					s.auto = (s.auto or 0) + Training.StationRate * dt
+					local reps = math.floor(s.auto)
+					if reps > 0 then
+						s.auto -= reps
+						gain(player, reps)
+					end
+					continue
+				end
+				s.auto = 0
+				local v = root.AssemblyLinearVelocity
+				if Vector3.new(v.X, 0, v.Z).Magnitude > 3 or Clash.isBusy(player) then
+					continue -- (only once they stop on it)
+				end
+				for _, station in GymKit.List do
+					if
+						station ~= s.left
+						and data.stations[station.key]
+						and not occupant[station]
+						and flat(root.Position, station.spot.Position) < SEAT_RANGE
+						and math.abs(root.Position.Y - station.spot.Position.Y) < 8
+					then
+						local plot = station.model:GetAttribute("Plot")
+						if not plot or plot == player:GetAttribute("Plot") then
+							seat(player, station)
+							break
+						end
 					end
 				end
 			end

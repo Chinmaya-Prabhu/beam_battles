@@ -1,7 +1,7 @@
 -- Codes (docs/CONTENT_CALENDAR.md): typed into the CODES window (client/Codes.lua) for free rewards, once per
 -- player. Built-in codes ship with the game; new ones are added live through the LiveOps remote config
 -- (`codes`, tools/liveops/push.py code ...) without republishing, and a remote code with the same name
--- overrides a built-in one. Rewards use shared/Rewards.lua's kinds, so Ki and Cash scale with the player
+-- overrides a built-in one. Rewards use shared/Rewards.lua's kinds, so Power and Cash scale with the player
 -- (`reps` of their training, `seconds` of their stands' income) and a code stays worth typing late game.
 -- Pure data and maths (tests run it outside Roblox).
 local Codes = {}
@@ -11,7 +11,7 @@ Codes.Builtin = {
 	RELEASE = {
 		rewards = {
 			{ kind = "cash", seconds = 600, floor = 100000 },
-			{ kind = "ki", reps = 600, floor = 3000 },
+			{ kind = "power", reps = 600, floor = 3000 },
 		},
 	},
 	BEAMBATTLE = {
@@ -37,7 +37,7 @@ local function clean(entry)
 	end
 	local rewards = {}
 	for _, r in entry.rewards do
-		if type(r) == "table" and (r.kind == "cash" or r.kind == "ki" or r.kind == "boost" or r.kind == "fighter") then
+		if type(r) == "table" and (r.kind == "cash" or r.kind == "power" or r.kind == "ki" or r.kind == "boost" or r.kind == "fighter") then
 			table.insert(rewards, r)
 		end
 	end

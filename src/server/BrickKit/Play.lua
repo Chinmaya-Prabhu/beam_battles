@@ -215,6 +215,32 @@ function Play.dropPortal(parent, cf, radius, set)
 		{ color = C.white, size = 0.6, rate = 14, life = { 1.5, 2.5 }, speed = 2, spread = 180, lightEmission = 1 }
 	)
 	Core.light(swirl, set.accent, 40, 2)
+	-- Countdown board hanging under the portal; the client writes the time (Ambience, tag "DropCountdown").
+	local anchor = Core.part(
+		m,
+		cf * CFrame.new(0, -10, 0),
+		Vector3.one,
+		C.gold,
+		{ trans = 1, collide = false, name = "CountdownAnchor" }
+	)
+	Core.tag(anchor, "DropCountdown")
+	local board = Instance.new("BillboardGui")
+	board.Name = "Countdown"
+	board.Size = UDim2.fromScale(40, 10)
+	board.LightInfluence = 0
+	board.MaxDistance = 1000
+	board.Parent = anchor
+	local text = Instance.new("TextLabel")
+	text.Name = "Text"
+	text.Size = UDim2.fromScale(1, 1)
+	text.BackgroundTransparency = 1
+	text.Font = Enum.Font.LuckiestGuy
+	text.TextScaled = true
+	text.TextColor3 = Color3.new(1, 1, 1)
+	text.TextStrokeTransparency = 0
+	text.TextStrokeColor3 = Color3.fromRGB(60, 20, 90)
+	text.Text = "NEXT DROP"
+	text.Parent = board
 	return m
 end
 

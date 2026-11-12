@@ -32,15 +32,20 @@ function Ambience.start()
 				p.CFrame = spin * offset
 			end
 		end
-		local map = workspace:FindFirstChild("Map")
-		local anchor = map and map:FindFirstChild("Portal") and map.Portal:FindFirstChild("CountdownAnchor")
 		local nextDrop = ReplicatedStorage:GetAttribute("NextDrop")
-		if anchor and nextDrop then
-			local label = anchor.Countdown.Text
+		if nextDrop then
 			local left = math.max(0, math.ceil(nextDrop - workspace:GetServerTimeNow()))
-			label.Text = left <= 3 and ("DROP IN " .. left .. "!")
-				or string.format("NEXT DROP  %d:%02d", left // 60, left % 60)
-			label.TextColor3 = left <= 3 and Color3.fromRGB(255, 230, 90) or Color3.new(1, 1, 1)
+			local soon = left <= 3
+			local line = soon and ("DROP IN " .. left .. "!") or string.format("NEXT DROP  %d:%02d", left // 60, left % 60)
+			-- Every portal's board (the hub's and each zone's).
+			for _, anchor in CollectionService:GetTagged("DropCountdown") do
+				local board = anchor:FindFirstChild("Countdown")
+				local label = board and board:FindFirstChild("Text")
+				if label then
+					label.Text = line
+					label.TextColor3 = soon and Color3.fromRGB(255, 230, 90) or Color3.new(1, 1, 1)
+				end
+			end
 		end
 	end)
 end
