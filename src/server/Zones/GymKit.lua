@@ -183,28 +183,50 @@ local function rivets(m, cf, x, y, z, half, color)
 	end
 end
 
--- A training post: a wide studded foot, then the pad in three wraps (a short one, a tall middle one with the
--- target, a short one), each band a plate one stud wider all round so a ring of studs shows on every tier,
--- and a studded cap with a knob.
+-- A training post: a kung fu wooden dummy. A slim round trunk held between two studded rails on a brick
+-- frame behind it, two arms reaching out at shoulder height and one bent leg low down, bands round the
+-- trunk and a small target at the chest. (A post you punch should be slim: the old padded column was a
+-- block.)
+local function limb(m, cf, from, dir, length, diameter, color)
+	local d = dir.Unit
+	local centre = from + d * (length / 2)
+	Core.part(
+		m,
+		cf * (CFrame.lookAt(centre, centre + d) * CFrame.Angles(0, math.pi / 2, 0)), -- (a cylinder's axis is X)
+		Vector3.new(length, diameter, diameter),
+		color,
+		{ shape = Enum.PartType.Cylinder, smooth = true }
+	)
+end
+
 local function post(m, cf, look)
 	local z = 1.6
-	local y = PLATE
-	Core.centered(m, cf, 0, y, z, 4, BRICK, 4, look.foot) -- the foot (its studs ring the pad)
-	rivets(m, cf, 0, y + BRICK, z, 1.5, look.cap)
-	y += BRICK
-	for k, bricks in { 1, 2, 1 } do
-		local h = BRICK * bricks
-		Core.centered(m, cf, 0, y, z, 3, h, 3, look.pad)
-		if bricks == 2 then
-			target(m, cf, 0, y + h / 2, z - 1.5, 2)
-		end
-		y += h
-		Core.centered(m, cf, 0, y, z, 4, PLATE, 4, k == 3 and look.cap or look.bands) -- a band (the top one is the cap)
-		y += PLATE
+	local trunkTop = PLATE + BRICK * 6
+	-- The frame: a studded base plate, two posts behind the trunk and two rails through them.
+	Core.centered(m, cf, 0, 0, z + 0.7, 7, PLATE, 2, look.foot)
+	for _, x in { -2.8, 2.8 } do
+		Core.centered(m, cf, x, PLATE, z + 0.9, 1, trunkTop + 0.4 - PLATE, 1, look.pole)
+		Core.roundPlate(m, cf, x, trunkTop + 0.4, z + 0.9, look.cap, 1)
 	end
-	Core.centered(m, cf, 0, y, z, 2, PLATE, 2, look.bands) -- the knob
-	Core.roundPlate(m, cf, 0, y + PLATE, z, look.cap, 1.2)
-	return cf * CFrame.new(0, PLATE, -1.6) * CFrame.Angles(0, math.pi, 0) -- facing the post (clear of the band lips)
+	for _, y in { PLATE + BRICK * 1.5, trunkTop - BRICK } do
+		Core.centered(m, cf, 0, y, z + 0.9, 6.6, PLATE * 1.5, 1, look.pole) -- a rail (studs on top)
+	end
+	-- The trunk: slim and round, banded at the top and bottom.
+	Core.cyl(m, cf, 0, PLATE, z, 1.5, trunkTop - PLATE, look.pad)
+	for _, y in { PLATE + 0.5, trunkTop - 0.5 } do
+		Core.cyl(m, cf, 0, y, z, 1.6, 0.25, look.bands)
+	end
+	Core.roundPlate(m, cf, 0, trunkTop, z, look.cap, 1.2) -- the cap
+	-- The arms: two at shoulder height, angled out to the sides, one a little higher; the leg: bent down.
+	local front = z - 0.7
+	limb(m, cf, Vector3.new(-0.35, 4.9, front + 0.1), Vector3.new(-0.45, 0.12, -1), 2.3, 0.38, look.pole)
+	limb(m, cf, Vector3.new(0.35, 4.6, front + 0.1), Vector3.new(0.45, 0.12, -1), 2.3, 0.38, look.pole)
+	limb(m, cf, Vector3.new(0, 3.6, front + 0.1), Vector3.new(0, 0, -1), 1.3, 0.38, look.pole) -- the middle arm
+	local knee = Vector3.new(0.3, 2.0, front - 0.9)
+	limb(m, cf, Vector3.new(0.15, 2.3, front + 0.1), knee - Vector3.new(0.15, 2.3, front + 0.1), 1.05, 0.45, look.pole)
+	limb(m, cf, knee, Vector3.new(0.15, -1, -0.15), 1.4, 0.45, look.pole)
+	target(m, cf, 0, 4.2, z - 0.72, 0.9)
+	return cf * CFrame.new(0, PLATE, -1.6) * CFrame.Angles(0, math.pi, 0) -- facing the dummy
 end
 
 -- A heavy bag under a brick gantry: two studded pillars on wide feet with brackets under a studded beam;
