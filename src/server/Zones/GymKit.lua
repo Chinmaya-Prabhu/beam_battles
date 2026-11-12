@@ -23,7 +23,6 @@ local Core = K.Core
 local BRICK, PLATE = Core.BRICK, Core.PLATE
 local SMOOTH = { smooth = true }
 local DECOR = { smooth = true, collide = false }
-local METAL = { material = Enum.Material.Metal }
 
 local function rgb(r, g, b)
 	return Color3.fromRGB(r, g, b)
@@ -122,11 +121,11 @@ end
 -- Every station is a punching post or a heavy bag (the training is always punching); each zone dresses
 -- them in its own materials. `look` colours: pole, pad, bands, cap, foot (post); frame, bag, bands (bag).
 local LOOKS = {
-	PunchPost = { pole = C.brown, pad = C.tan, bands = C.darkBrown, cap = C.darkGray, foot = C.gray },
+	PunchPost = { pole = C.brown, pad = rgb(186, 96, 48), bands = rgb(245, 228, 190), cap = C.darkGray, foot = C.gray },
 	Sandbag = { frame = C.darkBrown, bag = C.red, bands = C.black },
 	-- Blossom Academy: a gym's padded strike post and a blue boxing bag on a steel frame.
 	AcademyPost = { pole = STEEL, pad = rgb(60, 110, 210), bands = C.white, cap = STEEL_DARK, foot = STEEL_DARK },
-	AcademyBag = { frame = STEEL, bag = rgb(50, 90, 200), bands = C.white, metal = true },
+	AcademyBag = { frame = STEEL, bag = rgb(50, 90, 200), bands = C.white },
 	-- Ninja Village: a rope-bound makiwara and a straw bag under a bamboo beam.
 	NinjaPost = {
 		pole = rgb(120, 82, 50),
@@ -153,50 +152,112 @@ local LOOKS = {
 		cap = rgb(60, 60, 66),
 		foot = C.gray,
 	},
-	WalledBag = { frame = rgb(60, 60, 66), bag = rgb(110, 62, 36), bands = rgb(40, 40, 44), metal = true },
+	WalledBag = { frame = rgb(60, 60, 66), bag = rgb(110, 62, 36), bands = rgb(40, 40, 44) },
 }
 
--- A post with a padded striking face and banded wraps on a foot.
-local function post(m, cf, look)
-	Core.centered(m, cf, 0, PLATE, 1.6, 3, BRICK, 3, look.foot)
-	Core.cyl(m, cf, 0, PLATE + BRICK, 1.6, 1.4, BRICK * 5, look.pole)
-	Core.cyl(m, cf, 0, PLATE + 2.6, 1.6, 2.2, 3.4, look.pad)
-	for k = 0, 2 do
-		Core.cyl(m, cf, 0, PLATE + 3 + k * 1.15, 1.6, 2.3, 0.25, look.bands)
-	end
-	Core.cyl(m, cf, 0, PLATE + BRICK * 6, 1.6, 1.8, 0.4, look.cap)
-	return cf * CFrame.new(0, PLATE, -1.2) * CFrame.Angles(0, math.pi, 0) -- facing the post
-end
+-- Both are built like the rest of the world: studded bricks on the stud grid, the studs showing on every
+-- step (the foot around the column, the pad around the pole, the cap), a few round studs as rivets, and a
+-- red-and-white target where the fists land.
+local WHITE, TARGET_RED = rgb(245, 245, 245), rgb(220, 40, 40)
 
--- A heavy bag on a chain under a gantry; it swings only while someone punches it (client/TrainPose.lua).
-local function bag(m, cf, look)
-	local opts = look.metal and METAL or nil
-	for _, x in { -3.4, 3.4 } do
-		Core.centered(m, cf, x, PLATE, 2, 1, BRICK * 8, 1, look.frame, opts)
-		Core.centered(m, cf, x, PLATE, 2, 2, BRICK, 2, C.gray)
-	end
-	Core.centered(m, cf, 0, PLATE + BRICK * 8, 2, 8, BRICK, 1.2, look.frame, opts)
-	local hinge = cf * CFrame.new(0, PLATE + BRICK * 8, 2)
-	local b = Core.model(m, "Bag", hinge)
-	Core.part(b, hinge * CFrame.new(0, -1.1, 0), Vector3.new(0.2, 2.2, 0.2), C.darkGray, DECOR)
-	Core.part(
-		b,
-		hinge * CFrame.new(0, -4.6, 0) * CFrame.Angles(0, 0, math.pi / 2),
-		Vector3.new(4.6, 2.8, 2.8),
-		look.bag,
-		{ shape = Enum.PartType.Cylinder, smooth = true, collide = false }
-	)
-	for _, y in { -2.6, -6.6 } do
+-- A round target facing the trainee (-Z) at local (x, y, z): white, red and white rings, each a little proud
+-- of the last, so it reads at a glance as "hit here".
+local function target(m, cf, x, y, z, size)
+	for i, ring in { { size, WHITE }, { size * 0.68, TARGET_RED }, { size * 0.34, WHITE } } do
 		Core.part(
-			b,
-			hinge * CFrame.new(0, y, 0) * CFrame.Angles(0, 0, math.pi / 2),
-			Vector3.new(0.4, 2.9, 2.9),
-			look.bands,
+			m,
+			cf * CFrame.new(x, y, z - i * 0.06) * CFrame.Angles(0, math.pi / 2, 0),
+			Vector3.new(0.12, ring[1], ring[1]),
+			ring[2],
 			{ shape = Enum.PartType.Cylinder, smooth = true, collide = false }
 		)
 	end
+end
+
+-- Rivets: 1x1 round studs on a brick's top corners.
+local function rivets(m, cf, x, y, z, half, color)
+	for _, dx in { -half, half } do
+		for _, dz in { -half, half } do
+			Core.roundPlate(m, cf, x + dx, y, z + dz, color, 0.8)
+		end
+	end
+end
+
+-- A training post: a wide studded foot, then the pad in three wraps (a short one, a tall middle one with the
+-- target, a short one), each band a plate one stud wider all round so a ring of studs shows on every tier,
+-- and a studded cap with a knob.
+local function post(m, cf, look)
+	local z = 1.6
+	local y = PLATE
+	Core.centered(m, cf, 0, y, z, 4, BRICK, 4, look.foot) -- the foot (its studs ring the pad)
+	rivets(m, cf, 0, y + BRICK, z, 1.5, look.cap)
+	y += BRICK
+	for k, bricks in { 1, 2, 1 } do
+		local h = BRICK * bricks
+		Core.centered(m, cf, 0, y, z, 3, h, 3, look.pad)
+		if bricks == 2 then
+			target(m, cf, 0, y + h / 2, z - 1.5, 2)
+		end
+		y += h
+		Core.centered(m, cf, 0, y, z, 4, PLATE, 4, k == 3 and look.cap or look.bands) -- a band (the top one is the cap)
+		y += PLATE
+	end
+	Core.centered(m, cf, 0, y, z, 2, PLATE, 2, look.bands) -- the knob
+	Core.roundPlate(m, cf, 0, y + PLATE, z, look.cap, 1.2)
+	return cf * CFrame.new(0, PLATE, -1.6) * CFrame.Angles(0, math.pi, 0) -- facing the post (clear of the band lips)
+end
+
+-- A heavy bag under a brick gantry: two studded pillars on wide feet with brackets under a studded beam;
+-- the bag itself is a chunky brick barrel (a cross of bricks, round from the front) with studded band
+-- rings, a studded top cap on a short chain, the target on its face. It swings only while someone
+-- punches it (client/TrainPose.lua).
+local function bag(m, cf, look)
+	local top = PLATE + BRICK * 7
+	for _, x in { -3.4, 3.4 } do
+		Core.centered(m, cf, x, PLATE, 2, 3, BRICK, 3, look.frame) -- the foot
+		rivets(m, cf, x, PLATE + BRICK, 2, 1, look.bands)
+		Core.centered(m, cf, x, PLATE + BRICK, 2, 1.6, BRICK * 6, 1.6, look.frame) -- the pillar
+		Core.centered(m, cf, x - 1.3 * math.sign(x), top - BRICK, 2, 1, BRICK, 1.6, look.frame) -- bracket
+	end
+	Core.centered(m, cf, 0, top, 2, 9, BRICK, 2, look.frame) -- the beam (studded on top)
+	for _, x in { -3.4, 3.4 } do
+		Core.roundPlate(m, cf, x, top + BRICK, 2, look.bands, 1.2)
+	end
+	local hinge = cf * CFrame.new(0, top, 2)
+	local b = Core.model(m, "Bag", hinge)
+	local loose = { collide = false }
+	local looseSmooth = { collide = false, smooth = true }
+	-- The chain: three links, turned alternately.
+	for k = 0, 2 do
+		Core.part(
+			b,
+			hinge * CFrame.new(0, -0.25 - k * 0.4, 0) * CFrame.Angles(0, k % 2 * math.pi / 2, 0),
+			Vector3.new(0.2, 0.45, 0.5),
+			C.darkGray,
+			looseSmooth
+		)
+	end
+	local bodyTop = -2
+	-- The cap: a studded 2x2 plate on a 3x3 one.
+	Core.part(b, hinge * CFrame.new(0, bodyTop + PLATE * 1.5, 0), Vector3.new(2, PLATE, 2), look.bands, loose)
+	Core.part(b, hinge * CFrame.new(0, bodyTop + PLATE * 0.5, 0), Vector3.new(3, PLATE, 3), look.bands, loose)
+	-- The barrel: a cross of bricks (3x2 and 2x3 around a 3x3 core) reads round from every side.
+	local height = BRICK * 4
+	local mid = bodyTop - height / 2
+	for _, size in { Vector3.new(3, height, 3), Vector3.new(4, height, 2), Vector3.new(2, height, 4) } do
+		Core.part(b, hinge * CFrame.new(0, mid, 0), size, look.bag, loose)
+	end
+	-- Two band rings, one stud proud of the barrel, studs on top.
+	for _, y in { bodyTop - BRICK - PLATE / 2, mid - BRICK * 1.2 } do
+		for _, size in { Vector3.new(3.4, PLATE, 3.4), Vector3.new(4.4, PLATE, 2.2), Vector3.new(2.2, PLATE, 4.4) } do
+			Core.part(b, hinge * CFrame.new(0, y, 0), size, look.bands, loose)
+		end
+	end
+	-- The bottom: a smaller 2x2 brick under the barrel.
+	Core.part(b, hinge * CFrame.new(0, bodyTop - height - PLATE / 2, 0), Vector3.new(2, PLATE, 2), look.bands, loose)
+	target(b, hinge, 0, mid + 0.3, -2.06, 1.6)
 	b:SetAttribute("Hinge", hinge)
-	return cf * CFrame.new(0, PLATE, -1) * CFrame.Angles(0, math.pi, 0) -- facing the bag
+	return cf * CFrame.new(0, PLATE, -1.5) * CFrame.Angles(0, math.pi, 0) -- facing the bag (clear of its bands)
 end
 
 function GymKit.station(parent, cf, key, set)
