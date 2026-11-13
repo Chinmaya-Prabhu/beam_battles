@@ -1938,5 +1938,65 @@
     "rarity": "Rare",
     "income": 0,
     "parts": 0
+  },
+  {
+    "key": "DekuOFA",
+    "source": "Deku (One For All)",
+    "display": "Deku (One For All)",
+    "series": "My Hero Academia",
+    "parentInPack": "custom",
+    "rarity": "Epic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Kirishima",
+    "source": "Kirishima",
+    "display": "Kirishima",
+    "series": "My Hero Academia",
+    "parentInPack": "custom",
+    "rarity": "Rare",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Aizawa",
+    "source": "Aizawa",
+    "display": "Aizawa",
+    "series": "My Hero Academia",
+    "parentInPack": "custom",
+    "rarity": "Rare",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Dabi",
+    "source": "Dabi",
+    "display": "Dabi",
+    "series": "My Hero Academia",
+    "parentInPack": "custom",
+    "rarity": "Epic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Shigaraki",
+    "source": "Shigaraki",
+    "display": "Shigaraki",
+    "series": "My Hero Academia",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "AllForOne",
+    "source": "All for One",
+    "display": "All for One",
+    "series": "My Hero Academia",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
   }
 ]

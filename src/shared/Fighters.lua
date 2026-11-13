@@ -93,7 +93,7 @@ Fighters.List = {
 	{ key = "StoneFreeAura", display = "Stone Freedom Aura", series = "JOJO", rarity = "Epic", income = 10000, model = "StoneFreeAura" },
 	{ key = "AllMight", display = "All Mighty", series = "My Hero Academia", rarity = "Epic", income = 10000, model = "AllMight", pool = "Blossom", launch = true },
 	{ key = "AwakenedBakugo", display = "Awakened Bakugoh", series = "My Hero Academia", rarity = "Epic", income = 12000, model = "AwakenedBakugo", pool = "Blossom", launch = true },
-	{ key = "DekuAwakened", display = "Dekku Awakened", series = "My Hero Academia", rarity = "Epic", income = 15000, model = "DekuAwakened", pool = "Blossom", launch = true },
+	{ key = "DekuAwakened", display = "Dekku Awakened", series = "My Hero Academia", rarity = "Epic", income = 12000, model = "DekuAwakened" },
 	{ key = "5ThGate", display = "5th Gate", series = "NARUTO", rarity = "Epic", income = 12000, model = "5ThGate" },
 	{ key = "Kakashi", display = "Kakashy", series = "NARUTO", rarity = "Rare", income = 3000, model = "Kakashi", pool = "Ninja", launch = true },
 	{ key = "MightGuy", display = "Might Guyy", series = "NARUTO", rarity = "Epic", income = 10000, model = "MightGuy", pool = "Ninja", launch = true },
@@ -196,6 +196,12 @@ Fighters.List = {
 	{ key = "BeastTitan", display = "Beast Titan", series = "AOT", rarity = "Epic", income = 15000, model = "BeastTitan", pool = "Walled", launch = true },
 	{ key = "CartTitan", display = "Cart Titan", series = "AOT", rarity = "Rare", income = 2000, model = "CartTitan", pool = "Walled", launch = true },
 	{ key = "JawTitan", display = "Jaw Titan", series = "AOT", rarity = "Rare", income = 2500, model = "JawTitan", pool = "Walled", launch = true },
+	{ key = "DekuOFA", display = "Dekku (One For All)", series = "My Hero Academia", rarity = "Epic", income = 12000, model = "DekuOFA", pool = "Blossom", launch = true },
+	{ key = "Kirishima", display = "Kirishimo", series = "My Hero Academia", rarity = "Rare", income = 2000, model = "Kirishima", pool = "Blossom", launch = true },
+	{ key = "Aizawa", display = "Aizawo", series = "My Hero Academia", rarity = "Rare", income = 2000, model = "Aizawa", pool = "Blossom", launch = true },
+	{ key = "Dabi", display = "Dabii", series = "My Hero Academia", rarity = "Epic", income = 10000, model = "Dabi", pool = "Blossom", launch = true },
+	{ key = "Shigaraki", display = "Shigaraky", series = "My Hero Academia", rarity = "Legendary", income = 100000, model = "Shigaraki", pool = "Blossom", launch = true },
+	{ key = "AllForOne", display = "All For Won", series = "My Hero Academia", rarity = "Mythic", income = 600000, model = "AllForOne", pool = "Blossom", launch = true },
 }
 -- What players read for each series (the series keys stay internal).
 Fighters.SeriesNames = {

@@ -65,12 +65,6 @@
     "rarity": "Rare",
     "boost": 1.5
   },
-  "DekuAwakened": {
-    "exclusive": false,
-    "pool": "Blossom",
-    "rarity": "Epic",
-    "boost": 1.5
-  },
   "ErenPostTimeSkip": {
     "exclusive": false,
     "pool": "Walled",
@@ -592,5 +586,41 @@
     "pool": "Walled",
     "rarity": "Epic",
     "boost": 1.5
+  },
+  "DekuOFA": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Epic",
+    "boost": 1.25
+  },
+  "Kirishima": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Rare",
+    "boost": 1
+  },
+  "Aizawa": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Rare",
+    "boost": 1
+  },
+  "Dabi": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Epic",
+    "boost": 1
+  },
+  "Shigaraki": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Legendary",
+    "boost": 1.25
+  },
+  "AllForOne": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Mythic",
+    "boost": 1
   }
 }

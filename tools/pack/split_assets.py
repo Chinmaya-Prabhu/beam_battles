@@ -40,6 +40,9 @@ PACKS = {
     "AOT.rbxm": {"Levi": "Levi", "Armored Titan": "ArmoredTitan", "Eren": None, "Mikasa": None},
     # (its Tanjiro replaces the pack's look)
     "demonslayer.rbxm": {"Tanjiro": "Tanjiro", "Zenitsu": "Zenitsu", "Inosuke": "Inosuke", "Nezuko": "Nezuko"},
+    # (its Deku takes Deku Awakened's place in Blossom Academy)
+    "mha.rbxm": {"Shigaraki": "Shigaraki", "Kirishima": "Kirishima", "Deku": "DekuOFA", "Dabi": "Dabi",
+                 "All for One": "AllForOne", "Aizawa": "Aizawa"},
 }
 WHOLE = {
     "baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna", "Aokiji.rbxm": "Aokiji",
