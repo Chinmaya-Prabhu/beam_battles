@@ -59,11 +59,6 @@
     "pool": "Divine",
     "rarity": "Legendary"
   },
-  "BuuSagaGoku": {
-    "exclusive": false,
-    "pool": "Divine",
-    "rarity": "Legendary"
-  },
   "Deku": {
     "exclusive": false,
     "pool": "Blossom",
@@ -113,11 +108,6 @@
     "exclusive": false,
     "pool": "Divine",
     "rarity": "Legendary"
-  },
-  "GokuBlackNew": {
-    "exclusive": false,
-    "pool": "Divine",
-    "rarity": "Mythic"
   },
   "Gon": {
     "exclusive": false,
@@ -172,7 +162,7 @@
   "Kakashi": {
     "exclusive": false,
     "pool": "Ninja",
-    "rarity": "Epic"
+    "rarity": "Rare"
   },
   "KcmMinato": {
     "exclusive": false,
@@ -197,7 +187,7 @@
   "Lemillion": {
     "exclusive": false,
     "pool": "Blossom",
-    "rarity": "Common"
+    "rarity": "Uncommon"
   },
   "LssjBroly": {
     "exclusive": false,
@@ -242,47 +232,17 @@
   "Neji": {
     "exclusive": false,
     "pool": "Ninja",
-    "rarity": "Rare"
+    "rarity": "Common"
   },
   "Pain": {
     "exclusive": false,
     "pool": "Ninja",
     "rarity": "Legendary"
   },
-  "Ptslaw": {
-    "exclusive": false,
-    "pool": "Pirate",
-    "rarity": "Rare"
-  },
-  "Ptsluffy": {
-    "exclusive": false,
-    "pool": "Pirate",
-    "rarity": "Rare"
-  },
-  "Ptsnaruto": {
-    "exclusive": false,
-    "pool": "Ninja",
-    "rarity": "Uncommon"
-  },
-  "Ptssanji": {
-    "exclusive": false,
-    "pool": "Pirate",
-    "rarity": "Rare"
-  },
-  "Ptssasuke": {
-    "exclusive": false,
-    "pool": "Ninja",
-    "rarity": "Uncommon"
-  },
-  "Ptszoro": {
-    "exclusive": false,
-    "pool": "Pirate",
-    "rarity": "Rare"
-  },
   "RockLee": {
     "exclusive": false,
     "pool": "Ninja",
-    "rarity": "Rare"
+    "rarity": "Common"
   },
   "SageMode": {
     "exclusive": false,
@@ -297,17 +257,12 @@
   "Snakeman": {
     "exclusive": false,
     "pool": "Pirate",
-    "rarity": "Secret"
+    "rarity": "Legendary"
   },
   "SpeedGuy": {
     "exclusive": false,
     "pool": "Blossom",
-    "rarity": "Uncommon"
-  },
-  "Ssjr": {
-    "exclusive": false,
-    "pool": "Divine",
-    "rarity": "Mythic"
+    "rarity": "Common"
   },
   "Sukuna": {
     "exclusive": false,
@@ -332,12 +287,12 @@
   "Tsnaruto": {
     "exclusive": false,
     "pool": "Ninja",
-    "rarity": "Epic"
+    "rarity": "Common"
   },
   "Tssasuke": {
     "exclusive": false,
     "pool": "Ninja",
-    "rarity": "Epic"
+    "rarity": "Common"
   },
   "Tszoro": {
     "exclusive": false,
@@ -354,11 +309,6 @@
     "pool": "Divine",
     "rarity": "Mythic"
   },
-  "VegitoBlue": {
-    "exclusive": false,
-    "pool": "Divine",
-    "rarity": "Secret"
-  },
   "Whitebeard": {
     "exclusive": true,
     "pool": "Pirate",
@@ -367,7 +317,7 @@
   "Yuji": {
     "exclusive": false,
     "pool": "Blossom",
-    "rarity": "Uncommon"
+    "rarity": "Common"
   },
   "Yusuke": {
     "exclusive": false,
@@ -441,7 +391,7 @@
   },
   "CellMax": {
     "exclusive": false,
-    "pool": "Walled",
+    "pool": "Divine",
     "rarity": "Secret"
   },
   "SixPathsNaruto": {
@@ -493,5 +443,45 @@
     "exclusive": false,
     "pool": "Blossom",
     "rarity": "Mythic"
+  },
+  "Aokiji": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Legendary"
+  },
+  "Gear5Luffy": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Secret"
+  },
+  "Roger": {
+    "exclusive": false,
+    "pool": "Pirate",
+    "rarity": "Secret"
+  },
+  "BeastGohan": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Secret"
+  },
+  "UIGoku": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Secret"
+  },
+  "UEVegeta": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Secret"
+  },
+  "SS4Gogeta": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Secret"
+  },
+  "Gogeta": {
+    "exclusive": false,
+    "pool": "Divine",
+    "rarity": "Legendary"
   }
 }

@@ -353,7 +353,7 @@ Config.Zones = {
 		band = { "Gold", "Master" },
 		ladderPower = { 100e6, 180e6, 300e6, 500e6, 750e6, 1.1e9 }, -- (day 2-3)
 		tier = "Diamond",
-		guardians = { "Ptsluffy", "Ptslaw", "Ptszoro", "Ace", "Shanks" },
+		guardians = { "Tszoro", "TsSanji", "Ace", "Mihawk", "Shanks" },
 		boss = { key = "Whitebeard", title = "THE EMPEROR", rounds = 3, skill = "Master" },
 		unlocked = false,
 		next = "Walled",

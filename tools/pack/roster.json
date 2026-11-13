@@ -1708,5 +1708,85 @@
     "rarity": "Mythic",
     "income": 0,
     "parts": 0
+  },
+  {
+    "key": "Aokiji",
+    "source": "Aokiji",
+    "display": "Aokiji",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Gear5Luffy",
+    "source": "Luffy (Gear 5)",
+    "display": "Luffy (Gear 5)",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Roger",
+    "source": "Roger",
+    "display": "Roger",
+    "series": "One Piece",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "BeastGohan",
+    "source": "Gohan (Beast)",
+    "display": "Gohan (Beast)",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "UIGoku",
+    "source": "Goku (Ultra Instinct)",
+    "display": "Goku (Ultra Instinct)",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "UEVegeta",
+    "source": "Vegeta (Ultra Ego)",
+    "display": "Vegeta (Ultra Ego)",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "SS4Gogeta",
+    "source": "Gogeta (SS4)",
+    "display": "Gogeta (SS4)",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Gogeta",
+    "source": "Gogeta",
+    "display": "Gogeta",
+    "series": "DBZ",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
   }
 ]

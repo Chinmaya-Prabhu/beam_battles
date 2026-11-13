@@ -10,6 +10,7 @@ tools/pack/custom_later/ for series not in the game yet.
   * assets/baryon naruto.rbxm one NPC rig (its health bar, attack and respawn scripts go in strip_pack)
   * assets/AOT.rbxm           Eren, Levi, Mikasa, Armored Titan (the pack's own Eren and Mikasa stay)
   * assets/awakened_sukuna.rbxm one rig
+  * one rig each: Aokiji, gear5 (Luffy Gear 5), roger, BeastGohan, UIGoku, UEvegeta, ss4gogeta, Gogeta
   * assets/Hashiras.rbxm      one Model holding the eight Demon Slayer Hashira -> custom_later (no zone yet)
 
 The files hold several top-level instances, which Rojo can't read, so rbxm_bin.wrap() puts them in one Folder
@@ -37,7 +38,11 @@ PACKS = {
     },
     "AOT.rbxm": {"Levi": "Levi", "Armored Titan": "ArmoredTitan", "Eren": None, "Mikasa": None},
 }
-WHOLE = {"baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna"}
+WHOLE = {
+    "baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna", "Aokiji.rbxm": "Aokiji",
+    "gear5.rbxm": "Gear5Luffy", "roger.rbxm": "Roger", "BeastGohan.rbxm": "BeastGohan", "UIGoku.rbxm": "UIGoku",
+    "UEvegeta.rbxm": "UEVegeta", "ss4gogeta.rbxm": "SS4Gogeta", "Gogeta.rbxm": "Gogeta",
+}
 HASHIRA = {  # inside assets/Hashiras.rbxm's one Model
     "Sanemi": "Sanemi", "Rengoku": "Rengoku", "Iguro": "Iguro", "Muichiro": "Muichiro", "Shinobu": "Shinobu",
     "Giyu": "Giyu", "Gyomei": "Gyomei", "Mitsuri": "Mitsuri",
