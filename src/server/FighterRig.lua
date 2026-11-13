@@ -622,9 +622,9 @@ function FighterRig.build(key, source)
 		if shown then
 			local faces, real = {}, false
 			for _, p in stack do
-				-- (A face plate bigger than the head, Cell's, was drawn to that size: its face stays on it.)
-				local bigPlate = not headMesh(p) and p.Size.X > packHead.Size.X * 1.2
-				if p == shown or headMesh(p) or (p.Transparency >= 0.95 and not bigPlate) then
+				-- (A face plate or head copy bigger than the head, Cell's, was drawn to that size: its face stays on it.)
+				local bigPlate = p ~= shown and p.Size.X > shown.Size.X * 1.2
+				if not bigPlate and (p == shown or headMesh(p) or p.Transparency >= 0.95) then
 					for _, d in p:GetChildren() do
 						if d:IsA("Decal") and d.Texture ~= "" then
 							table.insert(faces, d)
@@ -647,6 +647,7 @@ function FighterRig.build(key, source)
 				local m = p ~= shown and headMesh(p)
 				if
 					m
+					and p.Size.X <= shown.Size.X * 1.2
 					and (m.Scale.Magnitude < 0.05 or (
 						shownMesh
 						and math.abs(m.Scale.Magnitude - shownMesh.Scale.Magnitude) < 0.02

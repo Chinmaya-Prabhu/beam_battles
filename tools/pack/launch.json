@@ -616,5 +616,17 @@
     "pool": "Blossom",
     "rarity": "Mythic",
     "boost": 1
+  },
+  "Natsu": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare",
+    "boost": 1.25
+  },
+  "Gray": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon",
+    "boost": 1
   }
 }
