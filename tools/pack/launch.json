@@ -14,11 +14,6 @@
     "pool": "Pirate",
     "rarity": "Epic"
   },
-  "AdultGon": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Legendary"
-  },
   "Akainu": {
     "exclusive": false,
     "pool": "Pirate",
@@ -109,50 +104,10 @@
     "pool": "Divine",
     "rarity": "Legendary"
   },
-  "Gon": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Common"
-  },
-  "Gray": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Uncommon"
-  },
-  "GreyAwakening": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Epic"
-  },
   "Hellflame": {
     "exclusive": false,
     "pool": "Blossom",
     "rarity": "Rare"
-  },
-  "Hiei": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Common"
-  },
-  "HieiJaganEye": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Rare"
-  },
-  "Hisoka": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Uncommon"
-  },
-  "Illumi": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Uncommon"
-  },
-  "IllumiAwakened": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Epic"
   },
   "Itachi": {
     "exclusive": false,
@@ -168,16 +123,6 @@
     "exclusive": false,
     "pool": "Ninja",
     "rarity": "Mythic"
-  },
-  "Killua": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Common"
-  },
-  "KilluaGodspeed": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Legendary"
   },
   "Kizaru": {
     "exclusive": false,
@@ -218,16 +163,6 @@
     "exclusive": false,
     "pool": "Ninja",
     "rarity": "Epic"
-  },
-  "Natsu": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Uncommon"
-  },
-  "NatsuAwakened": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Rare"
   },
   "Neji": {
     "exclusive": false,
@@ -318,16 +253,6 @@
     "exclusive": false,
     "pool": "Blossom",
     "rarity": "Common"
-  },
-  "Yusuke": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Common"
-  },
-  "YusukeMode": {
-    "exclusive": false,
-    "pool": "Hub",
-    "rarity": "Rare"
   },
   "Cell": {
     "exclusive": true,
@@ -482,6 +407,76 @@
   "Gogeta": {
     "exclusive": false,
     "pool": "Divine",
+    "rarity": "Legendary"
+  },
+  "Tanjiro": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "Zenitsu": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "Inosuke": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Common"
+  },
+  "Nezuko": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "Shinobu": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "Mitsuri": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "Iguro": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Uncommon"
+  },
+  "Giyu": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare"
+  },
+  "Sanemi": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare"
+  },
+  "Erza": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Rare"
+  },
+  "Rengoku": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Epic"
+  },
+  "Muichiro": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Epic"
+  },
+  "Gyomei": {
+    "exclusive": false,
+    "pool": "Hub",
+    "rarity": "Legendary"
+  },
+  "Saitama": {
+    "exclusive": false,
+    "pool": "Hub",
     "rarity": "Legendary"
   }
 }

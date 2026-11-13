@@ -13,7 +13,8 @@
     "NARUTO": "Hidden Leaf",
     "OTHER": "Wild Cards",
     "One Piece": "Grand Pirates",
-    "YYH": "Spirit Detectives"
+    "YYH": "Spirit Detectives",
+    "Demon Slayer": "Demon Hunters"
   },
   "display": {
     "AnnieJuniorHigh": "Anny (Junior High)",
@@ -194,6 +195,18 @@
     "UIGoku": "Gokku (Ultra Instinct)",
     "UEVegeta": "Vegata (Ultra Ego)",
     "SS4Gogeta": "Gogetta (SS4)",
-    "Gogeta": "Gogetta"
+    "Gogeta": "Gogetta",
+    "Zenitsu": "Zenitzu",
+    "Inosuke": "Inoske",
+    "Nezuko": "Nezuco",
+    "Shinobu": "Shinobo",
+    "Mitsuri": "Mitsury",
+    "Iguro": "Iguru",
+    "Giyu": "Giyuu",
+    "Sanemi": "Sanemy",
+    "Erza": "Erzza",
+    "Rengoku": "Rengoko",
+    "Muichiro": "Muichiru",
+    "Gyomei": "Gyomey"
   }
 }

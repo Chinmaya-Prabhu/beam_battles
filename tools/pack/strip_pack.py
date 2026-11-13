@@ -334,6 +334,16 @@ def strip(rig, key):
                 holds.add(ref)
                 ref = came_from.get(ref)
 
+    # An invisible part that is the parent of a kept part stays too, or the part would go with it (Tanjiro's hair
+    # meshes sit inside an invisible "Hair" part).
+    for item in walk(rig):
+        if item.get("class") in PARTS and item.get("referent") in reached and visible(item):
+            node = parent_of.get(item)
+            while node is not None and node is not rig:
+                if node.get("class") in PARTS:
+                    holds.add(node.get("referent"))
+                node = parent_of.get(node)
+
     for item in list(walk(rig)):
         if item.get("class") in PARTS and item in parent_of:
             ref = item.get("referent")

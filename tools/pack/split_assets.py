@@ -11,7 +11,8 @@ tools/pack/custom_later/ for series not in the game yet.
   * assets/AOT.rbxm           Eren, Levi, Mikasa, Armored Titan (the pack's own Eren and Mikasa stay)
   * assets/awakened_sukuna.rbxm one rig
   * one rig each: Aokiji, gear5 (Luffy Gear 5), roger, BeastGohan, UIGoku, UEvegeta, ss4gogeta, Gogeta
-  * assets/Hashiras.rbxm      one Model holding the eight Demon Slayer Hashira -> custom_later (no zone yet)
+  * assets/Hashiras.rbxm      one Model holding the eight Demon Slayer Hashira (the Hub)
+  * assets/demonslayer.rbxm  Tanjiro, Zenitsu, Inosuke, Nezuko (the Hub); erza.rbxm one rig
 
 The files hold several top-level instances, which Rojo can't read, so rbxm_bin.wrap() puts them in one Folder
 first. The Six Paths file also carries a fake "setup window" LocalScript (ScreenBuilder/Runtime): never drag it
@@ -37,11 +38,14 @@ PACKS = {
         "Tsunade": "Tsunade", "pain": None,
     },
     "AOT.rbxm": {"Levi": "Levi", "Armored Titan": "ArmoredTitan", "Eren": None, "Mikasa": None},
+    # (its Tanjiro replaces the pack's look)
+    "demonslayer.rbxm": {"Tanjiro": "Tanjiro", "Zenitsu": "Zenitsu", "Inosuke": "Inosuke", "Nezuko": "Nezuko"},
 }
 WHOLE = {
     "baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna", "Aokiji.rbxm": "Aokiji",
     "gear5.rbxm": "Gear5Luffy", "roger.rbxm": "Roger", "BeastGohan.rbxm": "BeastGohan", "UIGoku.rbxm": "UIGoku",
     "UEvegeta.rbxm": "UEVegeta", "ss4gogeta.rbxm": "SS4Gogeta", "Gogeta.rbxm": "Gogeta",
+    "erza.rbxm": "Erza",
 }
 HASHIRA = {  # inside assets/Hashiras.rbxm's one Model
     "Sanemi": "Sanemi", "Rengoku": "Rengoku", "Iguro": "Iguro", "Muichiro": "Muichiro", "Shinobu": "Shinobu",
@@ -66,7 +70,23 @@ def wrapped_xml(path):
     return ET.parse(to_xml(out)).getroot()
 
 
+def unwrap(model):
+    """Some exports keep the real rig one level down (Jiraiya's "StarterCharacter", Nezuko's unnamed Model):
+    strip_pack drops nested rigs, so the inner rig becomes the fighter (named after the outer one)."""
+    if any(k.get("class") == "Humanoid" for k in model.findall("Item")):
+        return model
+    inner = [k for k in model.findall("Item") if k.get("class") == "Model" and any(
+        c.get("class") == "Humanoid" for c in k.findall("Item"))]
+    if len(inner) != 1:
+        return model
+    for p in inner[0].find("Properties"):
+        if p.get("name") == "Name":
+            p.text = name(model)
+    return inner[0]
+
+
 def save(root, model, key, later=False):
+    model = unwrap(model)
     write_model(root, model, key)  # (writes to custom_later)
     if not later:
         shutil.move(os.path.join(split_models.LATER, key + ".rbxm"), os.path.join(OUT, key + ".rbxm"))
@@ -87,7 +107,7 @@ def main():
     root = ET.parse(to_xml(os.path.join(ASSETS, "Hashiras.rbxm"))).getroot()
     for model in root.find("Item").findall("Item"):
         if name(model) in HASHIRA:
-            save(root, model, HASHIRA[name(model)], later=True)
+            save(root, model, HASHIRA[name(model)])  # (the Hub)
 
     root = wrapped_xml(os.path.join(ASSETS, "6pathsnaruto.rbxm"))
     pack = root.find("Item")
