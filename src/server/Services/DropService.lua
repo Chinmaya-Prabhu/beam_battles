@@ -5,6 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Shared = ReplicatedStorage.Shared
 local Config = require(Shared.Config)
+local CollectionService = game:GetService("CollectionService")
 local Fighters = require(Shared.Fighters)
 local FighterModels = require(Shared.FighterModels)
 local Odds = require(Shared.Odds)
@@ -379,14 +380,56 @@ function DropService.gallery()
 		end
 		return
 	end
-	for i, fighter in Fighters.Launch do
-		local col = (i - 1) % 16
-		local row = math.floor((i - 1) / 16)
-		local feet = Vector3.new(-60 + col * 8, 0, -170 - row * 12)
-		local model = FighterModels.spawn(fighter.key, feet, Vector3.new(0, 0, 1), { parent = folder })
-		if model then
-			nameplate(model, fighter, "Normal", "Diamond")
+	-- Every launch fighter, zone by zone (the Hub, then the zones in order, then Divine), in lines across the north of
+	-- the island at its real size (each one's BodyScale; scale 1, the size it follows you at). Standing still, arms
+	-- down, no aura: nothing hides a face or the body.
+	local order = { "Hub" }
+	for _, name in Config.ZoneOrder do
+		table.insert(order, name)
+	end
+	table.insert(order, "Divine")
+	-- (On their own floor high over the hub, clear of every building; you land on it when you join.)
+	local floorY = 400
+	local floor = Instance.new("Part")
+	floor.Name = "GalleryFloor"
+	floor.Anchored = true
+	floor.Size = Vector3.new(360, 1, 360)
+	floor.Position = Vector3.new(0, floorY - 0.5, -60)
+	floor.Color = Color3.fromRGB(70, 74, 90)
+	floor.Parent = folder
+	local function land(player)
+		player.CharacterAdded:Connect(function(character)
+			task.wait(1)
+			character:PivotTo(CFrame.lookAt(Vector3.new(0, floorY + 4, 100), Vector3.new(0, floorY + 4, 0)))
+		end)
+		if player.Character then
+			player.Character:PivotTo(CFrame.lookAt(Vector3.new(0, floorY + 4, 100), Vector3.new(0, floorY + 4, 0)))
 		end
+	end
+	game:GetService("Players").PlayerAdded:Connect(land)
+	for _, player in game:GetService("Players"):GetPlayers() do
+		land(player)
+	end
+	local x, z, rowWidth, gap = -150, 80, 300, 3
+	for _, pool in order do
+		for _, fighter in Fighters.Launch do
+			if fighter.pool == pool then
+				local model =
+					FighterModels.spawn(fighter.key, Vector3.new(0, floorY, z), Vector3.new(0, 0, 1), { parent = folder })
+				if model then
+					CollectionService:RemoveTag(model, "Fighter") -- (no idle clip: it stands as built)
+					local size = model:GetExtentsSize()
+					local width = math.max(size.X, 3)
+					if x + width > -150 + rowWidth then
+						x, z = -150, z - 24
+					end
+					model:PivotTo(model:GetPivot() + Vector3.new(x + width / 2, 0, z - model:GetPivot().Position.Z))
+					x += width + gap
+					nameplate(model, fighter, "Normal", "Diamond")
+				end
+			end
+		end
+		x, z = -150, z - 30 -- (each zone starts a new line)
 	end
 end
 
