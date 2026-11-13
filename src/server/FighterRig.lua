@@ -51,6 +51,24 @@ local BODY_SCALE = {
 -- A normal R15 avatar from the top of its head to the soles of its feet (studs). Hand-made R15 fighters are sized
 -- by their body, never their sword or hair: Armored Titan came in at 48 studs.
 local R15_HEIGHT = 5.2
+-- Each standard R15 joint's two parts.
+local R15_JOINTS = {
+	Root = { "HumanoidRootPart", "LowerTorso" },
+	Waist = { "LowerTorso", "UpperTorso" },
+	Neck = { "UpperTorso", "Head" },
+	LeftShoulder = { "UpperTorso", "LeftUpperArm" },
+	LeftElbow = { "LeftUpperArm", "LeftLowerArm" },
+	LeftWrist = { "LeftLowerArm", "LeftHand" },
+	RightShoulder = { "UpperTorso", "RightUpperArm" },
+	RightElbow = { "RightUpperArm", "RightLowerArm" },
+	RightWrist = { "RightLowerArm", "RightHand" },
+	LeftHip = { "LowerTorso", "LeftUpperLeg" },
+	LeftKnee = { "LeftUpperLeg", "LeftLowerLeg" },
+	LeftAnkle = { "LeftLowerLeg", "LeftFoot" },
+	RightHip = { "LowerTorso", "RightUpperLeg" },
+	RightKnee = { "RightUpperLeg", "RightLowerLeg" },
+	RightAnkle = { "RightLowerLeg", "RightFoot" },
+}
 
 -- Head top to feet, from the body parts only.
 local function bodyHeight(rig)
@@ -154,7 +172,7 @@ local function r15Anchors(rig)
 end
 
 -- Which R15 segment carries an item that sat on an R6 limb, from how far down the limb it is.
-local DEFAULT_FACE = { Cell = true }
+local DEFAULT_FACE = {} -- (Cell has his own face, on a plate in front of his head)
 
 local function segmentFor(region, offset, k)
 	local y = offset.Position.Y / k
@@ -333,6 +351,15 @@ function FighterRig.build(key, source)
 			end
 		end
 		rig.PrimaryPart = rig:FindFirstChild("HumanoidRootPart")
+		-- A standard joint that lost an end on load (the new Legendary Broly's Root and Neck came in with no root part
+		-- and no head: he fell over headless) is reconnected by the standard part names.
+		for _, j in rig:GetDescendants() do
+			local ends = j:IsA("Motor6D") and R15_JOINTS[j.Name]
+			if ends then
+				j.Part0 = j.Part0 or bodyPart(rig, ends[1])
+				j.Part1 = j.Part1 or bodyPart(rig, ends[2])
+			end
+		end
 		rig:SetAttribute("FighterKey", key)
 		-- Its size: a set one (the titans), else as built but never bigger than the biggest body (MAX_BODY).
 		local height = bodyHeight(rig)
@@ -595,7 +622,9 @@ function FighterRig.build(key, source)
 		if shown then
 			local faces, real = {}, false
 			for _, p in stack do
-				if p == shown or headMesh(p) or p.Transparency >= 0.95 then
+				-- (A face plate bigger than the head, Cell's, was drawn to that size: its face stays on it.)
+				local bigPlate = not headMesh(p) and p.Size.X > packHead.Size.X * 1.2
+				if p == shown or headMesh(p) or (p.Transparency >= 0.95 and not bigPlate) then
 					for _, d in p:GetChildren() do
 						if d:IsA("Decal") and d.Texture ~= "" then
 							table.insert(faces, d)
