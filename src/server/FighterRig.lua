@@ -25,11 +25,13 @@ local MAX_BODY = 2.6
 -- Fighters drawn at a set size: 2.565 is Whitebeard's (the biggest original body in the pack); 1.8 sits between his and a
 -- normal avatar.
 local GIANT = 2.565
--- Three sizes, nothing else: LARGE (the titans, Whitebeard, Cell Max: GIANT, Whitebeard's 2.6x), one size below
+-- Three sizes, nothing else: LARGE (the titans, Whitebeard, Kaido, Big Mom, Cell Max: GIANT, Whitebeard's 2.6x), one size below
 -- (Mahoraga, Legendary Broly), and everyone else the regular size (1), however their model was built.
 local BELOW_GIANT = 1.8
 local BODY_SCALE = {
 	Whitebeard = GIANT,
+	Kaido = GIANT,
+	BigMom = GIANT,
 	CellMax = GIANT,
 	AttackTitan = GIANT,
 	FemaleTitan = GIANT,
@@ -546,27 +548,60 @@ function FighterRig.build(key, source)
 	-- which draws in front and the face can vanish. The FakeHead is a whole head itself, so hide the real one.
 	local fakeHead = items:FindFirstChild("FakeHead")
 	local packHead = items:FindFirstChild("PackHead")
-	-- An invisible face plate exactly where the head is (Eri's "Face"): its decal is drawn on the plate's flat front,
-	-- inside the rounded head mesh, so no face shows. Put the face on the head itself.
+	-- One visible head with the face on it. Packs stack several heads in the same spot: the real head with its mesh
+	-- shrunk to nothing (Yuji, Gojo, Sukuna, 8th Gate), a FakeHead that is the visible one, invisible plates that carry
+	-- the face (Eri's "Face", Cell's), sometimes a second visible copy that fights the first for which draws in front.
+	-- The face decals all move to the one head that is seen; the other copies are hidden.
+	local function headMesh(p)
+		local m = p:FindFirstChildWhichIsA("SpecialMesh")
+		return m and m.MeshType == Enum.MeshType.Head and m
+	end
+	local function seen(p)
+		local m = headMesh(p)
+		return p.Transparency < 0.95 and m and m.Scale.Magnitude > 0.05
+	end
 	if packHead then
-		for _, plate in items:GetChildren() do
-			if
-				plate:IsA("BasePart")
-				and plate ~= packHead
-				and plate.Name ~= "FakeHead"
-				and plate.Transparency >= 0.95
-				and (plate.Position - packHead.Position).Magnitude < 0.3
-			then
-				for _, d in plate:GetChildren() do
-					if d:IsA("Decal") and d.Texture ~= "" then -- (Cell's image is gone: he gets DEFAULT_FACE below)
-						d.Parent = packHead
-					end
+		local stack = {}
+		for _, p in items:GetChildren() do
+			if p:IsA("BasePart") and (p.Position - packHead.Position).Magnitude < 0.6 then
+				table.insert(stack, p)
+			end
+		end
+		local shown = (fakeHead and table.find(stack, fakeHead) and seen(fakeHead) and fakeHead)
+			or (seen(packHead) and packHead)
+		if not shown then
+			for _, p in stack do
+				if seen(p) then
+					shown = p
+					break
 				end
 			end
 		end
-	end
-	if fakeHead and packHead and fakeHead:FindFirstChildWhichIsA("Decal") then
-		packHead.Transparency = 1
+		if shown then
+			local faces, real = {}, false
+			for _, p in stack do
+				if p == shown or headMesh(p) or p.Transparency >= 0.95 then
+					for _, d in p:GetChildren() do
+						if d:IsA("Decal") and d.Texture ~= "" then
+							table.insert(faces, d)
+							real = real or not string.find(d.Texture, "textures/face.png", 1, true)
+						end
+					end
+				end
+			end
+			for _, d in faces do
+				if real and string.find(d.Texture, "textures/face.png", 1, true) then
+					d:Destroy() -- (Roblox's default smiley under a real face)
+				else
+					d.Parent = shown
+				end
+			end
+			for _, p in stack do
+				if p ~= shown and headMesh(p) then
+					p.Transparency = 1
+				end
+			end
+		end
 	end
 	local donorKey = FACE_FROM[key]
 	if donorKey then
