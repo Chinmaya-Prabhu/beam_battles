@@ -131,9 +131,34 @@ function MutationLook.apply(model, mutation)
 				d:Destroy()
 			end
 		end
+		-- A fighter with no face decal wears its face in a texture: a head mesh or a hair-and-face accessory (Luffy,
+		-- Levi, Mihawk, the titans). Those pieces, worn over the head, keep their own look, as a face decal does, so
+		-- a statue is still them and not a faceless one.
+		local faceDecal = false
+		for _, d in model:GetDescendants() do
+			if d:IsA("Decal") and d.Parent:IsA("BasePart") and d.Parent.Transparency < 0.95 then
+				faceDecal = true
+				break
+			end
+		end
+		local head = model:FindFirstChild("Head")
+		local function wornOverHead(p)
+			if faceDecal or not (head and head:IsA("BasePart")) then
+				return false
+			end
+			local textured = (p:IsA("MeshPart") and p.TextureID ~= "")
+				or p:FindFirstChildWhichIsA("SurfaceAppearance") ~= nil
+				or (p:FindFirstChildOfClass("SpecialMesh") and p:FindFirstChildOfClass("SpecialMesh").TextureId ~= "")
+			if not textured then
+				return false
+			end
+			local here = p.CFrame:PointToObjectSpace(head.Position)
+			local half = p.Size * 0.65 -- (a little past its box: Gogeta's face mesh sits just off the head's centre)
+			return math.abs(here.X) <= half.X and math.abs(here.Y) <= half.Y and math.abs(here.Z) <= half.Z
+		end
 		for _, p in model:GetDescendants() do
 			-- Visible parts only: the face plates (invisible, decal only) and the root keep as they are.
-			if p:IsA("BasePart") and p.Transparency < 0.9 and p.Name ~= "HumanoidRootPart" then
+			if p:IsA("BasePart") and p.Transparency < 0.9 and p.Name ~= "HumanoidRootPart" and not wornOverHead(p) then
 				local region = look.regions and look.regions[regionOf(p)]
 				paint(p, region or look.statue)
 			end
