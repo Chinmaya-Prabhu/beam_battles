@@ -25,66 +25,20 @@ local MAX_BODY = 2.6
 -- Fighters drawn at a set size: 2.565 is Whitebeard's (the biggest original body in the pack); 1.8 sits between his and a
 -- normal avatar.
 local GIANT = 2.565
--- Every fighter's size, from their height in the anime (a normal adult, about 1.8 m, is 1; anyone not listed is 1).
--- GIANT is Whitebeard's 6.7 m, the biggest body a fighter keeps (MAX_BODY): the true giants (Kaido, Big Mom, Cell Max,
--- the 15 m titans) share it so nothing buries its altar. The Jaw Titan is one of the small, fast ones, the Cart Titan
--- walks on four legs (1.5 keeps its length near Whitebeard's height).
+-- Three sizes, nothing else: LARGE (the titans, Whitebeard, Cell Max: GIANT, Whitebeard's 2.6x), one size below
+-- (Mahoraga, Legendary Broly), and everyone else the regular size (1), however their model was built.
+local BELOW_GIANT = 1.8
 local BODY_SCALE = {
-	-- Giants
 	Whitebeard = GIANT,
-	Kaido = GIANT,
-	BigMom = GIANT,
 	CellMax = GIANT,
 	AttackTitan = GIANT,
 	FemaleTitan = GIANT,
 	ArmoredTitan = GIANT,
 	BeastTitan = GIANT,
-	Mahoraga = 1.8,
-	JawTitan = 1.7,
-	CartTitan = 1.5,
-	-- Tall: the Admirals and the other 3 m giants of the sea, then the big ones
-	Akainu = 1.6,
-	Kizaru = 1.6,
-	Aokiji = 1.6,
-	Doflamingo = 1.6,
-	Fujitora = 1.5,
-	Sengoku = 1.5,
-	Roger = 1.5,
-	LssjBroly = 1.5,
-	AwakenedSukuna = 1.4, -- (the Heian form)
-	Broly = 1.3,
-	AllMightMode = 1.3,
-	AllMight = 1.25,
-	Gyomei = 1.25,
-	Cell = 1.15,
-	Mihawk = 1.1,
-	Shanks = 1.1,
-	Snakeman = 1.1,
-	Hellflame = 1.1,
-	Erwin = 1.05,
-	Jiraiya = 1.05,
-	Hashirama = 1.05,
-	Rayleigh = 1.05,
-	GojoSatoru = 1.05,
-	GojoSatoruBlindfoldOff = 1.05,
-	-- Small
-	Eri = 0.75, -- (a child)
-	Shinobu = 0.85,
-	Nezuko = 0.85,
-	Frieza = 0.85,
-	GoldenFrieza = 0.85,
-	Levi = 0.9,
-	Muichiro = 0.9,
-	Iguro = 0.9,
-	Tanjiro = 0.95,
-	Zenitsu = 0.95,
-	Inosuke = 0.95,
-	Mitsuri = 0.95,
-	Mikasa = 0.95,
-	Sasha = 0.95,
-	Tsunade = 0.95,
-	Gaara = 0.95,
-	Deku = 0.95,
+	JawTitan = GIANT,
+	CartTitan = GIANT,
+	Mahoraga = BELOW_GIANT,
+	LssjBroly = BELOW_GIANT,
 }
 -- A normal R15 avatar from the top of its head to the soles of its feet (studs). Hand-made R15 fighters are sized
 -- by their body, never their sword or hair: Armored Titan came in at 48 studs.
@@ -592,6 +546,25 @@ function FighterRig.build(key, source)
 	-- which draws in front and the face can vanish. The FakeHead is a whole head itself, so hide the real one.
 	local fakeHead = items:FindFirstChild("FakeHead")
 	local packHead = items:FindFirstChild("PackHead")
+	-- An invisible face plate exactly where the head is (Eri's "Face"): its decal is drawn on the plate's flat front,
+	-- inside the rounded head mesh, so no face shows. Put the face on the head itself.
+	if packHead then
+		for _, plate in items:GetChildren() do
+			if
+				plate:IsA("BasePart")
+				and plate ~= packHead
+				and plate.Name ~= "FakeHead"
+				and plate.Transparency >= 0.95
+				and (plate.Position - packHead.Position).Magnitude < 0.3
+			then
+				for _, d in plate:GetChildren() do
+					if d:IsA("Decal") and d.Texture ~= "" then -- (Cell's image is gone: he gets DEFAULT_FACE below)
+						d.Parent = packHead
+					end
+				end
+			end
+		end
+	end
 	if fakeHead and packHead and fakeHead:FindFirstChildWhichIsA("Decal") then
 		packHead.Transparency = 1
 	end
