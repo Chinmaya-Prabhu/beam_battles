@@ -7,6 +7,7 @@
 -- ReplicatedStorage.Assets.R15 so both server and clients can clone them.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local FighterRig = {}
 
@@ -230,6 +231,27 @@ local function regions(source)
 			end
 		end
 	end
+	-- Anything the joints didn't reach (a morph welded through a part the walk stops at, a weapon on a hilt welded
+	-- by a script that never ran) belongs to the nearest body part: never dropped (Whitebeard's bisento, Sasuke's
+	-- sword, Golden Frieza's limbs and Six Paths Naruto's sleeves and shoes were).
+	local bodyList = {}
+	for p in bodies do
+		table.insert(bodyList, p)
+	end
+	for _, p in source:GetDescendants() do
+		if p:IsA("BasePart") and not region[p] and not (BODY6[p.Name] and p.Parent == source) then
+			local best, bestDistance = nil, math.huge
+			for _, b in bodyList do
+				local distance = (p.Position - b.Position).Magnitude
+				if distance < bestDistance then
+					best, bestDistance = b, distance
+				end
+			end
+			if best then
+				region[p] = best.Name
+			end
+		end
+	end
 	return region
 end
 
@@ -440,8 +462,17 @@ function FighterRig.build(key, source)
 	-- Every piece below gets its own weld to its new segment. Old welds between two pieces (the pack head and the
 	-- hair welded to it) must go first: moving one piece while still welded to another that hasn't moved yet drags
 	-- it back to where the model was built (Nezuko's head ended up 1000 studs away).
+	-- The body is the rig's own Head, Torso and limbs only. A part with a body name inside a morph or a container
+	-- (Cell Max's and Gogeta's real heads, a morph's own "Right Leg") is a piece like any other and moves too:
+	-- skipping it threw it away with everything inside it.
+	local isBody = {}
+	for _, p in src:GetChildren() do
+		if p:IsA("BasePart") and BODY6[p.Name] and p ~= srcHead then
+			isBody[p] = true
+		end
+	end
 	local function moving(part)
-		return part and region[part] and (not BODY6[part.Name] or part == srcHead)
+		return part and region[part] and not isBody[part]
 	end
 	for _, j in src:GetDescendants() do
 		if (j:IsA("JointInstance") or j:IsA("WeldConstraint")) and (moving(j.Part0) or moving(j.Part1)) then
@@ -449,7 +480,7 @@ function FighterRig.build(key, source)
 		end
 	end
 	for part, r in region do
-		if (not BODY6[part.Name] or part == srcHead) and from[r] and to[r] then
+		if moving(part) and from[r] and to[r] then
 			local offset = from[r]:ToObjectSpace(part.CFrame)
 			local segment = rig:FindFirstChild(segmentFor(r, offset, torso.Size.Y / 2))
 			if segment then
@@ -486,6 +517,28 @@ function FighterRig.build(key, source)
 			end
 		end
 	end
+	-- (Studio: anything visible still left in the source is lost from the fighter. Say so, with why.)
+	if RunService:IsStudio() then
+		local lost = {}
+		for _, p in src:GetDescendants() do
+			if p:IsA("BasePart") and p.Transparency < 0.95 and not isBody[p] then
+				local r = region[p]
+				table.insert(
+					lost,
+					string.format(
+						"%s<%s> region=%s moving=%s",
+						p.Name,
+						p.Parent and p.Parent.Name or "?",
+						tostring(r),
+						tostring(moving(p) and true or false)
+					)
+				)
+			end
+		end
+		if #lost > 0 then
+			warn("[FighterRig] " .. key .. " lost " .. #lost .. " pieces: " .. table.concat(lost, "; "))
+		end
+	end
 	src:Destroy()
 	-- Packs that draw the face on a "FakeHead" put it exactly where the real head is; the two fight over
 	-- which draws in front and the face can vanish. The FakeHead is a whole head itself, so hide the real one.
@@ -500,7 +553,9 @@ function FighterRig.build(key, source)
 		local donor = folder and folder:FindFirstChild(donorKey)
 		local face = donor and faceDecal(donor)
 		local mark = faceDecal(rig) -- the decal already there (whiskers): the face goes on the same part
-		if face and mark then
+		if face and mark and string.find(mark.Texture, "textures/face.png", 1, true) then
+			mark.Texture = face.Texture -- (the default smiley: replaced, not drawn over)
+		elseif face and mark then
 			local copy = face:Clone()
 			copy.Name = "face"
 			copy.ZIndex = mark.ZIndex - 1 -- under the whiskers

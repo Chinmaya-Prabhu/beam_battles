@@ -262,10 +262,19 @@ def attach_morphs(rig, parent_of):
             MORPH_STATS[name(rig)] += 1
 
 
+FACE_IS_ACCESSORY = {"Levi", "AwakenedSukuna", "Mihawk"}
+
+
 def strip(rig, key):
     """Strips a deep copy of one rig in place and returns stats."""
     parent_of = {c: p for p in walk(rig) for c in p.findall("Item")}
     before = sum(1 for i in walk(rig) if i.get("class") in PARTS)
+    # Fighters whose face is an accessory (a face mesh in its texture) also carry Roblox's default smiley decal on
+    # the head, which shows through: it goes.
+    if key in FACE_IS_ACCESSORY:
+        for item in list(walk(rig)):
+            if item.get("class") == "Decal" and "textures/face.png" in ET.tostring(item, encoding="unicode"):
+                remove({c: p for p in walk(rig) for c in p.findall("Item")}, item)
     # A container named like a body part (Orochimaru's "Torso" model of morph pieces) would be found by the game's
     # FindFirstChild("Torso") instead of the body: give it another name.
     for item in rig.findall("Item"):
