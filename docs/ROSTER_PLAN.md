@@ -41,13 +41,30 @@ up.
 
 ## Size
 
-- **Normal fighters** keep their own size.
-- **Titans:** the Attack, Female, Armored and Beast Titans stand at Whitebeard's giant size (2.6x a normal
-  fighter), the Jaw Titan at 1.7x and the Cart Titan, on four legs, at 1.5x.
-- **Room limit:** every place a fighter stands has a most-room limit (Config.Fit): altars 18 wide and 34 tall, base
-  stands 17 and 30, a champion following you 12 and 22, a fighter carried overhead 9 and 12, a clash pad 14 and 26.
-  It is checked after every multiplier, Huge mutations included. Normal fighters never reach it; a giant is shrunk
-  until it fits, so it still towers over the others without burying an altar or the next stand.
+Every fighter is sized from their height in the anime. A normal adult (about 1.8 m) is 1, and anyone not listed is
+normalised to exactly 1, however their model was built. The list is BODY_SCALE in server/FighterRig.lua.
+
+- **Giants (2.6x, the biggest a body may be):** Whitebeard, Kaido, Big Mom, Cell Max, and the Attack, Female,
+  Armored and Beast Titans.
+- **Big:** Mahoraga 1.8, Jaw Titan 1.7, Cart Titan 1.5 (on four legs).
+- **Tall:**
+  - Admirals and Doflamingo: 1.6
+  - Fujitora, Sengoku, Roger and Legendary Broly: 1.5
+  - Heian Sukuna: 1.4
+  - Broly and All Might (Max): 1.3
+  - All Might and Gyomei: 1.25
+  - Cell: 1.15
+  - Mihawk, Shanks, Snake Man and Endeavor: 1.1
+  - Erwin, Jiraiya, Hashirama, Rayleigh and Gojo: 1.05
+- **Small:**
+  - Eri: 0.75
+  - Shinobu, Nezuko, Frieza and Golden Frieza: 0.85
+  - Levi, Muichiro and Iguro: 0.9
+  - Tanjiro, Zenitsu, Inosuke, Mitsuri, Mikasa, Sasha, Tsunade, Gaara and Deku: 0.95
+
+Each place also has a height limit (Config.Fit), measured head to feet on the body only, so a sword or cape never
+counts: altars 32 studs, base stands 30, a champion 16, a carried fighter 12, a clash pad 26. A normal fighter on an
+altar is 13 tall and a giant 33, so only a Huge giant is ever held back.
 
 ## Aura
 

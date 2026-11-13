@@ -25,18 +25,66 @@ local MAX_BODY = 2.6
 -- Fighters drawn at a set size: 2.565 is Whitebeard's (the biggest original body in the pack); 1.8 sits between his and a
 -- normal avatar.
 local GIANT = 2.565
--- The titans: the four big ones at GIANT; the Jaw Titan smaller (it is one of the small, fast ones), the Cart Titan on
--- four legs lower still (it is long: 1.5 keeps its length near Whitebeard's height).
+-- Every fighter's size, from their height in the anime (a normal adult, about 1.8 m, is 1; anyone not listed is 1).
+-- GIANT is Whitebeard's 6.7 m, the biggest body a fighter keeps (MAX_BODY): the true giants (Kaido, Big Mom, Cell Max,
+-- the 15 m titans) share it so nothing buries its altar. The Jaw Titan is one of the small, fast ones, the Cart Titan
+-- walks on four legs (1.5 keeps its length near Whitebeard's height).
 local BODY_SCALE = {
+	-- Giants
+	Whitebeard = GIANT,
 	Kaido = GIANT,
 	BigMom = GIANT,
-	Mahoraga = 1.8,
+	CellMax = GIANT,
 	AttackTitan = GIANT,
 	FemaleTitan = GIANT,
 	ArmoredTitan = GIANT,
 	BeastTitan = GIANT,
+	Mahoraga = 1.8,
 	JawTitan = 1.7,
 	CartTitan = 1.5,
+	-- Tall: the Admirals and the other 3 m giants of the sea, then the big ones
+	Akainu = 1.6,
+	Kizaru = 1.6,
+	Aokiji = 1.6,
+	Doflamingo = 1.6,
+	Fujitora = 1.5,
+	Sengoku = 1.5,
+	Roger = 1.5,
+	LssjBroly = 1.5,
+	AwakenedSukuna = 1.4, -- (the Heian form)
+	Broly = 1.3,
+	AllMightMode = 1.3,
+	AllMight = 1.25,
+	Gyomei = 1.25,
+	Cell = 1.15,
+	Mihawk = 1.1,
+	Shanks = 1.1,
+	Snakeman = 1.1,
+	Hellflame = 1.1,
+	Erwin = 1.05,
+	Jiraiya = 1.05,
+	Hashirama = 1.05,
+	Rayleigh = 1.05,
+	GojoSatoru = 1.05,
+	GojoSatoruBlindfoldOff = 1.05,
+	-- Small
+	Eri = 0.75, -- (a child)
+	Shinobu = 0.85,
+	Nezuko = 0.85,
+	Frieza = 0.85,
+	GoldenFrieza = 0.85,
+	Levi = 0.9,
+	Muichiro = 0.9,
+	Iguro = 0.9,
+	Tanjiro = 0.95,
+	Zenitsu = 0.95,
+	Inosuke = 0.95,
+	Mitsuri = 0.95,
+	Mikasa = 0.95,
+	Sasha = 0.95,
+	Tsunade = 0.95,
+	Gaara = 0.95,
+	Deku = 0.95,
 }
 -- A normal R15 avatar from the top of its head to the soles of its feet (studs). Hand-made R15 fighters are sized
 -- by their body, never their sword or hair: Armored Titan came in at 48 studs.
@@ -323,13 +371,13 @@ function FighterRig.build(key, source)
 		local height = bodyHeight(rig)
 		local bodyScale = 1
 		if height and height > 0 then
-			local want = BODY_SCALE[key] or math.min(height / R15_HEIGHT, MAX_BODY)
+			local want = math.min(BODY_SCALE[key] or 1, MAX_BODY) -- (not listed: a normal adult, however it was built)
 			if math.abs(want * R15_HEIGHT / height - 1) > 0.03 then
 				rig:ScaleTo(rig:GetScale() * want * R15_HEIGHT / height)
 			end
 			bodyScale = want
 		end
-		rig:SetAttribute("BodyScale", math.abs(bodyScale - 1) > 0.05 and bodyScale or 1)
+		rig:SetAttribute("BodyScale", bodyScale)
 		return rig
 	end
 	local description = Instance.new("HumanoidDescription")
@@ -367,15 +415,15 @@ function FighterRig.build(key, source)
 		src:Destroy()
 		return nil
 	end
-	if torso and BODY_SCALE[key] then
-		src:ScaleTo(BODY_SCALE[key] * 2 / torso.Size.Y) -- (scales every piece, joint and mesh with it)
-	elseif torso and torso.Size.Y / 2 > MAX_BODY then
-		src:ScaleTo(MAX_BODY * 2 / torso.Size.Y)
+	-- Its size (BODY_SCALE, else a normal adult): scales every piece, joint and mesh with it.
+	local wantBody = math.min(BODY_SCALE[key] or 1, MAX_BODY)
+	if torso and math.abs(wantBody * 2 / torso.Size.Y - 1) > 0.01 then
+		src:ScaleTo(src:GetScale() * wantBody * 2 / torso.Size.Y)
 	end
 	-- Big originals (Whitebeard, the titans) are R6 bodies scaled up evenly: grow the R15 body to match, so the
 	-- pack's own head, hair and items sit on a body of their size instead of a standard-sized one.
 	local bodyScale = torso.Size.Y / 2
-	if math.abs(bodyScale - 1) > 0.05 then
+	if math.abs(bodyScale - 1) > 0.01 then
 		rig:ScaleTo(bodyScale)
 	else
 		bodyScale = 1

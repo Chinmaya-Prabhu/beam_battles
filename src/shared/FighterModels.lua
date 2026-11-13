@@ -16,6 +16,23 @@ local FighterModels = {}
 -- The parts a fighter stands on (R15, then R6).
 local FEET = { "LeftFoot", "RightFoot", "Left Leg", "Right Leg" }
 
+-- Head top to the soles, from the body parts only (nil if it has no head or feet).
+local function bodyHeight(model)
+	local head = model:FindFirstChild("Head")
+	if not (head and head:IsA("BasePart")) then
+		return nil
+	end
+	local bottom
+	for _, name in FEET do
+		local p = model:FindFirstChild(name)
+		if p and p:IsA("BasePart") then
+			local low = p.Position.Y - p.Size.Y / 2
+			bottom = bottom and math.min(bottom, low) or low
+		end
+	end
+	return bottom and (head.Position.Y + head.Size.Y / 2 - bottom) or nil
+end
+
 local JOINT_CLASSES = { Motor6D = true, Weld = true, ManualWeld = true, Snap = true, Motor = true, Glue = true }
 
 local function source(key)
@@ -140,9 +157,10 @@ function FighterModels.spawn(key, feet, look, opts)
 		model:ScaleTo(model:GetScale() * opts.scale)
 	end
 	if opts.fit then
-		-- Never more than the place's room (Config.Fit): measured at rest, before posing.
-		local size = model:GetExtentsSize()
-		local shrink = math.min(1, opts.fit.width / math.max(size.X, size.Z), opts.fit.height / size.Y)
+		-- Never taller than the place allows (Config.Fit): head to feet at rest, the body only (a sword, cape or
+		-- hair must not make a fighter shrink).
+		local height = bodyHeight(model)
+		local shrink = height and math.min(1, opts.fit.height / height) or 1
 		if shrink < 0.98 then
 			model:ScaleTo(model:GetScale() * shrink)
 		end

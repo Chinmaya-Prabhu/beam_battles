@@ -106,16 +106,16 @@ Config.Mutations = {
 Config.NewbieLuck = { mult = 10, minutes = 20 }
 
 Config.Scale = { Table = 2.5, Plot = 1.5, Champion = 3, Index = 1 }
--- The most room a fighter takes where it stands, after every multiplier (its size class, the place's scale, a Huge
--- mutation): `width` across its footprint, `height` feet to head, in studs. Normal fighters never reach these;
--- a titan or Whitebeard is shrunk to fit, so it still towers over the others without burying an altar (16 wide,
--- pillars 10 apart), its neighbours on a base (stands 20 apart, Floor 2 36 up) or its owner.
+-- The tallest a fighter may stand where it is shown, head to feet in studs, after every multiplier (its size class,
+-- the place's scale, a Huge mutation). Measured on the body, never a sword, cape or hair, so a giant (Whitebeard,
+-- Cell Max, the titans: 2.6x a normal fighter) still towers over everyone and Mihawk keeps his size. Only the
+-- extremes are held back: a Huge giant on an altar, under a base's Floor 2 (36 up), or following its owner.
 Config.Fit = {
-	Table = { width = 18, height = 34 }, -- altars, guardian spawns, the market, the tutorial showcase
-	Plot = { width = 17, height = 30 },
-	Champion = { width = 12, height = 22 }, -- following its owner
-	Carry = { width = 9, height = 12 }, -- held over its owner's head
-	Clash = { width = 14, height = 26 }, -- a bot on a clash pad
+	Table = { height = 32 }, -- altars, guardian spawns, the market, the tutorial showcase (a normal fighter: 13)
+	Plot = { height = 30 }, -- (a normal fighter: 8)
+	Champion = { height = 16 }, -- following its owner (a normal fighter: 5)
+	Carry = { height = 12 }, -- held over its owner's head
+	Clash = { height = 26 }, -- a bot on a clash pad
 }
 
 -- Battle.
