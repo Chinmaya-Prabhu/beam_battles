@@ -368,7 +368,7 @@ Config.Zones = {
 		band = { "Diamond", "Legend" },
 		ladderPower = { 2e9, 3e9, 4.5e9, 6.5e9, 9e9, 12e9 }, -- (day 3-5)
 		tier = "Celestial",
-		guardians = { "Sasha", "Erwin", "Mikasa", "ErenPostTimeSkip", "FemaleTitan" },
+		guardians = { "Annie", "Mikasa", "ErenPostTimeSkip", "Erwin", "Levi" },
 		boss = { key = "AttackTitan", title = "THE TITAN", rounds = 3, skill = "Legend" },
 		unlocked = false,
 	},

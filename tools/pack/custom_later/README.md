@@ -21,3 +21,9 @@ Rarity should follow rank in the anime (a lower number is stronger), so the orde
 | Tanjiro Demon King | his own form | Mythic |
 
 Series key `Demon Slayer`, shown to players as "Moon Demons". Mihawk-style R15 models (Daki) go through the same pipeline.
+
+## The eight Hashira (`split_assets.py` cuts them out of assets/Hashiras.rbxm)
+
+Sanemi, Rengoku, Iguro, Muichiro, Shinobu, Giyu, Gyomei, Mitsuri. Same `Demon Slayer` series as the Upper Moons:
+together with them (and Tanjiro) they make a whole Demon Slayer zone. Their pieces were welded by runtime "Weld"
+scripts, so strip_pack's adopt_orphans welds them to the nearest limb: check them in the gallery before shipping.

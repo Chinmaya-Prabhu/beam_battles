@@ -13,9 +13,10 @@ for _, zone in { "Blossom", "Ninja", "Pirate", "Walled" } do
 		assert((w.Mythic or 0) <= 15 + 1e-6, zone .. " rung " .. rung .. ": Mythic at most 15%")
 	end
 end
--- Blossom and Ninja keep the ladder's own odds; Walled (pool from Epic up) starts at Epic.
+-- Blossom and Ninja keep the ladder's own odds; Walled (pool from Legendary up) starts at Legendary, the caps
+-- holding Mythic and Secret to 15% and 1% (about what its Celestial altars give).
 assert(Odds.guardianWeights(1, "Blossom").Uncommon == 60, "Blossom rung 1 unshifted")
-assert(Odds.guardianWeights(1, "Walled").Epic == 60, "Walled rung 1 starts at Epic")
+assert(Odds.guardianWeights(1, "Walled").Legendary == 84, "Walled rung 1 starts at Legendary")
 assert(Odds.guardianWeights(6, "Walled").Legendary > 80, "Walled boss mostly Legendary")
 print("Odds: checks passed")
 

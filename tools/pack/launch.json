@@ -4,11 +4,6 @@
     "pool": "Blossom",
     "rarity": "Legendary"
   },
-  "5ThGate": {
-    "exclusive": false,
-    "pool": "Ninja",
-    "rarity": "Epic"
-  },
   "8ThGate": {
     "exclusive": false,
     "pool": "Ninja",
@@ -43,11 +38,6 @@
     "exclusive": false,
     "pool": "Walled",
     "rarity": "Legendary"
-  },
-  "AnnieJuniorHigh": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Epic"
   },
   "AttackTitan": {
     "exclusive": true,
@@ -84,15 +74,10 @@
     "pool": "Blossom",
     "rarity": "Epic"
   },
-  "Eren": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Legendary"
-  },
   "ErenPostTimeSkip": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Mythic"
+    "rarity": "Legendary"
   },
   "Eri": {
     "exclusive": false,
@@ -103,11 +88,6 @@
     "exclusive": false,
     "pool": "Walled",
     "rarity": "Mythic"
-  },
-  "ErwinAlt": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Epic"
   },
   "FemaleTitan": {
     "exclusive": false,
@@ -244,11 +224,6 @@
     "pool": "Walled",
     "rarity": "Legendary"
   },
-  "MikasaFormal": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Epic"
-  },
   "Minato": {
     "exclusive": false,
     "pool": "Ninja",
@@ -267,7 +242,7 @@
   "Neji": {
     "exclusive": false,
     "pool": "Ninja",
-    "rarity": "Uncommon"
+    "rarity": "Rare"
   },
   "Pain": {
     "exclusive": false,
@@ -309,25 +284,10 @@
     "pool": "Ninja",
     "rarity": "Rare"
   },
-  "RockLeeGates": {
-    "exclusive": false,
-    "pool": "Ninja",
-    "rarity": "Epic"
-  },
   "SageMode": {
     "exclusive": false,
     "pool": "Ninja",
     "rarity": "Legendary"
-  },
-  "Sasha": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Epic"
-  },
-  "SashaSuit": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Epic"
   },
   "Shanks": {
     "exclusive": false,
@@ -419,11 +379,6 @@
     "pool": "Hub",
     "rarity": "Rare"
   },
-  "Zabuza": {
-    "exclusive": false,
-    "pool": "Ninja",
-    "rarity": "Rare"
-  },
   "Cell": {
     "exclusive": true,
     "pool": "Divine",
@@ -488,5 +443,55 @@
     "exclusive": false,
     "pool": "Walled",
     "rarity": "Secret"
+  },
+  "SixPathsNaruto": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Mythic"
+  },
+  "BaryonNaruto": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Secret"
+  },
+  "Kaguya": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Mythic"
+  },
+  "Jiraiya": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Legendary"
+  },
+  "Hashirama": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Legendary"
+  },
+  "Orochimaru": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Epic"
+  },
+  "Tsunade": {
+    "exclusive": false,
+    "pool": "Ninja",
+    "rarity": "Rare"
+  },
+  "Levi": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Mythic"
+  },
+  "ArmoredTitan": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Secret"
+  },
+  "AwakenedSukuna": {
+    "exclusive": false,
+    "pool": "Blossom",
+    "rarity": "Mythic"
   }
 }

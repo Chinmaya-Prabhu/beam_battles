@@ -1608,5 +1608,105 @@
     "rarity": "Secret",
     "income": 0,
     "parts": 0
+  },
+  {
+    "key": "SixPathsNaruto",
+    "source": "Naruto (Six Paths)",
+    "display": "Naruto (Six Paths)",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "BaryonNaruto",
+    "source": "Naruto (Baryon Mode)",
+    "display": "Naruto (Baryon Mode)",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Kaguya",
+    "source": "Kaguya",
+    "display": "Kaguya",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Jiraiya",
+    "source": "Jiraiya",
+    "display": "Jiraiya",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Hashirama",
+    "source": "Hashirama",
+    "display": "Hashirama",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Legendary",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Orochimaru",
+    "source": "Orochimaru",
+    "display": "Orochimaru",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Epic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Tsunade",
+    "source": "Tsunade",
+    "display": "Tsunade",
+    "series": "NARUTO",
+    "parentInPack": "custom",
+    "rarity": "Rare",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "Levi",
+    "source": "Levi",
+    "display": "Levi",
+    "series": "AOT",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "ArmoredTitan",
+    "source": "Armored Titan",
+    "display": "Armored Titan",
+    "series": "AOT",
+    "parentInPack": "custom",
+    "rarity": "Secret",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "AwakenedSukuna",
+    "source": "Sukuna (Awakened)",
+    "display": "Sukuna (Awakened)",
+    "series": "JJK",
+    "parentInPack": "custom",
+    "rarity": "Mythic",
+    "income": 0,
+    "parts": 0
   }
 ]
