@@ -297,13 +297,18 @@ local function solveRest(source)
 end
 
 -- A body part by name, never a container that happens to share it.
+-- (Two parts can share the name: Six Paths Naruto has an invisible "Head" beside his real one. The visible one wins.)
 local function bodyPart(model, name)
+	local found
 	for _, child in model:GetChildren() do
 		if child.Name == name and child:IsA("BasePart") then
-			return child
+			if child.Transparency < 0.95 then
+				return child
+			end
+			found = found or child
 		end
 	end
-	return nil
+	return found
 end
 
 local function colorOf(source, name)
@@ -596,8 +601,19 @@ function FighterRig.build(key, source)
 					d.Parent = shown
 				end
 			end
+			-- Hide only true copies of the shown head (same size and colour): a mask or a hair cap is also a head mesh,
+			-- in its own colour (Kakashi's mask), and stays.
+			local shownMesh = headMesh(shown)
 			for _, p in stack do
-				if p ~= shown and headMesh(p) then
+				local m = p ~= shown and headMesh(p)
+				if
+					m
+					and (m.Scale.Magnitude < 0.05 or (
+						shownMesh
+						and math.abs(m.Scale.Magnitude - shownMesh.Scale.Magnitude) < 0.02
+						and p.Color == shown.Color
+					))
+				then
 					p.Transparency = 1
 				end
 			end

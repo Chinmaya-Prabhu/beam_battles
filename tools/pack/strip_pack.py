@@ -263,6 +263,9 @@ def attach_morphs(rig, parent_of):
 
 
 FACE_IS_ACCESSORY = {"Levi", "AwakenedSukuna", "Mihawk"}
+# Parts dropped by name: Minato (Fox Cloak)'s chakra head mesh carries a face image Roblox no longer serves, so it
+# covered his own head and face with a blank one.
+DROP_PARTS = {"KcmMinato": {"HEAD"}}
 
 
 def strip(rig, key):
@@ -271,6 +274,9 @@ def strip(rig, key):
     before = sum(1 for i in walk(rig) if i.get("class") in PARTS)
     # Fighters whose face is an accessory (a face mesh in its texture) also carry Roblox's default smiley decal on
     # the head, which shows through: it goes.
+    for item in list(walk(rig)):
+        if item.get("class") in PARTS and name(item) in DROP_PARTS.get(key, ()):
+            remove({c: p for p in walk(rig) for c in p.findall("Item")}, item)
     if key in FACE_IS_ACCESSORY:
         for item in list(walk(rig)):
             if item.get("class") == "Decal" and "textures/face.png" in ET.tostring(item, encoding="unicode"):
