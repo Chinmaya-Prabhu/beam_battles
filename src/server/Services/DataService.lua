@@ -4,7 +4,7 @@
 -- Loads on join (with retries); saves on leave, on shutdown and every AUTOSAVE seconds when changed.
 -- If the store can't be reached (e.g. Studio without API access), the player plays on an in-memory profile
 -- that is never written back, so a bad load can never wipe a real save.
--- The client reads progress from player attributes: Zones ("Blossom,Ninja"), Ladder_<Zone>, Boss_<Zone>,
+-- The client reads progress from player attributes: Zones ("Walled,Blossom"), Ladder_<Zone>, Boss_<Zone>,
 -- Power, Gear, Stations ("PunchPost,Bench"), Rebirths, and Champion / ChampionMutation /
 -- ChampionMult for the equipped fighter, Cash, Stands and Plot (the plot index this session).
 local DataStoreService = game:GetService("DataStoreService")

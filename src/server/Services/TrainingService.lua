@@ -300,7 +300,7 @@ local DEBUG_NEW = {
 	"Tsluffy",
 }
 
--- Zones that open at a Power level (Blossom Academy at 2K): opened the moment the player first reaches it.
+-- Zones that open at a Power level (the first zone, the Walled City, at 2K): opened the moment the player first reaches it.
 local function openZones(player, data)
 	for name, zone in Config.Zones do
 		if zone.unlockPower and data.power >= zone.unlockPower and not data.zones[name] then

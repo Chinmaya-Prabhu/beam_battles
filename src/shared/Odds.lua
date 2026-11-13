@@ -86,7 +86,7 @@ function Odds.shiftRarity(weights, steps)
 end
 
 -- Guardian spawn weights for `rung` in zone pool `poolName`: the ladder's odds (Config.GuardianOdds), shifted
--- up only as far as the zone's pool starts (Walled has nothing below Epic: two steps; Pirate one), then
+-- up only as far as the zone's pool starts (Pirate starts at Epic: two steps), then
 -- capped at the top so the rarest are a treat, not every spawn (the pools have one or two fighters there).
 local GUARDIAN_CAP = { Mythic = 0.15, Secret = 0.01 } -- (tools/sim/pacing.py: Secrets take about a week)
 function Odds.guardianWeights(rung, poolName)

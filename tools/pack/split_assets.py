@@ -45,7 +45,7 @@ WHOLE = {
     "baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna", "Aokiji.rbxm": "Aokiji",
     "gear5.rbxm": "Gear5Luffy", "roger.rbxm": "Roger", "BeastGohan.rbxm": "BeastGohan", "UIGoku.rbxm": "UIGoku",
     "UEvegeta.rbxm": "UEVegeta", "ss4gogeta.rbxm": "SS4Gogeta", "Gogeta.rbxm": "Gogeta",
-    "erza.rbxm": "Erza",
+    "erza.rbxm": "Erza", "beasttitan.rbxm": "BeastTitan", "carttitan.rbxm": "CartTitan", "jawtitan.rbxm": "JawTitan",
 }
 HASHIRA = {  # inside assets/Hashiras.rbxm's one Model
     "Sanemi": "Sanemi", "Rengoku": "Rengoku", "Iguro": "Iguro", "Muichiro": "Muichiro", "Shinobu": "Shinobu",

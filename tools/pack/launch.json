@@ -29,15 +29,10 @@
     "pool": "Blossom",
     "rarity": "Legendary"
   },
-  "Annie": {
-    "exclusive": false,
-    "pool": "Walled",
-    "rarity": "Legendary"
-  },
   "AttackTitan": {
     "exclusive": true,
     "pool": "Walled",
-    "rarity": "Secret"
+    "rarity": "Legendary"
   },
   "AwakenedBakugo": {
     "exclusive": false,
@@ -67,7 +62,7 @@
   "ErenPostTimeSkip": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Legendary"
+    "rarity": "Uncommon"
   },
   "Eri": {
     "exclusive": false,
@@ -77,12 +72,12 @@
   "Erwin": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Mythic"
+    "rarity": "Uncommon"
   },
   "FemaleTitan": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Secret"
+    "rarity": "Epic"
   },
   "Gaara": {
     "exclusive": false,
@@ -157,7 +152,7 @@
   "Mikasa": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Legendary"
+    "rarity": "Uncommon"
   },
   "Minato": {
     "exclusive": false,
@@ -247,7 +242,7 @@
   "Whitebeard": {
     "exclusive": true,
     "pool": "Pirate",
-    "rarity": "Mythic"
+    "rarity": "Secret"
   },
   "Yuji": {
     "exclusive": false,
@@ -357,12 +352,12 @@
   "Levi": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Mythic"
+    "rarity": "Rare"
   },
   "ArmoredTitan": {
     "exclusive": false,
     "pool": "Walled",
-    "rarity": "Secret"
+    "rarity": "Legendary"
   },
   "AwakenedSukuna": {
     "exclusive": false,
@@ -478,5 +473,25 @@
     "exclusive": false,
     "pool": "Hub",
     "rarity": "Legendary"
+  },
+  "Sasha": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Common"
+  },
+  "JawTitan": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Rare"
+  },
+  "CartTitan": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Rare"
+  },
+  "BeastTitan": {
+    "exclusive": false,
+    "pool": "Walled",
+    "rarity": "Epic"
   }
 }

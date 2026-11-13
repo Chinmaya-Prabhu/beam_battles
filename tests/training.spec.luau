@@ -9,8 +9,8 @@ for i = 2, Training.LadderTop do
 	assert(b.mult > a.mult, "gear " .. i .. " beats the one before")
 	assert(b.cost > a.cost, "gear " .. i .. " costs more")
 end
--- Stations: stronger zone by zone.
-local order = { "Hub", "Blossom", "Ninja", "Pirate", "Walled" }
+-- Stations: stronger zone by zone, in the order the zones open (Config.ZoneOrder).
+local order = { "Hub", "Walled", "Blossom", "Ninja", "Pirate" }
 local last = 0
 for _, zone in order do
 	for _, s in Training.Stations[zone] do
@@ -42,11 +42,11 @@ assert(Training.canBuyGear(1, 2, 1e3), "buy wooden weights")
 assert(Training.canBuyGear(1, 3, 1e9), "stock can skip ahead")
 assert(not Training.canBuyGear(3, 2, 1e9), "never downgrade")
 eq(select(2, Training.canBuyGear(10, 11, 1e18, 0)), "NEEDS REBIRTH 1", "rebirth-gated weights")
-assert(Training.canBuyGear(10, 11, 1e18, 1, { Walled = true }, 1e18), "rebirth 1 unlocks the turtle shell")
+assert(Training.canBuyGear(10, 11, 1e18, 1, { Pirate = true }, 1e18), "rebirth 1 unlocks the turtle shell")
 assert(not Training.canBuyGear(1, 2, 999), "needs the cash")
 eq(select(2, Training.canBuyGear(3, 4, 1e18, 0, {})), "OPEN THE ZONE FIRST", "zone-gated weights")
-assert(Training.canBuyGear(3, 4, 1e18, 0, { Blossom = true }, 10e3), "sold once Blossom is open")
-eq(select(2, Training.canBuyGear(3, 4, 1e18, 0, { Blossom = true }, 0)), "NEEDS POWER", "weights need Power too")
+assert(Training.canBuyGear(3, 4, 1e18, 0, { Walled = true }, 10e3), "sold once the first zone (Walled) is open")
+eq(select(2, Training.canBuyGear(3, 4, 1e18, 0, { Walled = true }, 0)), "NEEDS POWER", "weights need Power too")
 assert(not Training.canBuyGear(13, 14, 1e18, 9), "premium gear is never bought with cash")
 eq(Training.bestGear(4, 14), 14, "premium gear worn over the ladder")
 eq(Training.bestGear(13, 14), 14, "premium weights are always worn")
@@ -62,9 +62,9 @@ for ladder = 1, Training.LadderTop do
 end
 eq(Training.perRep(13, 1, 1, 0, 1, 14), 10000, "perRep uses the premium multiplier")
 eq(Training.bestGear(4, nil), 4, "ladder gear without premium")
-assert(Training.canBuyStation("AcademyPost", 2e3, 500e3, false), "buy the academy post")
-eq(select(2, Training.canBuyStation("AcademyPost", 1999, 1e9, false)), "NEEDS POWER", "academy post needs power")
-eq(select(2, Training.canBuyStation("AcademyPost", 1e9, 1, false)), "NOT ENOUGH CASH", "academy post needs cash")
+assert(Training.canBuyStation("WalledPost", 2e3, 500e3, false), "buy the first zone's post")
+eq(select(2, Training.canBuyStation("WalledPost", 1999, 1e9, false)), "NEEDS POWER", "the first post needs power")
+eq(select(2, Training.canBuyStation("WalledPost", 1e9, 1, false)), "NOT ENOUGH CASH", "the first post needs cash")
 -- Rate cap.
 eq(Training.accept(100, 0.2), math.floor(Training.MaxCps * 0.2 * 1.25 + 2), "batch capped")
 eq(Training.accept(3, 0.2), 3, "honest batch kept")

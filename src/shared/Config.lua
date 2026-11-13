@@ -54,7 +54,7 @@ Config.Tiers = {
 		botDelay = 5,
 		weights = { Epic = 80, Legendary = 16, Mythic = 3.7, Secret = 0.3 },
 	},
-	-- Walled City only: the top of the drop ladder.
+	-- The last zone only (Pirate Bay): the top of the drop ladder.
 	Celestial = {
 		trim = Color3.fromRGB(255, 120, 230),
 		power = 250e6,
@@ -196,7 +196,7 @@ Config.Push = {
 	-- multiplies it by botRarityStep (or the zone's own), so a rarer prize is guarded by a stronger rival.
 	botPower = { Tutorial = 30, Bronze = 1e3, Silver = 4e3, Gold = 320e3, Diamond = 16e6, Celestial = 600e6 },
 	botRarityStep = 1.5,
-	hubRarityStep = { Silver = 4 }, -- (hub Silver shares Blossom's drops: its rare ones can't be cheaper here)
+	hubRarityStep = { Silver = 4 }, -- (hub Silver shares the first zone's odds: its rare ones can't be cheaper here)
 }
 
 -- Beam Rally (docs/PROGRESSION.md, rally section): one orb flies between the players and must be deflected
@@ -238,10 +238,10 @@ Config.BotSkill = {
 	Silver = { base = 0.99, fade = 0.4, perfect = 0.3, smash = 0.4 },
 	Gold = { base = 0.99, fade = 0.3, perfect = 0.4, smash = 0.5 },
 	Diamond = { base = 0.99, fade = 0.23, perfect = 0.5, smash = 0.6 },
-	Master = { base = 0.995, fade = 0.17, perfect = 0.6, smash = 0.7 }, -- late Pirate, Walled
+	Master = { base = 0.995, fade = 0.17, perfect = 0.6, smash = 0.7 }, -- the last two zones
 	Legend = { base = 0.997, fade = 0.13, perfect = 0.7, smash = 0.8 }, -- the last guardians and the Titan
 }
-Config.BotSkill.Celestial = Config.BotSkill.Master -- Walled City's altar bots
+Config.BotSkill.Celestial = Config.BotSkill.Master -- the last zone's altar bots
 
 -- Bot rivals: clicks per second by altar tier (low, high). A first-ever clash uses the easy band.
 Config.Bots = {
@@ -294,85 +294,119 @@ Config.Island = {
 	-- Zone gates on piers at the north rim, in ladder order left to right as you walk up from the plaza.
 	gates = {
 		-- `color`: each gate's own colour (its torii, pier and signpost arm), so the four don't look alike.
-		{ zone = "Blossom", title = "BLOSSOM", angle = 245, open = false, color = Color3.fromRGB(255, 130, 185) },
-		{ zone = "Ninja", title = "NINJA", angle = 265, color = Color3.fromRGB(255, 140, 30) },
-		{ zone = "Pirate", title = "PIRATE", angle = 285, color = Color3.fromRGB(40, 100, 210) },
-		{ zone = "Walled", title = "WALLED", angle = 305, color = Color3.fromRGB(80, 150, 70) },
+		{ zone = "Walled", title = "WALLED", angle = 245, open = false, color = Color3.fromRGB(80, 150, 70) },
+		{ zone = "Blossom", title = "BLOSSOM", angle = 265, color = Color3.fromRGB(255, 130, 185) },
+		{ zone = "Ninja", title = "NINJA", angle = 285, color = Color3.fromRGB(255, 140, 30) },
+		{ zone = "Pirate", title = "PIRATE", angle = 305, color = Color3.fromRGB(40, 100, 210) },
 	},
 	waterfalls = { 72, 108 },
 	market = {}, -- (old shop fronts round the plaza: removed, everything they sold is a menu)
 }
 
 -- Zone islands (docs/WORLD_PLAN.md §3-4). Each zone floats out past its hub gate; you climb its Dojo
--- Ladder (5 guardians, then the boss) and beating the boss opens the next zone. `band` is the bot skill
--- range the ladder climbs through (Config.BotSkill names); Power upgrades soften every guardian and boss.
--- `center` is the middle of the zone island's main terrace.
-Config.Zones = {
-	Blossom = {
-		order = 1,
-		title = "BLOSSOM ACADEMY",
-		set = "Blossom",
-		gateAngle = 35,
-		center = Vector3.new(708, 24, 496),
-		series = { "My Hero Academia", "OTHER", "YYH" },
+-- Ladder (5 guardians, then the boss) and beating the boss opens the next zone. `center` is the middle of the
+-- zone island's main terrace. What belongs to a ZONE stays here (island, theme, roster, guardians, boss); what
+-- belongs to its PLACE IN THE ORDER (Power gates, altar odds, bot skill, guardian cash) is in Config.ZoneSlots.
+-- The order (switched 2026-11-13): the Walled City first (its humans are the common drops, its titans the rare
+-- ones), then Blossom Academy, the Ninja Village, and Pirate Bay last (Gear 5, Roger and the Emperors).
+Config.ZoneOrder = { "Walled", "Blossom", "Ninja", "Pirate" }
+
+-- One entry per place in the order. `band` is the bot skill range the ladder climbs through (Config.BotSkill names);
+-- `ladderPower` the Power to challenge guardians 1-5 and the boss (ZoneService), in step with the stations
+-- (tools/sim/cash_weights.py); `tier` the altar tier (drop odds), one step above the hub and up a step per zone;
+-- `botRarityStep` how much stronger a rarer prize's bot is; `bossSkill` the boss's bot skill; `guardianCash` the
+-- first-clear cash per rung (ZoneService). The first zone opens at `unlockPower`; each later one when the zone
+-- before it falls.
+Config.ZoneSlots = {
+	{
 		band = { "Bronze", "Silver" },
-		-- Power to challenge guardians 1-5 and the boss (ZoneService), in step with the zone's stations.
-		-- (Blossom opens at 2K Power, so its first guardian needs 2K; the rest climb from there.)
 		ladderPower = { 2e3, 6e3, 15e3, 40e3, 150e3, 600e3 }, -- (small steps first: the early wins come fast)
 		botRarityStep = 6, -- (a Legendary's bot sits near the boss, about 430K)
-		tier = "Silver", -- altar tier (drop odds): one step above the hub, and up a step per zone
-		guardians = { "Lemillion", "Deku", "Bakugo", "Todoroki", "Hellflame" },
-		boss = { key = "AllMightMode", title = "SYMBOL OF PEACE", rounds = 3, skill = "Gold" },
-		unlocked = false,
-		unlockPower = 2e3, -- Blossom Academy opens when a player first reaches 2K Power (TrainingService)
-		next = "Ninja",
+		tier = "Silver",
+		bossSkill = "Gold",
+		unlockPower = 2e3, -- the first zone opens when a player first reaches 2K Power (TrainingService)
+		guardianCash = 50e3,
 	},
-	Ninja = {
-		order = 2,
-		title = "NINJA VILLAGE",
-		set = "Ninja",
-		gateAngle = 145,
-		center = Vector3.new(-708, 24, 496),
-		series = { "NARUTO", "HXH" },
+	{
 		band = { "Silver", "Gold" },
-		ladderPower = { 1.5e6, 3e6, 6e6, 12e6, 24e6, 50e6 }, -- (tools/sim/cash_weights.py: day 1-2)
+		ladderPower = { 1.5e6, 3e6, 6e6, 12e6, 24e6, 50e6 }, -- (day 1-2)
 		botRarityStep = 2, -- (a Mythic's bot sits at the boss's level)
 		tier = "Gold",
-		guardians = { "Neji", "RockLee", "Gaara", "Kakashi", "Itachi" },
-		boss = { key = "Madara", title = "THE SHADOW", rounds = 3, skill = "Diamond" },
-		unlocked = false,
-		next = "Pirate",
+		bossSkill = "Diamond",
+		guardianCash = 1e6,
 	},
-	Pirate = {
-		order = 3,
-		title = "PIRATE BAY",
-		set = "Pirate",
-		gateAngle = 325,
-		center = Vector3.new(708, 24, -496),
-		series = { "One Piece", "Fairy Tail" },
+	{
 		band = { "Gold", "Master" },
 		ladderPower = { 100e6, 180e6, 300e6, 500e6, 750e6, 1.1e9 }, -- (day 2-3)
 		tier = "Diamond",
-		guardians = { "Tszoro", "TsSanji", "Ace", "Mihawk", "Shanks" },
-		boss = { key = "Whitebeard", title = "THE EMPEROR", rounds = 3, skill = "Master" },
-		unlocked = false,
-		next = "Walled",
+		bossSkill = "Master",
+		guardianCash = 20e6,
 	},
+	{
+		band = { "Diamond", "Legend" },
+		ladderPower = { 2e9, 3e9, 4.5e9, 6.5e9, 9e9, 12e9 }, -- (day 3-5)
+		tier = "Celestial",
+		bossSkill = "Legend",
+		guardianCash = 400e6,
+	},
+}
+
+-- Guardians climb in rarity like the slot's first-win rewards in tools/sim/cash_weights.py (FIRST); the boss gives
+-- its own fighter: Legendary, Mythic, Mythic, then a Secret at the end.
+Config.Zones = {
 	Walled = {
-		order = 4,
 		title = "WALLED CITY",
 		set = "Walled",
 		gateAngle = 215,
 		center = Vector3.new(-708, 24, -496),
 		series = { "AOT", "FATE" },
-		band = { "Diamond", "Legend" },
-		ladderPower = { 2e9, 3e9, 4.5e9, 6.5e9, 9e9, 12e9 }, -- (day 3-5)
-		tier = "Celestial",
-		guardians = { "Annie", "Mikasa", "ErenPostTimeSkip", "Erwin", "Levi" },
-		boss = { key = "AttackTitan", title = "THE TITAN", rounds = 3, skill = "Legend" },
+		guardians = { "Sasha", "Mikasa", "Levi", "JawTitan", "FemaleTitan" },
+		boss = { key = "AttackTitan", title = "THE TITAN", rounds = 3 },
+		unlocked = false,
+	},
+	Blossom = {
+		title = "BLOSSOM ACADEMY",
+		set = "Blossom",
+		gateAngle = 35,
+		center = Vector3.new(708, 24, 496),
+		series = { "My Hero Academia", "OTHER", "YYH" },
+		guardians = { "Lemillion", "Deku", "Todoroki", "AwakenedBakugo", "Sukuna" },
+		boss = { key = "GojoSatoruBlindfoldOff", title = "THE STRONGEST", rounds = 3 },
+		unlocked = false,
+	},
+	Ninja = {
+		title = "NINJA VILLAGE",
+		set = "Ninja",
+		gateAngle = 145,
+		center = Vector3.new(-708, 24, 496),
+		series = { "NARUTO", "HXH" },
+		guardians = { "MightGuy", "Orochimaru", "Itachi", "Jiraiya", "KcmMinato" },
+		boss = { key = "Madara", title = "THE SHADOW", rounds = 3 },
+		unlocked = false,
+	},
+	Pirate = {
+		title = "PIRATE BAY",
+		set = "Pirate",
+		gateAngle = 325,
+		center = Vector3.new(708, 24, -496),
+		series = { "One Piece", "Fairy Tail" },
+		guardians = { "Tszoro", "Mihawk", "Akainu", "Kaido", "Shanks" },
+		boss = { key = "Whitebeard", title = "THE EMPEROR", rounds = 3 },
 		unlocked = false,
 	},
 }
+for i, name in Config.ZoneOrder do
+	local zone, slot = Config.Zones[name], Config.ZoneSlots[i]
+	zone.order = i
+	zone.next = Config.ZoneOrder[i + 1]
+	zone.band = slot.band
+	zone.ladderPower = slot.ladderPower
+	zone.botRarityStep = slot.botRarityStep
+	zone.tier = slot.tier
+	zone.unlockPower = slot.unlockPower
+	zone.guardianCash = slot.guardianCash
+	zone.boss.skill = slot.bossSkill
+end
 
 Config.Drops = {
 	interval = 22, -- seconds between drops onto empty altars

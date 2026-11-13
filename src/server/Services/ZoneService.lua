@@ -285,9 +285,8 @@ local function travelLoop()
 	end
 end
 
--- First-clear prizes: each guardian pays cash (GUARDIAN_CASH[zone] x rung, so the ladder climbs), the boss
+-- First-clear prizes: each guardian pays cash (the zone's slot guardianCash x rung, so the ladder climbs), the boss
 -- gives its exclusive fighter (shared/Fighters.lua `exclusive`) with the full reveal.
-local GUARDIAN_CASH = { Blossom = 50e3, Ninja = 1e6, Pirate = 20e6, Walled = 400e6 }
 
 local function ladderResult(name, zone, rung, isBoss)
 	return function(winner)
@@ -333,7 +332,7 @@ local function ladderResult(name, zone, rung, isBoss)
 		end
 		if (data.ladder[name] or 0) < rung then
 			data.ladder[name] = rung
-			local prize = (GUARDIAN_CASH[name] or 0) * rung
+			local prize = ((Config.Zones[name] and Config.Zones[name].guardianCash) or 0) * rung
 			if prize > 0 then
 				Plots.addCash(winner, prize)
 			end

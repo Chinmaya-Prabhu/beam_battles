@@ -21,17 +21,17 @@ Training.Gear = {
 	{ name = "Cloth Wraps", mult = 1, cost = 0, zone = nil, look = "cloth" },
 	{ name = "Wooden Weights", mult = 2, cost = 1e3, zone = "Hub", look = "wood" },
 	{ name = "Stone Weights", mult = 4, cost = 5e3, zone = "Hub", look = "stone" },
-	{ name = "Iron Weights", mult = 8, cost = 250e3, power = 10e3, zone = "Blossom", look = "iron" },
-	{ name = "Steel Weights", mult = 16, cost = 6e6, power = 150e3, zone = "Blossom", look = "steel" },
-	{ name = "Gold Weights", mult = 32, cost = 100e6, power = 2e6, zone = "Ninja", look = "gold" },
-	{ name = "Chakra Seals", mult = 64, cost = 1e9, power = 20e6, zone = "Ninja", look = "chakra" },
-	{ name = "Sea Rock Shackles", mult = 128, cost = 8e9, power = 150e6, zone = "Pirate", look = "seastone" },
-	{ name = "Diamond Weights", mult = 256, cost = 60e9, power = 750e6, zone = "Pirate", look = "diamond" },
-	{ name = "Gravity Rings", mult = 512, cost = 400e9, power = 8e9, zone = "Walled", look = "gravity" },
+	{ name = "Iron Weights", mult = 8, cost = 250e3, power = 10e3, zone = "Walled", look = "iron" },
+	{ name = "Steel Weights", mult = 16, cost = 6e6, power = 150e3, zone = "Walled", look = "steel" },
+	{ name = "Gold Weights", mult = 32, cost = 100e6, power = 2e6, zone = "Blossom", look = "gold" },
+	{ name = "Chakra Seals", mult = 64, cost = 1e9, power = 20e6, zone = "Blossom", look = "chakra" },
+	{ name = "Sea Rock Shackles", mult = 128, cost = 8e9, power = 150e6, zone = "Ninja", look = "seastone" },
+	{ name = "Diamond Weights", mult = 256, cost = 60e9, power = 750e6, zone = "Ninja", look = "diamond" },
+	{ name = "Gravity Rings", mult = 512, cost = 400e9, power = 8e9, zone = "Pirate", look = "gravity" },
 	-- Rebirth-gated: only sold to players with at least `rebirth` rebirths.
-	{ name = "Turtle Shell Weights", mult = 800, cost = 2e12, power = 8e9, zone = "Walled", look = "turtle", rebirth = 1 },
-	{ name = "Warrior Armor Weights", mult = 1600, cost = 15e12, power = 30e9, zone = "Walled", look = "saiyan", rebirth = 3 },
-	{ name = "Limitless Instinct Weights", mult = 5000, cost = 100e12, power = 150e9, zone = "Walled", look = "ultra", rebirth = 5 },
+	{ name = "Turtle Shell Weights", mult = 800, cost = 2e12, power = 8e9, zone = "Pirate", look = "turtle", rebirth = 1 },
+	{ name = "Warrior Armor Weights", mult = 1600, cost = 15e12, power = 30e9, zone = "Pirate", look = "saiyan", rebirth = 3 },
+	{ name = "Limitless Instinct Weights", mult = 5000, cost = 100e12, power = 150e9, zone = "Pirate", look = "ultra", rebirth = 5 },
 	-- Premium (Robux gamepasses, shared/Products.lua): never bought with Cash and never outgrown: they give the
 	-- larger of their own `mult` and `boost` times the player's best ladder weight (Training.gearMult).
 	-- Nine-Tail Fox (R$299) is the entry tier, Eternal Dragon (R$599) the top one: the later tier always trains best
@@ -88,21 +88,23 @@ Training.Stations = {
 		{ key = "PunchPost", name = "Punching Post", style = "punch", mult = 2, power = 0, price = 0 },
 		{ key = "Sandbag", name = "Sandbag", style = "punch", mult = 3, power = 200, price = 30e3 },
 	},
+	-- Each zone's own post and bag; their numbers go with the zone's place in the order (Config.ZoneOrder:
+	-- Walled first, then Blossom, Ninja, Pirate).
+	Walled = {
+		{ key = "WalledPost", name = "Iron Post", style = "punch", mult = 5, power = 2e3, price = 500e3 },
+		{ key = "WalledBag", name = "Titan Bag", style = "punch", mult = 8, power = 10e3, price = 3e6 },
+	},
 	Blossom = {
-		{ key = "AcademyPost", name = "Academy Post", style = "punch", mult = 5, power = 2e3, price = 500e3 },
-		{ key = "AcademyBag", name = "Academy Bag", style = "punch", mult = 8, power = 10e3, price = 3e6 },
+		{ key = "AcademyPost", name = "Academy Post", style = "punch", mult = 12, power = 200e3, price = 20e6 },
+		{ key = "AcademyBag", name = "Academy Bag", style = "punch", mult = 20, power = 1e6, price = 100e6 },
 	},
 	Ninja = {
-		{ key = "NinjaPost", name = "Makiwara Post", style = "punch", mult = 12, power = 200e3, price = 20e6 },
-		{ key = "NinjaBag", name = "Straw Bag", style = "punch", mult = 20, power = 1e6, price = 100e6 },
+		{ key = "NinjaPost", name = "Makiwara Post", style = "punch", mult = 30, power = 12e6, price = 600e6 },
+		{ key = "NinjaBag", name = "Straw Bag", style = "punch", mult = 50, power = 60e6, price = 3e9 },
 	},
 	Pirate = {
-		{ key = "PiratePost", name = "Mast Post", style = "punch", mult = 30, power = 12e6, price = 600e6 },
-		{ key = "PirateBag", name = "Sea Sack", style = "punch", mult = 50, power = 60e6, price = 3e9 },
-	},
-	Walled = {
-		{ key = "WalledPost", name = "Iron Post", style = "punch", mult = 75, power = 600e6, price = 15e9 },
-		{ key = "WalledBag", name = "Titan Bag", style = "punch", mult = 120, power = 3e9, price = 80e9 },
+		{ key = "PiratePost", name = "Mast Post", style = "punch", mult = 75, power = 600e6, price = 15e9 },
+		{ key = "PirateBag", name = "Sea Sack", style = "punch", mult = 120, power = 3e9, price = 80e9 },
 	},
 }
 -- Saves from before every station became a post or a bag (DataService renames them on load).
@@ -173,7 +175,7 @@ end
 -- Power, each next one RebirthStep times more. Rebirth resets Power, gear and stations; fighters,
 -- the base, cash and zones stay.
 Training.RebirthBonus = 0.5
-Training.RebirthBase = 12e9 -- the Walled City boss (the long game after the four zones)
+Training.RebirthBase = 12e9 -- the last zone's boss (the long game after the four zones)
 Training.RebirthStep = 5
 
 -- Power needed for the next rebirth after `done` rebirths.

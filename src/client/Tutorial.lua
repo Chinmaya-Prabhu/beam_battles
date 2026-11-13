@@ -612,7 +612,7 @@ local function goalPop(data)
 	Debris:AddItem(holder, 2.2)
 end
 
--- A new area just opened (Blossom Academy at 2K Power): a big card in the middle that stays until the player
+-- A new area just opened (the Walled City at 2K Power): a big card in the middle that stays until the player
 -- answers it. GO points the guide beam at the area's gate and opens the map on it.
 local function zonePop(data)
 	local zone = Config.Zones[data.zone]

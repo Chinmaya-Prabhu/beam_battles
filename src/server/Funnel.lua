@@ -5,6 +5,7 @@
 --   Custom events: FirstFighterSeconds and TutorialSeconds.
 local AnalyticsService = game:GetService("AnalyticsService")
 local RunService = game:GetService("RunService")
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared").Config)
 
 local Funnel = {}
 
@@ -21,14 +22,14 @@ local TUTORIAL = {
 	[DONE] = { 9, "BoughtWeights" },
 }
 local PROGRESS = {
-	"EnteredBlossom",
+	"EnteredZone1",
 	"Guardian1",
 	"Guardian2",
 	"Guardian3",
 	"Guardian4",
 	"Guardian5",
-	"BlossomBoss",
-	"EnteredNinja",
+	"Zone1Boss",
+	"EnteredZone2",
 }
 
 local function seconds(data)
@@ -68,12 +69,13 @@ function Funnel.progress(player, data)
 	end
 	local zones = data.stats.zones or {}
 	local stage = 0
-	if zones.Blossom then
-		stage = 1 + (data.ladder.Blossom or 0)
-		if data.bosses.Blossom then
+	local first, second = Config.ZoneOrder[1], Config.ZoneOrder[2]
+	if zones[first] then
+		stage = 1 + (data.ladder[first] or 0)
+		if data.bosses[first] then
 			stage = 7
 		end
-		if zones.Ninja then
+		if zones[second] then
 			stage = 8
 		end
 	end

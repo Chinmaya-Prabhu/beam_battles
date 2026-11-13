@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Training = require(Shared.Training)
+local Config = require(Shared.Config)
 local Format = require(Shared.Format)
 local UIAtlas = require(Shared.UIAtlas)
 local Net = require(Shared.Net)
@@ -28,7 +29,7 @@ function Rebirth.start()
 
 	local open = UIKit.tile(UIKit.menu(), "rebirth", "REBIRTH", { LayoutOrder = 4 })
 	open:SetAttribute("AfterTutorial", true) -- (UIKit.menu shows it once the tutorial is done)
-	open:SetAttribute("OpenWhen", "Boss_Blossom") -- (its bar would sit at 0% for hours before that)
+	open:SetAttribute("OpenWhen", "Boss_" .. Config.ZoneOrder[1]) -- (its bar would sit at 0% for hours before that)
 	-- A dot when it's possible (the window shows how far along it is).
 	local readyDot = UIKit.dot(open)
 

@@ -1908,5 +1908,35 @@
     "rarity": "Legendary",
     "income": 0,
     "parts": 0
+  },
+  {
+    "key": "BeastTitan",
+    "source": "Beast Titan",
+    "display": "Beast Titan",
+    "series": "AOT",
+    "parentInPack": "custom",
+    "rarity": "Rare",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "CartTitan",
+    "source": "Cart Titan",
+    "display": "Cart Titan",
+    "series": "AOT",
+    "parentInPack": "custom",
+    "rarity": "Rare",
+    "income": 0,
+    "parts": 0
+  },
+  {
+    "key": "JawTitan",
+    "source": "Jaw Titan",
+    "display": "Jaw Titan",
+    "series": "AOT",
+    "parentInPack": "custom",
+    "rarity": "Rare",
+    "income": 0,
+    "parts": 0
   }
 ]

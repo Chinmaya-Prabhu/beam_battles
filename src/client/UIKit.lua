@@ -520,7 +520,7 @@ function UIKit.menu(column)
 	-- without finishing it gets them anyway (server TutorialService: player attribute MenuOpen), so nobody is
 	-- ever stuck without CODES or the MAP. After the tutorial they arrive one at a time rather than all at once
 	-- (OpenAfter: minutes after the tutorial ended, player attribute FtueDoneAt; OpenWhen: a player attribute
-	-- that must be set, e.g. Boss_Blossom for REBIRTH), each popping in, so a new kid isn't hit by every button
+	-- that must be set, e.g. Boss_Walled for REBIRTH), each popping in, so a new kid isn't hit by every button
 	-- in the same second and gets a small "something new!" every few minutes.
 	local built = os.clock()
 	local function tutorialTiles()
