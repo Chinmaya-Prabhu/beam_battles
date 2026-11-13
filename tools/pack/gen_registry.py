@@ -31,8 +31,10 @@ STRONG = re.compile(r"Awakened|Mode|Bankai|Gates|Godspeed|Blue|Sage|Kcm|Final|Ho
 OUTFIT = re.compile(r"Alt$|Formal|Suit|JuniorHigh|^Pts|^R1$|^R2$")
 
 
-def income(key, rarity):
-    k = 1.25 if STRONG.search(key) else 0.8 if OUTFIT.search(key) else 1
+def income(key, rarity, boost=None):
+    # Launch fighters: their hand-picked boost in launch.json (x1, x1.25 fan favourite or power-up form, x1.5 the
+    # zone's headline at that rarity: docs/ROSTER_PLAN.md). Others (out of play): the old name rule.
+    k = boost if boost is not None else 1.25 if STRONG.search(key) else 0.8 if OUTFIT.search(key) else 1
     value = INCOME[rarity] * k
     step = 10 ** (len(str(int(value))) - 2)  # two significant figures
     return int(round(value / step) * step)
@@ -99,7 +101,7 @@ def main():
             "\t{ key = %s, display = %s, series = %s, rarity = %s, income = %d, model = %s%s },"
             % (lua_string(f["key"]), lua_string(names["display"].get(f["key"], f["display"])),
                lua_string(f["series"]), lua_string(rarity),
-               income(f["key"], rarity), lua_string(f["key"]), extra)
+               income(f["key"], rarity, l.get("boost") if l else None), lua_string(f["key"]), extra)
         )
     lines += [
         "}",

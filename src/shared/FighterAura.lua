@@ -258,6 +258,7 @@ local SERIES = {
 	YYH = { "spirit", rgb(90, 160, 255), WHITE },
 	["Fairy Tail"] = { "fire", rgb(255, 90, 20), rgb(255, 220, 120) },
 	OTHER = { "magic", rgb(255, 150, 210), WHITE },
+	["Demon Slayer"] = { "spirit", rgb(60, 140, 255), WHITE }, -- (water breathing; each one has their own below)
 }
 local RED, BLACK, BLUE, PURPLE = rgb(255, 40, 40), rgb(14, 6, 18), rgb(70, 160, 255), rgb(160, 60, 255)
 local BY_KEY = {
@@ -371,12 +372,58 @@ local BY_KEY = {
 	Mahoraga = { "spirit", rgb(235, 235, 245), GOLD },
 	GoldenFrieza = { "saiyan", GOLD, PURPLE },
 	-- Others
-	Tanjiro = { "fire", rgb(255, 120, 20), GOLD },
 	Saitama = { "halo", GOLD, WHITE },
 	Accel = { "energy", WHITE, rgb(200, 220, 255) },
 	AfroSamurai = { "dark", BLACK, RED },
 	Rikka = { "energy", PURPLE, WHITE },
 	RikkaAwakened = { "energy", PURPLE, WHITE },
+	-- Added 2026-11-13 (docs/ROSTER_PLAN.md): the Hub's Demon Slayer core, each in their breathing's colours
+	Tanjiro = { "fire", rgb(255, 120, 40), rgb(120, 200, 255) }, -- sun and water
+	Zenitsu = { "lightning", rgb(255, 220, 50), WHITE },
+	Inosuke = { "dark", rgb(70, 90, 140), rgb(200, 220, 255) }, -- beast
+	Nezuko = { "fire", rgb(255, 90, 150), rgb(255, 200, 220) }, -- her blood demon art
+	Shinobu = { "magic", rgb(190, 120, 255), rgb(255, 200, 240) }, -- insect
+	Mitsuri = { "spirit", rgb(255, 120, 190), rgb(150, 255, 170) }, -- love
+	Iguro = { "dark", rgb(140, 60, 200), WHITE }, -- serpent
+	Giyu = { "spirit", rgb(60, 140, 255), WHITE }, -- water
+	Sanemi = { "spirit", rgb(150, 230, 170), WHITE }, -- wind
+	Rengoku = { "fire", rgb(255, 100, 20), GOLD }, -- flame
+	Muichiro = { "steam", rgb(200, 230, 255), WHITE }, -- mist
+	Gyomei = { "energy", rgb(190, 160, 110), WHITE }, -- stone
+	Erza = { "magic", rgb(255, 70, 70), rgb(230, 230, 255) }, -- scarlet and her armour's silver
+	-- The Walled City: soldiers in energy, titans in steam
+	Sasha = { "energy", rgb(190, 140, 90), WHITE },
+	Mikasa = { "energy", rgb(220, 40, 60), WHITE },
+	Erwin = { "energy", GOLD, WHITE },
+	Levi = { "energy", rgb(120, 150, 190), WHITE },
+	ArmoredTitan = { "steam", rgb(220, 190, 120), rgb(255, 140, 50) },
+	BeastTitan = { "steam", rgb(200, 170, 130), rgb(255, 140, 60) },
+	JawTitan = { "steam", rgb(235, 225, 200), GOLD },
+	CartTitan = { "steam", rgb(230, 225, 215), rgb(255, 160, 90) },
+	-- Blossom Academy
+	["100Deku"] = { "lightning", rgb(80, 255, 120), WHITE },
+	AwakenedSukuna = { "dark", BLACK, rgb(200, 20, 40) },
+	-- Ninja Village
+	SixPathsNaruto = { "spirit", GOLD, BLACK }, -- the Truth-Seeking Orbs
+	BaryonNaruto = { "fire", rgb(255, 80, 30), PURPLE },
+	Kaguya = { "magic", rgb(220, 200, 255), WHITE },
+	Jiraiya = { "energy", rgb(255, 90, 40), WHITE }, -- sage
+	Hashirama = { "energy", rgb(80, 200, 90), GOLD }, -- wood
+	Orochimaru = { "dark", PURPLE, rgb(120, 220, 80) },
+	Tsunade = { "energy", rgb(110, 240, 180), WHITE },
+	-- Pirate Bay
+	Tszoro = { "dark", BLACK, rgb(60, 220, 110) },
+	TsSanji = { "fire", rgb(255, 90, 30), GOLD },
+	Whitebeard = { "energy", WHITE, rgb(150, 200, 255) }, -- the quake
+	Aokiji = { "magic", rgb(140, 210, 255), WHITE }, -- ice
+	Gear5Luffy = { "steam", WHITE, rgb(210, 190, 255) },
+	Roger = { "dark", BLACK, RED }, -- Conqueror's Haki
+	-- Dragon Ball: the new forms
+	Gogeta = { "saiyan", GOLD, WHITE },
+	SS4Gogeta = { "saiyan", rgb(220, 30, 40), GOLD },
+	UIGoku = { "saiyan", rgb(225, 230, 240), rgb(120, 180, 255) },
+	UEVegeta = { "saiyan", PURPLE, rgb(255, 120, 200) },
+	BeastGohan = { "saiyan", rgb(235, 235, 245), RED },
 }
 STYLES.halo = { "halo", "sparkles" } -- (Saitama: he doesn't need one)
 
