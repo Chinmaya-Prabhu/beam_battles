@@ -38,6 +38,7 @@ PACKS = {
         "Tsunade": "Tsunade", "pain": None,
     },
     "AOT.rbxm": {"Levi": "Levi", "Armored Titan": "ArmoredTitan", "Eren": None, "Mikasa": None},
+    "erenerwin.rbxm": {"Eren": "ErenPostTimeSkip", "erwin": "Erwin"},  # (the Walled City's Eren and Erwin)
     # (its Tanjiro replaces the pack's look)
     "demonslayer.rbxm": {"Tanjiro": "Tanjiro", "Zenitsu": "Zenitsu", "Inosuke": "Inosuke", "Nezuko": "Nezuko"},
     # (its Deku is the new look of 100% Deku)
