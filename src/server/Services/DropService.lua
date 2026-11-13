@@ -358,6 +358,27 @@ function DropService.gallery()
 	local folder = Instance.new("Folder")
 	folder.Name = "FighterGallery"
 	folder.Parent = workspace
+	-- A list ("BeastTitan,Whitebeard,..."): just those, in one row 26 apart at altar size and room (Config.Fit),
+	-- to check sizes against each other.
+	local list = workspace:GetAttribute("FighterGallery")
+	if type(list) == "string" then
+		local i = 0
+		for key in string.gmatch(list, "[^,]+") do
+			if Fighters.ByKey[key] then
+				local feet = Vector3.new(-120 + i * 26, 0, -170)
+				local model = FighterModels.spawn(key, feet, Vector3.new(0, 0, 1), {
+					parent = folder,
+					scale = FighterModels.scaleFor(key, "Table"),
+					fit = Config.Fit.Table,
+				})
+				if model then
+					nameplate(model, Fighters.ByKey[key], "Normal", "Diamond")
+				end
+				i += 1
+			end
+		end
+		return
+	end
 	for i, fighter in Fighters.Launch do
 		local col = (i - 1) % 16
 		local row = math.floor((i - 1) / 16)

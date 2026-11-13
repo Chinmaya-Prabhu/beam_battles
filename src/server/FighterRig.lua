@@ -270,8 +270,18 @@ local function solveRest(source)
 	end
 end
 
+-- A body part by name, never a container that happens to share it.
+local function bodyPart(model, name)
+	for _, child in model:GetChildren() do
+		if child.Name == name and child:IsA("BasePart") then
+			return child
+		end
+	end
+	return nil
+end
+
 local function colorOf(source, name)
-	local p = source:FindFirstChild(name)
+	local p = bodyPart(source, name)
 	return p and p:IsA("BasePart") and p.Color or Color3.fromRGB(242, 243, 243)
 end
 
@@ -319,8 +329,8 @@ function FighterRig.build(key, source)
 		end
 	end
 	local src = source:Clone()
-	local srcRoot = src:FindFirstChild("HumanoidRootPart")
-	local torso = src:FindFirstChild("Torso")
+	local srcRoot = bodyPart(src, "HumanoidRootPart")
+	local torso = bodyPart(src, "Torso")
 	if torso and not srcRoot then
 		-- A hand-made rig saved without its root part (Mahoraga): make one where the Torso is.
 		srcRoot = Instance.new("Part")
@@ -365,6 +375,14 @@ function FighterRig.build(key, source)
 					table.insert(nested, { part = d, limb = limb, rel = limb.CFrame:ToObjectSpace(d.CFrame) })
 				end
 			end
+		end
+	end
+	-- Every part to the origin together first: a part with no joint to the root (Nezuko and Shinobu have no neck)
+	-- would otherwise stay where the model was built while the joints carry the rest.
+	local toOrigin = srcRoot.CFrame:Inverse()
+	for _, p in src:GetDescendants() do
+		if p:IsA("BasePart") then
+			p.CFrame = toOrigin * p.CFrame
 		end
 	end
 	srcRoot.CFrame = CFrame.new()
@@ -415,9 +433,20 @@ function FighterRig.build(key, source)
 	local items = Instance.new("Folder")
 	items.Name = "Items"
 	items.Parent = rig
-	local srcHead = src:FindFirstChild("Head")
+	local srcHead = bodyPart(src, "Head")
 	if srcHead then
 		region[srcHead] = "Head"
+	end
+	-- Every piece below gets its own weld to its new segment. Old welds between two pieces (the pack head and the
+	-- hair welded to it) must go first: moving one piece while still welded to another that hasn't moved yet drags
+	-- it back to where the model was built (Nezuko's head ended up 1000 studs away).
+	local function moving(part)
+		return part and region[part] and (not BODY6[part.Name] or part == srcHead)
+	end
+	for _, j in src:GetDescendants() do
+		if (j:IsA("JointInstance") or j:IsA("WeldConstraint")) and (moving(j.Part0) or moving(j.Part1)) then
+			j:Destroy()
+		end
 	end
 	for part, r in region do
 		if (not BODY6[part.Name] or part == srcHead) and from[r] and to[r] then
@@ -441,6 +470,19 @@ function FighterRig.build(key, source)
 				weld.Part0 = segment
 				weld.Part1 = part
 				weld.Parent = part
+				-- Parts kept inside this one (the Cart Titan's meshes, a Jaw Titan claw) ride on it: weld each, or they
+				-- come loose and fall the moment the fighter spawns.
+				for _, d in part:GetDescendants() do
+					if d:IsA("BasePart") and not region[d] then
+						d.Anchored = false
+						d.Massless = true
+						d.CanCollide = false
+						local hold = Instance.new("WeldConstraint")
+						hold.Part0 = part
+						hold.Part1 = d
+						hold.Parent = d
+					end
+				end
 			end
 		end
 	end

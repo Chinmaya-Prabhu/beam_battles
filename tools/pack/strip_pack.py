@@ -266,6 +266,11 @@ def strip(rig, key):
     """Strips a deep copy of one rig in place and returns stats."""
     parent_of = {c: p for p in walk(rig) for c in p.findall("Item")}
     before = sum(1 for i in walk(rig) if i.get("class") in PARTS)
+    # A container named like a body part (Orochimaru's "Torso" model of morph pieces) would be found by the game's
+    # FindFirstChild("Torso") instead of the body: give it another name.
+    for item in rig.findall("Item"):
+        if item.get("class") not in PARTS and name(item) in BODY:
+            set_name(item, name(item).replace(" ", "") + "Group")
 
     # Nested rigs (JoJo stands, "[ SEMI-PRO ]" name-tag models) are separate entries or junk.
     for item in list(walk(rig)):
