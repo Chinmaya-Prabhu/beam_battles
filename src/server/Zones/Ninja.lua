@@ -50,7 +50,7 @@ local LEDGE_Y = BRICK * 44 -- the carved back cliff's ledge (scenery)
 local function dress(root, frame, L)
 	local d = K.Core.model(root, "Dressing", frame)
 	-- One avenue from the gate to the boss, and short side paths into the court and the training yard.
-	K.Terrain.path(d, L(0, 0, -45), 370, 10, set)
+	K.Terrain.path(d, L(0, 0, 135), 370, 10, set) -- (z 135 to the gate at -235)
 	K.Terrain.path(d, L(-44, 0, -212, 90), 30, 8, set) -- (into the training yard)
 	-- The guardians' gateway: one big torii where the avenue leaves the drop court.
 	K.Build.torii(d, L(0, 0, -50), 18, 18, { color = C.vermilion })
