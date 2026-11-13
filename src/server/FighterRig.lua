@@ -18,7 +18,13 @@ local FighterRig = {}
 -- true: every R15 body part is hidden; a set: just those (Frieza's torso is invisible in his model, his limbs are not).
 -- (Jaw and Cart Titan are meshes on an invisible skeleton built in tools/pack/split_assets.py.)
 local HIDDEN_BODY =
-	{ GoldenFrieza = true, Frieza = { UpperTorso = true, LowerTorso = true }, JawTitan = true, CartTitan = true }
+	{
+		GoldenFrieza = true,
+		Frieza = { UpperTorso = true, LowerTorso = true },
+		JawTitan = true,
+		CartTitan = true,
+		AttackTitan = true, -- (its look is its "Fake" titan meshes; the blocky body under them would poke out)
+	}
 -- The biggest body a fighter keeps (Whitebeard is 2.6x a normal avatar): a model built larger than this (Cell Max
 -- is 12x) is scaled down to it, so nothing towers over its altar, stand or card.
 local MAX_BODY = 2.6
@@ -564,6 +570,10 @@ function FighterRig.build(key, source)
 	local function seen(p)
 		local m = headMesh(p)
 		return p.Transparency < 0.95 and m and m.Scale.Magnitude > 0.05
+	end
+	-- A FakeHead that is its own mesh (the new Attack Titan's titan head) is the head: the block under it goes.
+	if packHead and fakeHead and fakeHead:IsA("MeshPart") and fakeHead.Transparency < 0.95 then
+		packHead.Transparency = 1
 	end
 	if packHead then
 		local stack = {}

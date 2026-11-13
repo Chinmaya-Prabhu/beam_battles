@@ -402,7 +402,6 @@ local BY_KEY = {
 	CartTitan = { "steam", rgb(230, 225, 215), rgb(255, 160, 90) },
 	-- Blossom Academy
 	["100Deku"] = { "lightning", rgb(80, 255, 120), WHITE },
-	DekuOFA = { "lightning", rgb(80, 255, 120), WHITE },
 	Kirishima = { "energy", rgb(230, 40, 40), rgb(255, 200, 160) }, -- hardening
 	Aizawa = { "energy", rgb(255, 60, 60), WHITE }, -- erasure: red eyes
 	Dabi = { "fire", rgb(40, 110, 255), rgb(170, 220, 255) }, -- blue flames

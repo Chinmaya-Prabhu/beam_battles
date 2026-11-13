@@ -587,12 +587,6 @@
     "rarity": "Epic",
     "boost": 1.5
   },
-  "DekuOFA": {
-    "exclusive": false,
-    "pool": "Blossom",
-    "rarity": "Epic",
-    "boost": 1.25
-  },
   "Kirishima": {
     "exclusive": false,
     "pool": "Blossom",

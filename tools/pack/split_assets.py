@@ -40,15 +40,15 @@ PACKS = {
     "AOT.rbxm": {"Levi": "Levi", "Armored Titan": "ArmoredTitan", "Eren": None, "Mikasa": None},
     # (its Tanjiro replaces the pack's look)
     "demonslayer.rbxm": {"Tanjiro": "Tanjiro", "Zenitsu": "Zenitsu", "Inosuke": "Inosuke", "Nezuko": "Nezuko"},
-    # (its Deku takes Deku Awakened's place in Blossom Academy)
-    "mha.rbxm": {"Shigaraki": "Shigaraki", "Kirishima": "Kirishima", "Deku": "DekuOFA", "Dabi": "Dabi",
+    # (its Deku is the new look of 100% Deku)
+    "mha.rbxm": {"Shigaraki": "Shigaraki", "Kirishima": "Kirishima", "Deku": "100Deku", "Dabi": "Dabi",
                  "All for One": "AllForOne", "Aizawa": "Aizawa"},
 }
 WHOLE = {
     "baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna", "Aokiji.rbxm": "Aokiji",
     "gear5.rbxm": "Gear5Luffy", "roger.rbxm": "Roger", "BeastGohan.rbxm": "BeastGohan", "UIGoku.rbxm": "UIGoku",
     "UEvegeta.rbxm": "UEVegeta", "ss4gogeta.rbxm": "SS4Gogeta", "Gogeta.rbxm": "Gogeta",
-    "erza.rbxm": "Erza", "beasttitan.rbxm": "BeastTitan",
+    "erza.rbxm": "Erza", "newlegendarybroly.rbxm": "LssjBroly", "newattacktitan.rbxm": "AttackTitan", "beasttitan.rbxm": "BeastTitan",
 }
 HASHIRA = {  # inside assets/Hashiras.rbxm's one Model
     "Sanemi": "Sanemi", "Rengoku": "Rengoku", "Iguro": "Iguro", "Muichiro": "Muichiro", "Shinobu": "Shinobu",
@@ -253,8 +253,9 @@ def main():
     save(root, rig, "SixPathsNaruto")
 
     for fname, key in WHOLE.items():
-        shutil.copy(os.path.join(ASSETS, fname), os.path.join(OUT, key + ".rbxm"))
-        print("wrote", key)
+        # (through save, so a rig kept one level down, like the new Broly's "StarterCharacter", is unwrapped)
+        root = ET.parse(to_xml(os.path.join(ASSETS, fname))).getroot()
+        save(root, root.find("Item"), key)
     rig_titans()
 
 

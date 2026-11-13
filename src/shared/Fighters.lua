@@ -196,7 +196,6 @@ Fighters.List = {
 	{ key = "BeastTitan", display = "Beast Titan", series = "AOT", rarity = "Epic", income = 15000, model = "BeastTitan", pool = "Walled", launch = true },
 	{ key = "CartTitan", display = "Cart Titan", series = "AOT", rarity = "Rare", income = 2000, model = "CartTitan", pool = "Walled", launch = true },
 	{ key = "JawTitan", display = "Jaw Titan", series = "AOT", rarity = "Rare", income = 2500, model = "JawTitan", pool = "Walled", launch = true },
-	{ key = "DekuOFA", display = "Dekku (One For All)", series = "My Hero Academia", rarity = "Epic", income = 12000, model = "DekuOFA", pool = "Blossom", launch = true },
 	{ key = "Kirishima", display = "Kirishimo", series = "My Hero Academia", rarity = "Rare", income = 2000, model = "Kirishima", pool = "Blossom", launch = true },
 	{ key = "Aizawa", display = "Aizawo", series = "My Hero Academia", rarity = "Rare", income = 2000, model = "Aizawa", pool = "Blossom", launch = true },
 	{ key = "Dabi", display = "Dabii", series = "My Hero Academia", rarity = "Epic", income = 10000, model = "Dabi", pool = "Blossom", launch = true },
