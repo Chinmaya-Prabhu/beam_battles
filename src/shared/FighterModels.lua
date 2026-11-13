@@ -139,6 +139,14 @@ function FighterModels.spawn(key, feet, look, opts)
 		-- keeps its own size under the context's scale.
 		model:ScaleTo(model:GetScale() * opts.scale)
 	end
+	if opts.fit then
+		-- Never more than the place's room (Config.Fit): measured at rest, before posing.
+		local size = model:GetExtentsSize()
+		local shrink = math.min(1, opts.fit.width / math.max(size.X, size.Z), opts.fit.height / size.Y)
+		if shrink < 0.98 then
+			model:ScaleTo(model:GetScale() * shrink)
+		end
+	end
 	local pose = opts.pose or Poses.forKey(key)
 	if isR15 then
 		for _, item in model:GetDescendants() do

@@ -20,6 +20,7 @@ function Carry.lift(player, key, mutation)
 	end
 	local model = FighterModels.spawn(key, head.Position, root.CFrame.LookVector, {
 		scale = Carry.Scale * (Config.Mutations[mutation or "Normal"].scale or 1),
+		fit = Config.Fit.Carry,
 		parent = workspace,
 		mutation = mutation,
 		aura = true, -- (its rarity's aura, held up with it)

@@ -144,7 +144,7 @@ local function build(player)
 		key,
 		at,
 		Vector3.new(0, 0, -1),
-		{ scale = scale, parent = folder, mutation = mutation, aura = true }
+		{ scale = scale, fit = Config.Fit.Champion, parent = folder, mutation = mutation, aura = true }
 	)
 	if not model then
 		return

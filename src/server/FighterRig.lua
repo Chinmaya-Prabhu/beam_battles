@@ -15,14 +15,42 @@ local FighterRig = {}
 -- OUTFIT: their Shirt/Pants images no longer load on Roblox: paint the outfit on the body instead
 -- { shirt, shorts, shoes } (arms and torso, upper legs, feet).
 -- true: every R15 body part is hidden; a set: just those (Frieza's torso is invisible in his model, his limbs are not).
-local HIDDEN_BODY = { GoldenFrieza = true, Frieza = { UpperTorso = true, LowerTorso = true } }
+-- (Jaw and Cart Titan are meshes on an invisible skeleton built in tools/pack/split_assets.py.)
+local HIDDEN_BODY =
+	{ GoldenFrieza = true, Frieza = { UpperTorso = true, LowerTorso = true }, JawTitan = true, CartTitan = true }
 -- The biggest body a fighter keeps (Whitebeard is 2.6x a normal avatar): a model built larger than this (Cell Max
 -- is 12x) is scaled down to it, so nothing towers over its altar, stand or card.
 local MAX_BODY = 2.6
 -- Fighters drawn at a set size: 2.565 is Whitebeard's (the biggest original body in the pack); 1.8 sits between his and a
 -- normal avatar.
 local GIANT = 2.565
-local BODY_SCALE = { Kaido = GIANT, BigMom = GIANT, Mahoraga = 1.8 }
+-- The titans: the four big ones at GIANT; the Jaw Titan smaller (it is one of the small, fast ones), the Cart Titan on
+-- four legs lower still (it is long: 1.5 keeps its length near Whitebeard's height).
+local BODY_SCALE = {
+	Kaido = GIANT,
+	BigMom = GIANT,
+	Mahoraga = 1.8,
+	AttackTitan = GIANT,
+	FemaleTitan = GIANT,
+	ArmoredTitan = GIANT,
+	BeastTitan = GIANT,
+	JawTitan = 1.7,
+	CartTitan = 1.5,
+}
+-- A normal R15 avatar from the top of its head to the soles of its feet (studs). Hand-made R15 fighters are sized
+-- by their body, never their sword or hair: Armored Titan came in at 48 studs.
+local R15_HEIGHT = 5.2
+
+-- Head top to feet, from the body parts only.
+local function bodyHeight(rig)
+	local head = rig:FindFirstChild("Head")
+	local feet = { rig:FindFirstChild("LeftFoot"), rig:FindFirstChild("RightFoot") }
+	if not (head and head:IsA("BasePart") and feet[1] and feet[2]) then
+		return nil
+	end
+	local bottom = math.min(feet[1].Position.Y - feet[1].Size.Y / 2, feet[2].Position.Y - feet[2].Size.Y / 2)
+	return head.Position.Y + head.Size.Y / 2 - bottom
+end
 local FACE_FROM = { SageMode = "Tsnaruto" }
 -- Packs that switched faces with a script: the face that works is saved hidden and the one shown points
 -- at a deleted image, so the head is blank. [key] = the decal to show (the other front decals on its part go).
@@ -259,7 +287,17 @@ function FighterRig.build(key, source)
 		end
 		rig.PrimaryPart = rig:FindFirstChild("HumanoidRootPart")
 		rig:SetAttribute("FighterKey", key)
-		rig:SetAttribute("BodyScale", 1)
+		-- Its size: a set one (the titans), else as built but never bigger than the biggest body (MAX_BODY).
+		local height = bodyHeight(rig)
+		local bodyScale = 1
+		if height and height > 0 then
+			local want = BODY_SCALE[key] or math.min(height / R15_HEIGHT, MAX_BODY)
+			if math.abs(want * R15_HEIGHT / height - 1) > 0.03 then
+				rig:ScaleTo(rig:GetScale() * want * R15_HEIGHT / height)
+			end
+			bodyScale = want
+		end
+		rig:SetAttribute("BodyScale", math.abs(bodyScale - 1) > 0.05 and bodyScale or 1)
 		return rig
 	end
 	local description = Instance.new("HumanoidDescription")

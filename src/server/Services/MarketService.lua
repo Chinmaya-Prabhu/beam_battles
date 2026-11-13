@@ -90,6 +90,7 @@ local function show(epoch)
 			local function make(k)
 				return FighterModels.spawn(item.key, feet, -s.spot.LookVector, { -- face the road
 					scale = k,
+					fit = Config.Fit.Table,
 					parent = s.folder,
 					mutation = item.mutation,
 					aura = true,

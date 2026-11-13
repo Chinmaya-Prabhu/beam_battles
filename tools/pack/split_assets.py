@@ -45,7 +45,7 @@ WHOLE = {
     "baryon naruto.rbxm": "BaryonNaruto", "awakened_sukuna.rbxm": "AwakenedSukuna", "Aokiji.rbxm": "Aokiji",
     "gear5.rbxm": "Gear5Luffy", "roger.rbxm": "Roger", "BeastGohan.rbxm": "BeastGohan", "UIGoku.rbxm": "UIGoku",
     "UEvegeta.rbxm": "UEVegeta", "ss4gogeta.rbxm": "SS4Gogeta", "Gogeta.rbxm": "Gogeta",
-    "erza.rbxm": "Erza", "beasttitan.rbxm": "BeastTitan", "carttitan.rbxm": "CartTitan", "jawtitan.rbxm": "JawTitan",
+    "erza.rbxm": "Erza", "beasttitan.rbxm": "BeastTitan",
 }
 HASHIRA = {  # inside assets/Hashiras.rbxm's one Model
     "Sanemi": "Sanemi", "Rengoku": "Rengoku", "Iguro": "Iguro", "Muichiro": "Muichiro", "Shinobu": "Shinobu",
@@ -93,6 +93,127 @@ def save(root, model, key, later=False):
     print("wrote", key, "(later)" if later else "")
 
 
+# ---------------------------------------------------------------- titans without a rig
+# The Jaw and Cart Titan files are welded meshes with no Humanoid or joints. They get an invisible R6 skeleton
+# sized to them (FighterRig.HIDDEN_BODY hides the R15 body built from it); strip_pack's adopt_orphans then welds
+# each mesh cluster to its nearest limb (Jaw) or, inside a "TorsoMorph" model, all of it to the torso (Cart, on four
+# legs). Their own meshes named like body parts are renamed first so they can't be taken for the skeleton.
+R6_NAMES = {"Head", "Torso", "Left Arm", "Right Arm", "Left Leg", "Right Leg", "HumanoidRootPart"}
+
+
+def _cf(item):
+    for p in item.find("Properties"):
+        if p.get("name") == "CFrame":
+            return p
+    return None
+
+
+def _part(parent, name, pos, size, ref):
+    it = ET.SubElement(parent, "Item", {"class": "Part", "referent": ref})
+    pr = ET.SubElement(it, "Properties")
+    ET.SubElement(pr, "string", {"name": "Name"}).text = name
+    cf = ET.SubElement(pr, "CoordinateFrame", {"name": "CFrame"})
+    for k, v in zip(("X", "Y", "Z"), pos):
+        ET.SubElement(cf, k).text = repr(float(v))
+    for k, v in zip(("R00", "R01", "R02", "R10", "R11", "R12", "R20", "R21", "R22"), (1, 0, 0, 0, 1, 0, 0, 0, 1)):
+        ET.SubElement(cf, k).text = str(v)
+    sz = ET.SubElement(pr, "Vector3", {"name": "size"})
+    for k, v in zip(("X", "Y", "Z"), size):
+        ET.SubElement(sz, k).text = repr(float(v))
+    ET.SubElement(pr, "float", {"name": "Transparency"}).text = "1"
+    ET.SubElement(pr, "bool", {"name": "CanCollide"}).text = "false"
+    ET.SubElement(pr, "bool", {"name": "Anchored"}).text = "false"
+    return it
+
+
+def turn_y(model, degrees, pivot):
+    """Turns every part of `model` about the vertical axis through `pivot` (to make a model face -Z)."""
+    a = math.radians(degrees)
+    c, s_ = math.cos(a), math.sin(a)
+    rot = ((c, 0, s_), (0, 1, 0), (-s_, 0, c))
+    for item in model.iter("Item"):
+        cf = _cf(item)
+        if cf is None:
+            continue
+        g = {k.tag: float(k.text) for k in cf}
+        x, z = g["X"] - pivot[0], g["Z"] - pivot[2]
+        g["X"], g["Z"] = pivot[0] + rot[0][0] * x + rot[0][2] * z, pivot[2] + rot[2][0] * x + rot[2][2] * z
+        m = [[g["R%d%d" % (i, j)] for j in range(3)] for i in range(3)]
+        r = [[sum(rot[i][k] * m[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+        for i in range(3):
+            for j in range(3):
+                g["R%d%d" % (i, j)] = r[i][j]
+        for k in cf:
+            k.text = repr(g[k.tag])
+
+
+def skeleton(model, key, scale, torso, all_on_torso=False):
+    """Adds an invisible R6 body (scale = R6 units; `torso` = where the Torso's centre goes) and a Humanoid."""
+    for item in model.iter("Item"):
+        if item.get("class") in ("Part", "MeshPart", "UnionOperation") and name(item) in R6_NAMES:
+            for p in item.find("Properties"):
+                if p.get("name") == "Name":
+                    p.text = "Titan" + p.text.replace(" ", "")
+    if all_on_torso:
+        morph = ET.Element("Item", {"class": "Model", "referent": "SKEL_MORPH"})
+        ET.SubElement(ET.SubElement(morph, "Properties"), "string", {"name": "Name"}).text = "TorsoMorph"
+        for child in list(model.findall("Item")):
+            model.remove(child)
+            morph.append(child)
+        model.append(morph)
+    x, y, z = torso
+    k = scale
+    for nm, off, size in (
+        ("HumanoidRootPart", (0, 0, 0), (2, 2, 1)),
+        ("Torso", (0, 0, 0), (2, 2, 1)),
+        ("Head", (0, 1.5, 0), (2, 1, 1)),
+        ("Left Arm", (-1.5, 0, 0), (1, 2, 1)),
+        ("Right Arm", (1.5, 0, 0), (1, 2, 1)),
+        ("Left Leg", (-0.5, -2, 0), (1, 2, 1)),
+        ("Right Leg", (0.5, -2, 0), (1, 2, 1)),
+    ):
+        _part(model, nm, (x + off[0] * k, y + off[1] * k, z + off[2] * k), [v * k for v in size], "SKEL_" + key + nm.replace(" ", ""))
+    hum = ET.SubElement(model, "Item", {"class": "Humanoid", "referent": "SKEL_" + key + "Humanoid"})
+    ET.SubElement(ET.SubElement(hum, "Properties"), "string", {"name": "Name"}).text = "Humanoid"
+
+
+def parts_box(model):
+    lo, hi = [1e9] * 3, [-1e9] * 3
+    for item in model.iter("Item"):
+        if item.get("class") not in ("Part", "MeshPart", "UnionOperation"):
+            continue
+        cf = _cf(item)
+        size = next((p for p in item.find("Properties") if p.get("name") in ("size", "Size")), None)
+        if cf is None or size is None:
+            continue
+        c = [float(cf.find(a).text) for a in "XYZ"]
+        h = [float(size.find(a).text) / 2 for a in "XYZ"]
+        for i in range(3):
+            lo[i], hi[i] = min(lo[i], c[i] - h[i]), max(hi[i], c[i] + h[i])
+    return lo, hi
+
+
+def rig_titans():
+    tmp = tempfile.mkdtemp()
+    # Jaw Titan: R6 proportions already (torso 18.6 tall: scale 9.3), facing -Z.
+    root = ET.parse(to_xml(os.path.join(ASSETS, "jawtitan.rbxm"))).getroot()
+    model = root.find("Item")
+    torso = next(i for i in model.iter("Item") if name(i) == "Torso" and i.get("class") == "MeshPart")
+    t = [float(_cf(torso).find(a).text) for a in "XYZ"]
+    skeleton(model, "JawTitan", 9.3, t)
+    save(root, model, "JawTitan")
+    # Cart Titan: on four legs, its head at -X: turned to face -Z, everything welded to the torso.
+    root = ET.parse(to_xml(os.path.join(ASSETS, "carttitan.rbxm"))).getroot()
+    model = root.find("Item")
+    lo, hi = parts_box(model)
+    mid = [(lo[i] + hi[i]) / 2 for i in range(3)]
+    turn_y(model, -90, mid)
+    lo, hi = parts_box(model)
+    k = (hi[1] - lo[1]) / 5  # the skeleton spans the titan's height (an R6 body is 5 units tall)
+    skeleton(model, "CartTitan", k, ((lo[0] + hi[0]) / 2, lo[1] + 3 * k, (lo[2] + hi[2]) / 2), all_on_torso=True)
+    save(root, model, "CartTitan")
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     for fname, keys in PACKS.items():
@@ -131,6 +252,7 @@ def main():
     for fname, key in WHOLE.items():
         shutil.copy(os.path.join(ASSETS, fname), os.path.join(OUT, key + ".rbxm"))
         print("wrote", key)
+    rig_titans()
 
 
 if __name__ == "__main__":

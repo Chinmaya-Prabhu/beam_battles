@@ -145,6 +145,7 @@ function DropService.drop(index, forced)
 		local scale = FighterModels.scaleFor(fighter.key, "Table") * (Config.Mutations[mutation].scale or 1)
 		local model = FighterModels.spawn(fighter.key, altar.stand, altar.facing, {
 			scale = scale,
+			fit = Config.Fit.Table,
 			parent = altar.model_parent,
 			mutation = mutation,
 			aura = true,
@@ -241,6 +242,7 @@ function DropService.dropGuardian(index)
 		local function make(k)
 			return FighterModels.spawn(fighter.key, g.top, g.facing, {
 				scale = k,
+				fit = Config.Fit.Table,
 				parent = v.model_parent,
 				mutation = mutation,
 				aura = true,

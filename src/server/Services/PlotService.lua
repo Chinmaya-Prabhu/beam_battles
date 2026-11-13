@@ -148,6 +148,7 @@ local function dress(stand, entry, unlocked, plotIndex)
 		local scale = FighterModels.scaleFor(entry.k, "Plot") * (Config.Mutations[entry.m or "Normal"].scale or 1)
 		local model = FighterModels.spawn(entry.k, stand.top.Position, stand.top.LookVector, {
 			scale = scale,
+			fit = Config.Fit.Plot,
 			parent = stand.model,
 			mutation = entry.m,
 			aura = true,

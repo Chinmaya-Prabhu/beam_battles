@@ -229,6 +229,7 @@ local function swoop()
 			local facing = best:GetAttribute("Facing") or Vector3.new(0, 0, 1)
 			showcase = FighterModels.spawn(SHOWCASE, target, facing, {
 				scale = FighterModels.scaleFor(SHOWCASE, "Table"),
+				fit = Config.Fit.Table,
 				parent = workspace,
 				aura = true,
 			})

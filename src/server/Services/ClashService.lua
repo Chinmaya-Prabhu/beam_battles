@@ -357,7 +357,7 @@ local function addBot(index, side)
 		pick.key,
 		pad.Position,
 		pad.LookVector,
-		{ parent = altar.model_parent, scale = altar.rival and altar.rival.scale, aura = true }
+		{ parent = altar.model_parent, scale = altar.rival and altar.rival.scale, fit = Config.Fit.Clash, aura = true }
 	)
 	if not model then
 		return false
