@@ -51,11 +51,9 @@ local TEXT = {
 	[7] = "STEP ON THE GREEN PAD TO COLLECT!",
 	[10] = "FOLLOW THE ARROW AND BUY STONE WEIGHTS!",
 	-- After the weights, the way into the first zone (its own quest card takes over once inside).
-	[11] = "TRAIN TO "
-		.. Format.short(Config.Zones[Config.ZoneOrder[1]].unlockPower or 0)
-		.. " POWER TO OPEN THE "
-		.. Config.Zones[Config.ZoneOrder[1]].title
-		.. "!",
+	[11] = "TRAIN AT YOUR POST OR WIN FIGHTS AT THE ALTARS: " .. Format.short(
+		Config.Zones[Config.ZoneOrder[1]].unlockPower or 0
+	) .. " POWER OPENS THE NEXT ZONE!",
 	[12] = "THE " .. Config.Zones[Config.ZoneOrder[1]].title .. " IS OPEN! FOLLOW THE ARROW",
 }
 local FIRST_ZONE = Config.ZoneOrder[1]
