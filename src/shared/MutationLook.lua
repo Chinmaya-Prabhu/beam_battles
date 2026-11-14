@@ -158,9 +158,33 @@ function MutationLook.apply(model, mutation)
 		end
 		for _, p in model:GetDescendants() do
 			-- Visible parts only: the face plates (invisible, decal only) and the root keep as they are.
-			if p:IsA("BasePart") and p.Transparency < 0.9 and p.Name ~= "HumanoidRootPart" and not wornOverHead(p) then
-				local region = look.regions and look.regions[regionOf(p)]
-				paint(p, region or look.statue)
+			if p:IsA("BasePart") and p.Transparency < 0.9 and p.Name ~= "HumanoidRootPart" then
+				local spec = look.regions and look.regions[regionOf(p)] or look.statue
+				if not wornOverHead(p) then
+					paint(p, spec)
+				else
+					-- A face worn as a texture: the piece takes the statue's material, its texture stays and is tinted
+					-- the statue's colour, so the face shows in darker gold like every other statue's. A SpecialMesh
+					-- tints its own texture; a MeshPart's can't be, so each client washes it with a Highlight.
+					local color, material, reflectance = table.unpack(spec)
+					p.Material = material
+					p.Reflectance = reflectance
+					p.Color = color
+					local mesh = p:FindFirstChildOfClass("SpecialMesh")
+					if mesh and mesh.TextureId ~= "" then
+						mesh.VertexColor = Vector3.new(color.R, color.G, color.B)
+					elseif p:IsA("MeshPart") or p:FindFirstChildWhichIsA("SurfaceAppearance") then
+						p:SetAttribute("StatueTint", color)
+						CollectionService:AddTag(p, "StatueFace")
+					end
+				end
+			end
+		end
+		-- Face decals take the statue's colour too: features stay, in darker gold.
+		for _, d in model:GetDescendants() do
+			if d:IsA("Decal") and d.Parent:IsA("BasePart") then
+				local spec = look.regions and look.regions[regionOf(d.Parent)] or look.statue
+				d.Color3 = spec[1]
 			end
 		end
 		if look.cycle then
@@ -187,7 +211,9 @@ function MutationLook.startClient()
 	local function add(model)
 		local parts = {}
 		for _, p in model:GetDescendants() do
-			if p:IsA("BasePart") and p.Transparency < 0.9 and p.Name ~= "HumanoidRootPart" then
+			local shell = p:IsA("BasePart") and p.Transparency < 0.9 and p.Name ~= "HumanoidRootPart"
+			local face = p:IsA("Decal") or (p:IsA("SpecialMesh") and p.TextureId ~= "") -- (faces cycle too)
+			if shell or face then
 				table.insert(parts, p)
 			end
 		end
@@ -216,7 +242,76 @@ function MutationLook.startClient()
 				continue
 			end
 			for _, s in shells do
-				s.Color = color
+				if s:IsA("Decal") then
+					s.Color3 = color
+				elseif s:IsA("SpecialMesh") then
+					s.VertexColor = Vector3.new(color.R, color.G, color.B)
+				else
+					s.Color = color
+					if s:GetAttribute("StatueTint") then
+						s:SetAttribute("StatueTint", color)
+					end
+				end
+			end
+		end
+	end)
+	MutationLook.startFaceTint()
+end
+
+-- Face textures on MeshParts (Roblox can't tint them) get a Highlight fill in the statue's colour, on that one
+-- piece only, so the face reads as gold like every other statue's. Highlights are drawn per screen and Roblox draws
+-- about 31 at once (fighter outlines and auras use most), so only the nearest FACE_LIMIT faces get one; a far face
+-- keeps its colours, a few pixels at that distance.
+local FACE_LIMIT = 6
+function MutationLook.startFaceTint()
+	local glow = {} -- face part -> Highlight
+	local acc = 0
+	RunService.Heartbeat:Connect(function(dt)
+		acc += dt
+		if acc < 0.25 then
+			for part, h in glow do
+				local tint = part:GetAttribute("StatueTint")
+				if tint and h.FillColor ~= tint then
+					h.FillColor = tint
+				end
+			end
+			return
+		end
+		acc = 0
+		local camera = workspace.CurrentCamera
+		if not camera then
+			return
+		end
+		local here = camera.CFrame.Position
+		local faces = {}
+		for _, part in CollectionService:GetTagged("StatueFace") do
+			if part:IsDescendantOf(workspace) then
+				table.insert(faces, { part = part, d = (part.Position - here).Magnitude })
+			end
+		end
+		table.sort(faces, function(a, b)
+			return a.d < b.d
+		end)
+		local keep = {}
+		for i = 1, math.min(FACE_LIMIT, #faces) do
+			local part = faces[i].part
+			keep[part] = true
+			if not glow[part] then
+				local h = Instance.new("Highlight")
+				h.Name = "StatueFaceTint"
+				h.Adornee = part
+				h.FillColor = part:GetAttribute("StatueTint") or Color3.new(1, 0.84, 0.3)
+				h.FillTransparency = 0.35
+				h.OutlineTransparency = 1
+				h.DepthMode = Enum.HighlightDepthMode.Occluded
+				h.Parent = part
+				glow[part] = h
+			end
+		end
+		for part, h in glow do
+			if not keep[part] then
+				h:Destroy()
+				glow[part] = nil
 			end
 		end
 	end)
