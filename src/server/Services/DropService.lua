@@ -106,7 +106,10 @@ function DropService.drop(index, forced)
 		if root and (root.Position - altar.stand).Magnitude < Products.DropLuckRange then
 			dropLuckNear = dropLuckNear or player:GetAttribute("DropLuck") == true
 			mutationLuckNear = mutationLuckNear or player:GetAttribute("MutationLuck") == true
-			newbieNear = math.max(newbieNear, ((player:GetAttribute("NewbieUntil") or 0) - os.time()) / (Config.NewbieLuck.minutes * 60))
+			newbieNear = math.max(
+				newbieNear,
+				((player:GetAttribute("NewbieUntil") or 0) - os.time()) / (Config.NewbieLuck.minutes * 60)
+			)
 		end
 	end
 	if dropLuckNear then
@@ -362,7 +365,9 @@ function DropService.gallery()
 	-- A list ("BeastTitan,Whitebeard,..."): just those, in one row 26 apart at altar size and room (Config.Fit),
 	-- to check sizes against each other.
 	local list = workspace:GetAttribute("FighterGallery")
-	if type(list) == "string" then
+	-- A mutation's name ("Golden", "Diamond", ...): the full lineup, every fighter in that mutation.
+	local mutation = type(list) == "string" and Config.Mutations[list] and list or nil
+	if type(list) == "string" and not mutation then
 		local i = 0
 		for key in string.gmatch(list, "[^,]+") do
 			if Fighters.ByKey[key] then
@@ -414,8 +419,12 @@ function DropService.gallery()
 	for _, pool in order do
 		for _, fighter in Fighters.Launch do
 			if fighter.pool == pool then
-				local model =
-					FighterModels.spawn(fighter.key, Vector3.new(0, floorY, z), Vector3.new(0, 0, 1), { parent = folder })
+				local model = FighterModels.spawn(
+					fighter.key,
+					Vector3.new(0, floorY, z),
+					Vector3.new(0, 0, 1),
+					{ parent = folder, mutation = mutation }
+				)
 				if model then
 					CollectionService:RemoveTag(model, "Fighter") -- (no idle clip: it stands as built)
 					local size = model:GetExtentsSize()
