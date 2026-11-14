@@ -15,7 +15,7 @@ local ArrowPath = {}
 local player = Players.LocalPlayer
 
 local WIDTH = 3.6 -- (wide and bright: it has to read through auras and on a phone)
-local COLOR = Color3.fromRGB(120, 255, 150)
+local COLOR = Color3.fromRGB(255, 140, 20) -- (the chevrons' orange; their outline is blue)
 local TEXTURE = (UIAtlas.Ids.beam or 0) ~= 0 and ("rbxassetid://" .. UIAtlas.Ids.beam) or nil
 
 local targets = {} -- [owner] = Vector3
@@ -47,7 +47,7 @@ local function buildBeam()
 		-- The chevron strip (art/ui/tutorial_guide_arrows.png): three > per tile, pointing from the player
 		-- (Attachment0) to the target, scrolling the same way so they march toward it.
 		beam.Texture = TEXTURE
-		beam.Color = ColorSequence.new(Color3.new(1, 1, 1)) -- the art's own greens
+		beam.Color = ColorSequence.new(Color3.new(1, 1, 1)) -- the art's own orange and blue
 		beam.LightEmission = 0.55
 		beam.Brightness = 2.2
 		beam.TextureMode = Enum.TextureMode.Static
