@@ -7,12 +7,14 @@
 -- Fighter first: a new player wins a fighter within a minute, and everything else is taught after that.
 -- Order: 1 intro swoop (client) · 4 walk to the personal drop (Luffi, TUTORIAL_FIGHTER) · 5 win the clash ·
 -- 6 take it home · 7 collect the pad · 2 click to train (gift weights at 50) · 3 click at the base's punching
--- post (x2) to 1K (first aura) · 10 buy Stone Weights at the gear shop · then done (+$2K, goals appear). The numbers are saved, so
+-- post (x2) to 1K (first aura) · 10 buy Stone Weights at the gear shop · 11 train to the first zone's Power (2K) ·
+-- 12 walk to its gate · then done (+$2K, goals appear; inside, the zone's quest card leads to the guardians). The numbers are saved, so
 -- they keep their old meaning. A save from the old order (training first) goes 3 -> 4 and skips 2-3 after 7.
 -- (Stealing isn't taught: players find it at other bases. Locking is taught the first time someone steals from
 -- them (PlotService). Steps 8 and 9 are gone; a save on either moves on to 10.)
 -- Training is x5 for steps 2-3 and x2 for the rest (TutorialBoost).
 local Players = game:GetService("Players")
+local CollectionService = game:GetService("CollectionService")
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -48,7 +50,15 @@ local TEXT = {
 	[6] = "TAKE YOUR FIGHTER HOME AND PUT IT ON A STAND!",
 	[7] = "STEP ON THE GREEN PAD TO COLLECT!",
 	[10] = "FOLLOW THE ARROW AND BUY STONE WEIGHTS!",
+	-- After the weights, the way into the first zone (its own quest card takes over once inside).
+	[11] = "TRAIN TO "
+		.. Format.short(Config.Zones[Config.ZoneOrder[1]].unlockPower or 0)
+		.. " POWER TO OPEN THE "
+		.. Config.Zones[Config.ZoneOrder[1]].title
+		.. "!",
+	[12] = "THE " .. Config.Zones[Config.ZoneOrder[1]].title .. " IS OPEN! FOLLOW THE ARROW",
 }
+local FIRST_ZONE = Config.ZoneOrder[1]
 
 local state = {} -- [player] = { altar, resultAt, droppedAt }
 
@@ -186,6 +196,26 @@ local function dropFor(player)
 	return best
 end
 
+-- The player's own base punching post (else the nearest one).
+local function postTarget(player)
+	local root = rootOf(player)
+	local mine = player:GetAttribute("Plot")
+	local best, bestDist
+	for _, station in GymKit.List do
+		local d = root and (station.spot.Position - root.Position).Magnitude or 0
+		local plot = station.model:GetAttribute("Plot")
+		if plot == mine and plot ~= nil then
+			d = -1
+		elseif plot then
+			continue
+		end
+		if station.key == "PunchPost" and (not bestDist or d < bestDist) then
+			best, bestDist = station, d
+		end
+	end
+	return best and best.spot.Position
+end
+
 local function enter(player, step)
 	local data = Data.get(player)
 	Funnel.tutorial(player, data, step)
@@ -197,23 +227,23 @@ local function enter(player, step)
 	if step == 4 then
 		state[player].altar = dropFor(player)
 	elseif step == 3 then
-		-- The player's own base post (else the nearest punching post).
-		local root = rootOf(player)
-		local mine = player:GetAttribute("Plot")
-		local best, bestDist
-		for _, station in GymKit.List do
-			local d = root and (station.spot.Position - root.Position).Magnitude or 0
-			local plot = station.model:GetAttribute("Plot")
-			if plot == mine and plot ~= nil then
-				d = -1
-			elseif plot then
-				continue
-			end
-			if station.key == "PunchPost" and (not bestDist or d < bestDist) then
-				best, bestDist = station, d
+		player:SetAttribute("FtueTarget", postTarget(player))
+	elseif step == 11 and data then
+		if data.power >= (Config.Zones[FIRST_ZONE].unlockPower or 0) then
+			task.defer(setStep, player, 12)
+			return
+		end
+		player:SetAttribute("FtueTarget", postTarget(player))
+	elseif step == 12 and data then
+		if data.stats.zones[FIRST_ZONE] then
+			task.defer(setStep, player, DONE)
+			return
+		end
+		for _, gate in CollectionService:GetTagged("ZoneGate") do
+			if gate:GetAttribute("Zone") == FIRST_ZONE then
+				player:SetAttribute("FtueTarget", gate:GetPivot().Position)
 			end
 		end
-		player:SetAttribute("FtueTarget", best and best.spot.Position)
 	elseif step == 6 and places then
 		player:SetAttribute("FtueTarget", places.gate)
 	elseif step == 7 and places then
@@ -223,7 +253,7 @@ local function enter(player, step)
 		task.defer(setStep, player, 10) -- (no practice steal or lock step any more)
 	elseif step == 10 and data then
 		if data.gear >= FIRST_WEIGHTS then
-			task.defer(setStep, player, DONE)
+			task.defer(setStep, player, 11)
 			return
 		end
 		-- Enough cash for them, so the first shop visit always ends in a purchase.
@@ -349,6 +379,10 @@ local function tick(player)
 	then
 		setStep(player, 7)
 	elseif step == 10 and data.gear >= FIRST_WEIGHTS then
+		setStep(player, 11)
+	elseif step == 11 and data.power >= (Config.Zones[FIRST_ZONE].unlockPower or 0) then
+		setStep(player, 12)
+	elseif step == 12 and (data.stats.zones[FIRST_ZONE] or player:GetAttribute("Zone") == FIRST_ZONE) then
 		setStep(player, DONE)
 	end
 end
